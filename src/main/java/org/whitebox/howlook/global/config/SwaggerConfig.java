@@ -20,33 +20,47 @@ import java.util.List;
 public class SwaggerConfig {
     @Bean
     public Docket api(){
-        return new Docket(DocumentationType.OAS_30)
-                .useDefaultResponseMessages(false)
-                .select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
-                .paths(PathSelectors.any())
-                .build()
-                .securitySchemes(List.of(apiKey()))
-                .securityContexts(List.of(securityContext()))
-                .apiInfo(apiInfo());
+        return new Docket(DocumentationType.OAS_30).useDefaultResponseMessages(false).select().apis(RequestHandlerSelectors.basePackage("org.whitebox.howlook"))
+                .paths(PathSelectors.any()).build().apiInfo(apiInfo());
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("Boot API 01 Project Swagger")
-                .build();
-    }
-
-    private ApiKey apiKey() {
-        return new ApiKey("Authorization", "Bearer Token", "header");
-    }
-
-    private SecurityContext securityContext() {
-        return SecurityContext.builder().securityReferences(defaultAuth())
-                .operationSelector(selector -> selector.requestMappingPattern().startsWith("/api/")).build();
-    }
-    private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "global access");
-        return List.of(new SecurityReference("Authorization", new AuthorizationScope[] {authorizationScope}));
+        return new ApiInfoBuilder().title("How Look Swagger").build();
     }
 }
+
+//
+//@Configuration
+//public class SwaggerConfig {
+//    @Bean
+//    public Docket api(){
+//        return new Docket(DocumentationType.OAS_30)
+//                .useDefaultResponseMessages(false)
+//                .select()
+//                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+//                .paths(PathSelectors.any())
+//                .build()
+//                .securitySchemes(List.of(apiKey()))
+//                .securityContexts(List.of(securityContext()))
+//                .apiInfo(apiInfo());
+//    }
+//
+//    private ApiInfo apiInfo() {
+//        return new ApiInfoBuilder()
+//                .title("Boot API 01 Project Swagger")
+//                .build();
+//    }
+//
+//    private ApiKey apiKey() {
+//        return new ApiKey("Authorization", "Bearer Token", "header");
+//    }
+//
+//    private SecurityContext securityContext() {
+//        return SecurityContext.builder().securityReferences(defaultAuth())
+//                .operationSelector(selector -> selector.requestMappingPattern().startsWith("/api/")).build();
+//    }
+//    private List<SecurityReference> defaultAuth() {
+//        AuthorizationScope authorizationScope = new AuthorizationScope("global", "global access");
+//        return List.of(new SecurityReference("Authorization", new AuthorizationScope[] {authorizationScope}));
+//    }
+//}
