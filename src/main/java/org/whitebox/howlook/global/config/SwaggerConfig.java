@@ -20,12 +20,29 @@ import java.util.List;
 public class SwaggerConfig {
     @Bean
     public Docket api(){
-        return new Docket(DocumentationType.OAS_30).useDefaultResponseMessages(false).select().apis(RequestHandlerSelectors.basePackage("org.whitebox.howlook"))
-                .paths(PathSelectors.any()).build().apiInfo(apiInfo());
+        return new Docket(DocumentationType.OAS_30).useDefaultResponseMessages(false).select()
+                .apis(RequestHandlerSelectors.basePackage("org.whitebox.howlook"))
+                .paths(PathSelectors.any()).build()
+                .securitySchemes(List.of(apiKey()))
+                .securityContexts(List.of(securityContext()))
+                .apiInfo(apiInfo());
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("How Look Swagger").build();
+    }
+
+    private ApiKey apiKey() {
+        return new ApiKey("Authorization", "Bearer Token", "header");
+    }
+
+    private SecurityContext securityContext() {  // '/api/'경로에 대해 토큰필요
+        return SecurityContext.builder().securityReferences(defaultAuth())
+                .operationSelector(selector -> selector.requestMappingPattern().startsWith("/api/")).build();
+    }
+    private List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope = new AuthorizationScope("global", "global access");
+        return List.of(new SecurityReference("Authorization", new AuthorizationScope[] {authorizationScope}));
     }
 }
 

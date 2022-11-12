@@ -70,7 +70,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member member = Member.builder()
                     .mid(account.get("email"))
                     .mpw(passwordEncoder.encode("1111"))
-                    .nickName(account.get("profile"))
+                    .nickName(account.get("nickName"))
                     .gender(account.get("gender").charAt(0))
                     .social(true)
                     .build();
@@ -79,7 +79,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             //MemberSecurityDTO 구성 및 반환
             MemberSecurityDTO memberSecurityDTO =
-                    new MemberSecurityDTO(account.get("email"), "1111",null,account.get("profile"),
+                    new MemberSecurityDTO(account.get("email"), "1111",null,account.get("nickName"),
                             null,null,null,null,account.get("gender").charAt(0),null,
                             false,true,
                             Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
@@ -142,7 +142,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = (String)accountMap.get("email");
         Map<String,String> account = new HashMap<>();
         account.put("email",(String) accountMap.get("email"));
-        account.put("nickName",(String) accountMap.get("profile"));
+        account.put("nickName",(String) accountMap.get("nickname"));
         account.put("gender",(String) accountMap.get("gender"));
         account.put("birthDay",(String) accountMap.get("birthday"));
         log.info("account..." + account);
