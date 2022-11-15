@@ -2,6 +2,7 @@ package org.whitebox.howlook.domain.feed.entity;
 
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@DynamicInsert
 public class Feed extends BaseEntity{
 
     @Id

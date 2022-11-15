@@ -18,20 +18,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FeedRegisterDTO {
-
-    @NotEmpty
     private Long NPostId;       //게시글 id
-
-    @NotEmpty
     private Long PhotoCnt;      //업로드한 사진 개수
-
     private String Content;     //내용
-
     private String MainPhotoPath; //사진 경로
-
-    @NotEmpty
     private LocalDateTime regDate;
-
-    @NotEmpty
     private LocalDateTime modDate;
 }
