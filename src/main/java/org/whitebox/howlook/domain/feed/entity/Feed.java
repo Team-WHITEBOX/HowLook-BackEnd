@@ -1,11 +1,10 @@
 package org.whitebox.howlook.domain.feed.entity;
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Getter
@@ -24,7 +23,6 @@ public class Feed extends BaseEntity{
     private Long PhotoCnt;      //업로드한 사진 개수
 
     @Column(columnDefinition = "INT default 0")
-    //@ColumnDefault("0")         //이거 되는지 확인좀
     private Long LikeCount;     //좋아요개수
 
     @Column(columnDefinition = "INT default 0")
