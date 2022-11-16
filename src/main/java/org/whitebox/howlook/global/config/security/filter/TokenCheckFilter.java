@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,28 +28,25 @@ import java.util.Map;
 public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 후 정보 contextHolder에 등록
     private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
-    @Value("#{${AUTH_WHITELIST_PATH}.split(',')}")
-    private List<String> whiteList;
+//    @Value("#{${AUTH_WHITELIST_PATH}.split(',')}")
+    private String[] whiteList = {"/account","/swagger","/v3/api-docs","/api/v2"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
 
-//        if(whiteList.contains(path)){
+        for(String str : whiteList){
+            if(path.matches(str+".*")) {
+                log.info("pass token filter .....");
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+//        if (Arrays.asList(whiteList). .contains(path)) {
 //            log.info("pass token filter .....");
-//            filterChain.doFilter(request,response);
+//            filterChain.doFilter(request, response);
 //            return;
 //        }
 
-        log.info(whiteList);
-//        if(!path.startsWith("/api/")){
-//            filterChain.doFilter(request,response);
-//            return;
-//        }
-//        if(path.startsWith("/account/")){
-//            log.info("pass token filter .....");
-//            filterChain.doFilter(request,response);
-//            return;
-//        }
 
         log.info("Token Check Filter.....................");
         log.info("JWTUtil: "+jwtUtil);
