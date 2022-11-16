@@ -33,4 +33,6 @@ public class Feed extends BaseEntity{
     private String Content;     //내용
 
     private String MainPhotoPath; //사진 경로
+    
+    private Long FeedLocation;    //해당피드 위치정보
 }

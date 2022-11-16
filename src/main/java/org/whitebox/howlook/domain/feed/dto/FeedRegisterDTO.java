@@ -16,14 +16,16 @@ import java.time.LocalDateTime;
 public class FeedRegisterDTO {
 
     //@NotNull
-    private Long NPostId;       //게시글 id
+    private Long NPostId;           //게시글 id
 
     //@NotNull
-    private Long PhotoCnt;      //업로드한 사진 개수
+    private Long PhotoCnt;          //업로드한 사진 개수
 
-    private String Content;     //내용
+    private String Content;         //내용
 
-    private String MainPhotoPath; //사진 경로
+    private String MainPhotoPath;   //사진 경로
+
+    private Long FeedLocation;      //해당피드 위치정보
 
     private LocalDateTime regDate;
 
