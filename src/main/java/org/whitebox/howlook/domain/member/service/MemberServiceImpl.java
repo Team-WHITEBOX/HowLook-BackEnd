@@ -7,17 +7,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.whitebox.howlook.domain.member.dto.EditProfileRequest;
-import org.whitebox.howlook.domain.member.dto.EditProfileResponse;
-import org.whitebox.howlook.domain.member.dto.MemberJoinDTO;
-import org.whitebox.howlook.domain.member.dto.UpdatePasswordRequest;
+import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.entity.MemberRole;
 import org.whitebox.howlook.domain.member.exception.AccountMismatchException;
 import org.whitebox.howlook.domain.member.exception.PasswordEqualWithOldException;
 import org.whitebox.howlook.domain.member.exception.UsernameAlreadyExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
+import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
+
+import java.util.List;
+
+import static org.whitebox.howlook.global.error.ErrorCode.*;
 
 @Log4j2
 @Service
@@ -72,12 +74,37 @@ public class MemberServiceImpl implements MemberService{
     public void editProfile(EditProfileRequest editProfileRequest) {
         final Member member = accountUtil.getLoginMember();
 
+        log.info("프로필 수정");
         if (memberRepository.existsById(editProfileRequest.getMemberId())
                 && !member.getMid().equals(editProfileRequest.getMemberId())) {
+            log.info("예외");
             throw new UsernameAlreadyExistException();
         }
-
-    //    updateMemberProfile(member, editProfileRequest);
+        log.info("수정");
+        member.updateNickName(editProfileRequest.getMemberNickName());
+        member.updateHeight(editProfileRequest.getMemberHeight());
+        member.updateWeight(editProfileRequest.getMemberWeight());
+        member.updatePhone(editProfileRequest.getMemberPhone());
+        memberRepository.save(member);
     }
 
+    @Override
+    public UserProfileResponse getUserProfile(String usermid) {
+        final String loginMemberId = accountUtil.getLoginMemberId();
+
+        final UserProfileResponse result = memberRepository.findUserProfileByMidAndTargetUsermid(loginMemberId,usermid)
+                .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
+
+        //    final List<String> posts = 사진레파지토리.사진찾기(username);
+
+    //    result.setMemberPosts(posts);
+        return result;
+    }
+
+    @Override
+    public UserPostInfoResponse getUserPostInfo(String usermid) {
+        final UserPostInfoResponse result = memberRepository.findUserPostInfoByMid(usermid)
+                .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
+        return null;
+    }
 }
