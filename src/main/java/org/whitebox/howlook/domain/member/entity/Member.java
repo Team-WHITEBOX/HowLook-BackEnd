@@ -6,6 +6,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class Member {
     private String phone;
     private Long height;
     private Long weight;
-    private Date birthDay;
+    private LocalDate birthDay;
     private char gender;
     private Long profilePhotoId;
     private boolean del;
@@ -34,6 +35,10 @@ public class Member {
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
 
+//    @Builder
+//    public Member(String mid,String mpw, String){
+//
+//    }
 
     public void updatePassword(String mpw){
         this.mpw = mpw;
