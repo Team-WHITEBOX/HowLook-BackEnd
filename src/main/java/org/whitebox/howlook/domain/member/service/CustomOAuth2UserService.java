@@ -142,7 +142,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = (String)accountMap.get("email");
         Map<String,String> account = new HashMap<>();
         account.put("email",(String) accountMap.get("email"));
-        account.put("nickName",(String) accountMap.get("nickname"));
+        account.put("nickName",(String) ((Map<String, Object>)accountMap.get("profile")).get("nickname"));
         account.put("gender",(String) accountMap.get("gender"));
         account.put("birthDay",(String) accountMap.get("birthday"));
         log.info("account..." + account);

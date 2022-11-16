@@ -1,16 +1,20 @@
 package org.whitebox.howlook.global.config.security.handler;
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.whitebox.howlook.global.config.security.dto.MemberSecurityDTO;
+import org.whitebox.howlook.global.util.JWTUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 
 @Log4j2
@@ -18,7 +22,7 @@ import java.io.IOException;
 public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final PasswordEncoder passwordEncoder;
-
+    private final JWTUtil jwtUtil;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -28,22 +32,43 @@ public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHan
 
         MemberSecurityDTO memberSecurityDTO = (MemberSecurityDTO) authentication.getPrincipal();
 
-        String encodedPw = memberSecurityDTO.getMpw();
 
-        //소셜로그인이고 회원의 패스워드가 1111이라면
-        if (memberSecurityDTO.isSocial()
-                && (memberSecurityDTO.getMpw().equals("1111")
-                ||  passwordEncoder.matches("1111", memberSecurityDTO.getMpw())
-        )) {
-            log.info("Should Change Password");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-            log.info("Redirect to Member Modify ");
-            response.sendRedirect("/member/modify");
+        Map<String, Object> claim = Map.of("mid", memberSecurityDTO.getMid());
+        //Access Token 유효기간 1일
+        String accessToken = jwtUtil.generateToken(claim, 1);
+        //Refresh Token 유효기간 30일
+        String refreshToken = jwtUtil.generateToken(claim, 30);
 
-            return;
-        } else {
+        Gson gson = new Gson();
 
-            response.sendRedirect("/board/list");
-        }
+        Map<String,String> keyMap = Map.of(
+                "accessToken", accessToken,
+                "refreshToken", refreshToken);
+
+        String jsonStr = gson.toJson(keyMap);
+
+        response.getWriter().println(jsonStr);
+
+
+
+
+
+//        //소셜로그인이고 회원의 패스워드가 1111이라면
+//        if (memberSecurityDTO.isSocial()
+//                && (memberSecurityDTO.getMpw().equals("1111")
+//                ||  passwordEncoder.matches("1111", memberSecurityDTO.getMpw())
+//        )) {
+//            log.info("Should Change Password");
+//
+//            log.info("Redirect to Member Modify ");
+//            response.sendRedirect("/member/modify");
+//
+//            return;
+//        } else {
+//
+//            response.sendRedirect("/board/list");
+//        }
     }
 }
