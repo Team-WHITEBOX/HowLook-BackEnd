@@ -21,7 +21,6 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.whitebox.howlook.domain.member.service.CustomUserDetailsService;
 import org.whitebox.howlook.global.config.security.filter.APILoginFilter;
@@ -41,6 +40,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CustomSecurityConfig {
+
     private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
