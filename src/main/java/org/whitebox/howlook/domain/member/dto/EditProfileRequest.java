@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Getter
@@ -24,11 +25,11 @@ public class EditProfileRequest {
     private String memberNickName;
 
     @ApiModelProperty(value = "키", example = "183", required = true)
-    @NotBlank(message = "키을 입력해주세요")
+    @NotNull(message = "키을 입력해주세요")
     private Long memberHeight;
 
     @ApiModelProperty(value = "몸무게", example = "70", required = true)
-    @NotBlank(message = "키을 입력해주세요")
+    @NotNull(message = "몸무게를 입력해주세요")
     private Long memberWeight;
 
     @ApiModelProperty(value = "전화번호", example = "010-0000-0000", required = false)

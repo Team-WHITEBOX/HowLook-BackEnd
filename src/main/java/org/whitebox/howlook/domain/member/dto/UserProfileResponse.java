@@ -1,51 +1,55 @@
 package org.whitebox.howlook.domain.member.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApiModel("유저 프로필 조회 응답 모델")
 @Getter
 public class UserProfileResponse {
 
-    @ApiModelProperty(value = "유저네임", example = "dlwlrma")
-    private String memberUsername;
+    @ApiModelProperty(value = "아이디", example = "user1")
+    private String memberId;
 
-    @ApiModelProperty(value = "이름", example = "이지금")
-    private String memberName;
+    @ApiModelProperty(value = "닉네임", example = "길동이")
+    private String memberNickName;
 
-//    @ApiModelProperty(value = "프로필사진")
-//    private Image memberImage;
+    @ApiModelProperty(value = "키", example = "180")
+    private Long memberHeight;
 
-    @ApiModelProperty(value = "소개", example = "안녕하세요")
-    private String memberIntroduce;
+    @ApiModelProperty(value = "몸무게", example = "60")
+    private Long memberWeight;
 
-    @ApiModelProperty(value = "포스팅 수", example = "90")
-    private Long memberPostsCount;
+    @ApiModelProperty(value = "프로필사진")
+    private Long profilePhotoId;
+
+//    @ApiModelProperty(value = "해시태그", example = "#미니멀, #스트릿")
+//    private String memberTag;
+    
+    //랭킹
+
+    @ApiModelProperty(value = "게시글 목록", example = "['사진1','사진2','사진3']")
+    private List<String> memberPosts;
 
     @ApiModelProperty(value = "본인 여부", example = "false")
     private boolean isMe;
 
-//    @QueryProjection
-//    public UserProfileResponse(String username, String name, String website, Image image,
-//                               boolean isFollowing, boolean isFollower, boolean isBlocking, boolean isBlocked,
-//                               String introduce, Long postsCount, Long followingsCount, Long followersCount,
-//                               boolean isMe) {
-//        this.memberUsername = username;
-//        this.memberName = name;
-//        this.memberWebsite = website;
-//        this.memberImage = image;
-//        this.isFollowing = isFollowing;
-//        this.isFollower = isFollower;
-//        this.isBlocking = isBlocking;
-//        this.isBlocked = isBlocked;
-//        this.memberIntroduce = introduce;
-//        this.memberPostsCount = postsCount;
-//        this.memberFollowingsCount = followingsCount;
-//        this.memberFollowersCount = followersCount;
-//        this.isMe = isMe;
-//        this.hasStory = false;
-//        checkBlock();
-//    }
+    @QueryProjection
+    public UserProfileResponse(String memberId, String memberNickName, Long memberHeight, Long memberWeight, Long profilePhotoId,
+                               boolean isMe) {
+        this.memberId = memberId;
+        this.memberNickName = memberNickName;
+        this.memberHeight = memberHeight;
+        this.memberWeight = memberWeight;
+        this.profilePhotoId = profilePhotoId;
+        this.isMe = isMe;
+    }
+    public void setMemberPosts(List<String> posts){
+        this.memberPosts = posts.stream().collect(Collectors.toList());
+    }
 
 }

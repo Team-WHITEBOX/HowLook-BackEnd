@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.whitebox.howlook.domain.member.dto.EditProfileRequest;
-import org.whitebox.howlook.domain.member.dto.EditProfileResponse;
-import org.whitebox.howlook.domain.member.dto.UpdatePasswordRequest;
+import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
@@ -33,14 +31,22 @@ public class MemberController {
     }
 
     @ApiOperation(value = "유저 프로필 조회")
-    @GetMapping(value = "/{username}")
-    public ResponseEntity<ResultResponse> getUserProfile(@PathVariable("username") String username) {
-//        final UserProfileResponse userProfileResponse = memberService.getUserProfile(username);
+    @GetMapping(value = "/{usermid}")
+    public ResponseEntity<ResultResponse> getUserProfile(@PathVariable("usermid") String usermid) {
+        final UserProfileResponse userProfileResponse = memberService.getUserProfile(usermid);
 
-        return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS));//, userProfileResponse));
+        return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS, userProfileResponse));
     }
 
-    @ApiOperation(value = "회원 프로필 수정정보 조회")
+    @ApiOperation(value = "게시글 작성자 정보 조회")
+    @GetMapping(value = "/{usermid}/postinfo")
+    public ResponseEntity<ResultResponse> getUserPostInfo(@PathVariable("usermid") String usermid) {
+        final UserPostInfoResponse userPostInfoResponse = memberService.getUserPostInfo(usermid);
+
+        return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS));
+    }
+
+    @ApiOperation(value = "회원 프로필 수정 GET")
     @GetMapping(value = "/edit")
     public ResponseEntity<ResultResponse> getMemberEdit() {
         final EditProfileResponse editProfileResponse = memberService.getEditProfile();
