@@ -14,6 +14,5 @@ public interface ReplyService {
     void modify(ReplyDTO replyDTO);
 
     void remove(int CommendId);
-
-//    PageResponse<ReplyDTO> getListOfBoard(int bno, PageRequestDTO pageRequestDTO)
+//    PageResponse<ReplyDTO> getListOfBoard(int bno, PageRequestDTO pageRequestDTO);
 }
