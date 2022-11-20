@@ -2,11 +2,10 @@ package org.whitebox.howlook.domain.upload.entity;
 
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.whitebox.howlook.domain.feed.entity.Feed;
+import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -19,6 +18,19 @@ public class Upload {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long PhotoId;       //사진 id
-    private Long NPostId;       //게시글 id
+
     private String Path;        //사진 경로
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="NPostId")
+    private Feed feed;
+
+    @Builder
+    public Upload(Feed feed, String path) {
+        this.feed = feed;
+        this.Path = path;
+        //this.NPostId = feed.getNPostId();
+    }
+
 }

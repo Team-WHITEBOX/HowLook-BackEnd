@@ -2,8 +2,11 @@ package org.whitebox.howlook.domain.feed.entity;
 
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.whitebox.howlook.domain.upload.entity.Upload;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,4 +38,7 @@ public class Feed extends BaseEntity{
     private String MainPhotoPath; //사진 경로
     
     private Long FeedLocation;    //해당피드 위치정보
+
+    @OneToMany(mappedBy = "feed")
+    private List<Upload> uploads = new ArrayList<>();
 }

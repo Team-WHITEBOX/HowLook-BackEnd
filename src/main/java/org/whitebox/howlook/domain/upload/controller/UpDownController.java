@@ -42,40 +42,40 @@ public class UpDownController {
         // 사진 업로드 코드
         log.info(uploadFileDTO);
         final List<UploadResultDTO> list = new ArrayList<>();
-
-        if(uploadFileDTO.getFiles() != null)
-        {
-            // forEach 문으로 선택한 사진 수 만큼 실행 됨
-            uploadFileDTO.getFiles().forEach(multipartFile -> {
-                String originalName = multipartFile.getOriginalFilename();
-                String uuid = UUID.randomUUID().toString();
-
-                Path savePath = Paths.get(uploadPath, uuid+"_"+originalName);
-
-                try{
-                    multipartFile.transferTo(savePath);
-                }catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-
-                // 여기까지는 사진을 Server에 저장하는 코드
-                // 여기서부터 사진 정보를 DB에 저장하는 코드
-                // UploadFileDTO를 통해 db에 사진 저장경로를 Insert
-                Long pId = uploadFileDTO.getNPostId();
-                UploadResultDTO temp = UploadResultDTO.builder().Path(uploadPath+"\\"+uuid+"_"+originalName).NPostId(pId).build();
-                list.add(temp);
-
-                uploadService.register(temp);
-
-            });
-        }
+        // feed에 사진을 업로드하기 위한 기반 코드
+//        if(uploadFileDTO.getFiles() != null)
+//        {
+//            // forEach 문으로 선택한 사진 수 만큼 실행 됨
+//            uploadFileDTO.getFiles().forEach(multipartFile -> {
+//                String originalName = multipartFile.getOriginalFilename();
+//                String uuid = UUID.randomUUID().toString();
+//
+//                Path savePath = Paths.get(uploadPath, uuid+"_"+originalName);
+//
+//                try{
+//                    multipartFile.transferTo(savePath);
+//                }catch (IOException e)
+//                {
+//                    e.printStackTrace();
+//                }
+//
+//                // 여기까지는 사진을 Server에 저장하는 코드
+//                // 여기서부터 사진 정보를 DB에 저장하는 코드
+//                // UploadFileDTO를 통해 db에 사진 저장경로를 Insert
+//                Long pId = uploadFileDTO.getNPostId();
+////                UploadResultDTO temp = UploadResultDTO.builder().Path(uploadPath+"\\"+uuid+"_"+originalName).NPostId(pId).build();
+//                list.add(temp);
+//
+//                uploadService.register(temp);
+//
+//            });
+  //      }
         return list;
     }
 
 
     // 게시글 아이디에 붙어있는 사진 경로를 반환
-    @ApiOperation(value = "radPhoto Get", notes = "Get 방식으로 사진 경로 조회")
+    @ApiOperation(value = "readPhoto Get", notes = "Get 방식으로 사진 경로 조회")
     @GetMapping("/read")
     public List<String> readPhoto(Long NPostId) {
         List<String> list = new ArrayList<>();

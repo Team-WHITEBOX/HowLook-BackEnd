@@ -9,4 +9,5 @@ import java.util.List;
 public class UploadFileDTO {
     private Long NPostId; // 게시글 ID
     private List<MultipartFile> files; // 여러 장을 담을 파일 리스트
+
 }

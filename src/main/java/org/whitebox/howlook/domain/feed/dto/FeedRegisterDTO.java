@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -23,11 +22,12 @@ public class FeedRegisterDTO {
 
     private String Content;         //내용
 
-    private String MainPhotoPath;   //사진 경로
 
     private Long FeedLocation;      //해당피드 위치정보
 
     private LocalDateTime regDate;
 
     private LocalDateTime modDate;
+
+    private UploadFileDTO uploadFileDTO;
 }
