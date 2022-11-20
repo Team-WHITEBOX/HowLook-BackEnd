@@ -1,19 +1,27 @@
 package org.whitebox.howlook.domain.Reply.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.Reply.dto.ReplyDTO;
 import org.whitebox.howlook.domain.Reply.service.ReplyService;
+import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.whitebox.howlook.global.result.ResultCode.LIKE_COMMENT_SUCCESS;
+import static org.whitebox.howlook.global.result.ResultCode.UNLIKE_COMMENT_SUCCESS;
 
 @RestController
 @RequestMapping("/replies")
@@ -84,4 +92,37 @@ public class ReplyController {
 
         return resultMap;
     }
-}
+
+    @ApiOperation(value = "댓글 좋아요")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "F015 - 댓글 좋아요에 성공하였습니다."),
+            @ApiResponse(code = 400, message = "G003 - 유효하지 않은 입력입니다.\n"
+                    + "G004 - 입력 타입이 유효하지 않습니다.\n"
+                    + "F008 - 존재하지 않는 댓글입니다.\n"
+                    + "F010 - 해당 댓글에 이미 좋아요를 누른 회원입니다."),
+            @ApiResponse(code = 401, message = "M003 - 로그인이 필요한 화면입니다."),
+    })
+    @ApiImplicitParam(name = "commentId", value = "댓글 PK", example = "1", required = true)
+    @PostMapping("/like")
+    public ResponseEntity<ResultResponse> likeComment(@RequestParam int commentId) {
+        replyService.likeComment(commentId);
+
+        return ResponseEntity.ok(ResultResponse.of(LIKE_COMMENT_SUCCESS));
+    }
+
+    @ApiOperation(value = "댓글 좋아요 취소")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "F016 - 댓글 좋아요 해제에 성공하였습니다."),
+            @ApiResponse(code = 400, message = "G003 - 유효하지 않은 입력입니다.\n"
+                    + "G004 - 입력 타입이 유효하지 않습니다.\n"
+                    + "F008 - 존재하지 않는 댓글입니다.\n"
+                    + "F011 - 해당 댓글에 좋아요를 누르지 않은 회원입니다."),
+            @ApiResponse(code = 401, message = "M003 - 로그인이 필요한 화면입니다."),
+    })
+    @ApiImplicitParam(name = "commentId", value = "댓글 PK", example = "1", required = true)
+    @DeleteMapping("/like")
+    public ResponseEntity<ResultResponse> unlikeComment(@RequestParam Long commentId) {
+        replyService.unlikeComment(commentId);
+
+        return ResponseEntity.ok(ResultResponse.of(UNLIKE_COMMENT_SUCCESS));
+    }

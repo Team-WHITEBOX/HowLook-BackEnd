@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.whitebox.howlook.domain.Reply.dto.ReplyDTO;
-import org.whitebox.howlook.domain.Reply.reply;
+import org.whitebox.howlook.domain.Reply.entity.reply;
 import org.whitebox.howlook.domain.Reply.repository.ReplyRepository;
 import org.whitebox.howlook.domain.Reply.service.ReplyService;
 

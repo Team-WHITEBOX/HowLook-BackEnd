@@ -6,7 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.Reply.dto.ReplyDTO;
-import org.whitebox.howlook.domain.Reply.reply;
+import org.whitebox.howlook.domain.Reply.entity.reply;
 import org.whitebox.howlook.domain.Reply.repository.ReplyRepository;
 
 import java.util.Optional;

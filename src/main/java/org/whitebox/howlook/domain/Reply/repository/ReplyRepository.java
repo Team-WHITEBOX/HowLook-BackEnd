@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.whitebox.howlook.domain.Reply.reply;
+import org.whitebox.howlook.domain.Reply.entity.reply;
 
 public interface ReplyRepository extends JpaRepository<reply,Integer> {
     @Query("select r from reply r")

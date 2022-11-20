@@ -1,4 +1,4 @@
-package org.whitebox.howlook.domain.Reply;
+package org.whitebox.howlook.domain.Reply.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
