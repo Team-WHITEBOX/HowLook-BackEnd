@@ -40,7 +40,7 @@ public class UploadServiceImpl implements UploadService{
     public List<String> getPath(Long NPostId) {
         List<Map<String, Object>> cnt = new ArrayList<>();
         List<String> str = new ArrayList<>();
-        String sql = "SELECT path FROM webdb.upload WHERE npost_id = ?";
+        String sql = "SELECT path FROM s5532640.upload WHERE npost_id = ?";
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, NPostId);
         cnt.addAll(rows);
 

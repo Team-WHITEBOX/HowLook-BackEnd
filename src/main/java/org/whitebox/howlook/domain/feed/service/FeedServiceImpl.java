@@ -24,9 +24,7 @@ import java.util.List;
 public class FeedServiceImpl implements  FeedService{
 
     private final ModelMapper modelMapper;
-
     private final FeedRepository feedRepository;
-
     //전달받은 FeedRegisterDTO값을 데이터베이스에 저장
     @Override
     public void register(FeedRegisterDTO feedRegisterDTO) {
@@ -37,9 +35,10 @@ public class FeedServiceImpl implements  FeedService{
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    public String CountTest()
+    public List<String> CountTest()
     {
-        String cnt = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM webdb.feed", Integer.class).toString();
+        List<String> cnt = new ArrayList<>();
+        cnt.addAll(jdbcTemplate.queryForList("SELECT moddate FROM webdb.feed", String.class));
         return cnt;
     }
 

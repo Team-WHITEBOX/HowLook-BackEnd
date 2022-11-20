@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface FeedService {
     void register(FeedRegisterDTO feedRegisterDTO);
-    public String CountTest();
+    public List<String> CountTest();
 }

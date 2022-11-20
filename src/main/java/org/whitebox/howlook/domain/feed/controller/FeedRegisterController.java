@@ -14,6 +14,7 @@ import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.service.FeedService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/feed")
@@ -25,9 +26,7 @@ public class FeedRegisterController {
     //게시글 등록하는 POST로 매핑된 API구현
     @PostMapping("/register")
     public void registerPost(@Valid FeedRegisterDTO feedRegisterDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-
         log.info("Feed POST register!");
-
         if(bindingResult.hasErrors()) {
             log.info("has errors..");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
@@ -36,15 +35,13 @@ public class FeedRegisterController {
 
         log.info(feedRegisterDTO);
 
-
         feedService.register(feedRegisterDTO);
     }
 
     @GetMapping("/count")
-    public String count()
+    public List<String> count()
     {
-        String cnt = feedService.CountTest();
-
-        return cnt;
+        //String cnt = "1";
+        return feedService.CountTest();
     }
 }
