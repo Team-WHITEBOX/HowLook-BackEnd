@@ -14,25 +14,25 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class FeedReaderDTO {
 
-    @JsonProperty("npost-id")
+    //@JsonProperty("npost-id")
     private Long NPostId;       //게시글 id
 
-    @JsonProperty("photo-cnt")
+    //@JsonProperty("photo-cnt")
     private Long PhotoCnt;      //업로드한 사진 개수
 
-    @JsonProperty("like-count")
+    //@JsonProperty("like-count")
     private Long LikeCount;     //좋아요개수
 
-    @JsonProperty("comment-count")
+    //@JsonProperty("comment-count")
     private Long CommentCount;  //댓글개수
 
-    @JsonProperty("view-cnt")
+    //@JsonProperty("view-cnt")
     private Long ViewCnt;       //조회수
 
-    @JsonProperty("content")
+    //@JsonProperty("content")
     private String Content;     //내용
 
-    @JsonProperty("mainphoto-path")
+    //@JsonProperty("mainphoto-path")
     private String MainPhotoPath; //사진 경로
 
     @JsonProperty("regDate")
