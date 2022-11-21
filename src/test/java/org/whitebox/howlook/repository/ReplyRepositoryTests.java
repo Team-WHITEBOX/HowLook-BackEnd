@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.whitebox.howlook.domain.Reply.dto.ReplyDTO;
-import org.whitebox.howlook.domain.Reply.entity.reply;
+import org.whitebox.howlook.domain.Reply.entity.Reply;
 import org.whitebox.howlook.domain.Reply.repository.ReplyRepository;
 import org.whitebox.howlook.domain.Reply.service.ReplyService;
 
@@ -32,7 +32,7 @@ public class ReplyRepositoryTests {
 
         int bno = 100;
 
-        reply r = reply.builder()
+        Reply r = Reply.builder()
                 .NPostId(100)
                 .UserId("User1")
                 .Contents("안녕하세요")
@@ -50,7 +50,7 @@ public class ReplyRepositoryTests {
         int bno = 100;
         Pageable pageable = PageRequest.of(0,10, Sort.by("CommendId").descending());
 
-        Page<reply> result = replyRepository.listofBoard(bno, pageable);
+        Page<Reply> result = replyRepository.listofBoard(bno, pageable);
 
         result.getContent().forEach(reply -> {log.info(reply);});
     }

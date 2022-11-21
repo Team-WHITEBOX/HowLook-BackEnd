@@ -33,8 +33,8 @@ public class ReplyController {
     @ApiOperation(value = "Replies POST", notes = "POST 방식으로 댓글 등록") // 댓글 등록
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Integer> register( // 등록
-            @Valid @RequestBody ReplyDTO replyDTO,
-            BindingResult bindingResult) throws BindException {
+                                          @Valid @RequestBody ReplyDTO replyDTO,
+                                          BindingResult bindingResult) throws BindException {
 
         log.info(replyDTO);
 
@@ -66,21 +66,21 @@ public class ReplyController {
 
     @ApiOperation(value = "Delete Reply", notes = "DELETE 방식으로 특정 댓글 삭제") // 댓글 삭제
     @DeleteMapping("/{commendId}")
-    public Map<String,Integer> remove(@PathVariable("commendId") int CommendId) {
+    public Map<String, Integer> remove(@PathVariable("commendId") int CommendId) {
 
         replyService.remove(CommendId);
 
         Map<String, Integer> resultMap = new HashMap<>();
 
-        resultMap.put("commendId",CommendId);
+        resultMap.put("commendId", CommendId);
 
         return resultMap;
     }
 
     @ApiOperation(value = "Modify Reply", notes = "PUT 방식으로 특정 댓글 수정")
-    @PutMapping(value = "/{commendId}", consumes = MediaType.APPLICATION_JSON_VALUE )
-    public Map<String,Integer> remove( @PathVariable("commendId") int CommendId,
-                                    @RequestBody ReplyDTO replyDTO ){
+    @PutMapping(value = "/{commendId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Integer> remove(@PathVariable("commendId") int CommendId,
+                                       @RequestBody ReplyDTO replyDTO) {
 
         replyDTO.setRno(CommendId); //번호를 일치시킴
 
@@ -93,7 +93,7 @@ public class ReplyController {
         return resultMap;
     }
 
-    @ApiOperation(value = "댓글 좋아요")
+    @ApiOperation(value = "댓글 좋아요") // 좋아요 기능추가
     @ApiResponses({
             @ApiResponse(code = 200, message = "F015 - 댓글 좋아요에 성공하였습니다."),
             @ApiResponse(code = 400, message = "G003 - 유효하지 않은 입력입니다.\n"
@@ -121,8 +121,9 @@ public class ReplyController {
     })
     @ApiImplicitParam(name = "commentId", value = "댓글 PK", example = "1", required = true)
     @DeleteMapping("/like")
-    public ResponseEntity<ResultResponse> unlikeComment(@RequestParam Long commentId) {
+    public ResponseEntity<ResultResponse> unlikeComment(@RequestParam int commentId) {
         replyService.unlikeComment(commentId);
 
         return ResponseEntity.ok(ResultResponse.of(UNLIKE_COMMENT_SUCCESS));
     }
+}
