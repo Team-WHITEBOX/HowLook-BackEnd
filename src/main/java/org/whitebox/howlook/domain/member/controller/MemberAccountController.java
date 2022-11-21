@@ -30,6 +30,11 @@ public class MemberAccountController {
         }
     }
 
+    @PostMapping("/generateToken")
+    public void loginPost(@RequestBody String mid,@RequestBody String mpw){
+        log.info("로그인");
+    }
+
     @GetMapping("/join")
     public void joinGET(){
         log.info("join get....");
