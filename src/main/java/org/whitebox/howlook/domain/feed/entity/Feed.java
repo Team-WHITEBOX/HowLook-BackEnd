@@ -40,5 +40,6 @@ public class Feed extends BaseEntity{
     private Long FeedLocation;    //해당피드 위치정보
 
     @OneToMany(mappedBy = "feed")
+    @Builder.Default
     private List<Upload> uploads = new ArrayList<>();
 }
