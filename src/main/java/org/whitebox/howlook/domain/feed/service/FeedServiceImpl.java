@@ -18,15 +18,13 @@ import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.entity.Upload;
 import org.whitebox.howlook.domain.upload.repository.UploadRepository;
 import org.whitebox.howlook.domain.upload.service.UploadService;
+import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Log4j2
@@ -38,6 +36,7 @@ public class FeedServiceImpl implements  FeedService{
     private final ModelMapper modelMapper;
     private final FeedRepository feedRepository;
     private final UploadRepository uploadRepository;
+    private final AccountUtil accountUtil;
 
     private final UploadService uploadService; // 업로드 서비스
     @Value("${org.whitebox.upload.path}")
@@ -48,12 +47,9 @@ public class FeedServiceImpl implements  FeedService{
     public void register(FeedRegisterDTO feedRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
-
-//        Upload upload = new Upload(feedRegisterDTO.getUploadFileDTO(),feed);
-        //Upload temp = modelMapper.map(feedRegisterDTO.getUploadFileDTO(), Upload.class);
+        feed.setMid(accountUtil.getLoginMemberId());
         feedRepository.save(feed);
 
-     //   UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();
         UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();
         // 사진 업로드 코드
         log.info(uploadFileDTO);
@@ -96,7 +92,7 @@ public class FeedServiceImpl implements  FeedService{
     }
 
     @Override
-    public FeedReaderDTO reader(Long NPostId) {
+    public FeedReaderDTO readerPID(Long NPostId) {
         Optional<Feed> result = feedRepository.findById(NPostId);
 
         Feed feed = result.orElseThrow();
@@ -107,4 +103,17 @@ public class FeedServiceImpl implements  FeedService{
 
         return feedReaderDTO;
     }
+
+//    @Override
+//    public Collection<Feed> readerUID(String UserID) {
+//        Collection<Feed> result = feedRepository.findByUID(UserID);
+//
+//        Feed feed = result.orElseThrow();
+//        log.info(feed);
+//
+//        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
+//
+//        return
+//    }
 }

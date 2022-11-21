@@ -19,8 +19,9 @@ import java.util.Set;
 @ToString(exclude = "roleSet")
 public class Member {
     @Id
-    private String mid;
-    private String mpw;
+    private String mid;         //memberID
+    private String mpw;         //memberPW
+
     private String name;
     private String nickName;
     private String phone;

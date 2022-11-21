@@ -2,6 +2,7 @@ package org.whitebox.howlook.domain.feed.entity;
 
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.upload.entity.Upload;
 
 import javax.persistence.*;
@@ -20,6 +21,8 @@ public class Feed extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long NPostId;       //게시글 id
+
+    private String mid;
 
     @Column(columnDefinition = "INT default 0")
     private Long PhotoCnt;      //업로드한 사진 개수
@@ -42,4 +45,8 @@ public class Feed extends BaseEntity{
     @OneToMany(mappedBy = "feed")
     @Builder.Default
     private List<Upload> uploads = new ArrayList<>();
+
+    public void setMid(String mid){
+        this.mid=mid;
+    }
 }
