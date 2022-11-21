@@ -7,5 +7,7 @@ import java.util.List;
 
 @Data
 public class UploadFileDTO {
-    private List<MultipartFile> files;
+    private Long NPostId; // 게시글 ID
+    private List<MultipartFile> files; // 여러 장을 담을 파일 리스트
+
 }

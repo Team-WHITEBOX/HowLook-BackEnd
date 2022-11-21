@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sample")
+@RequestMapping("/sample")
 public class sampleController {
     @ApiOperation("Sample GET doA")
     @GetMapping("/doA")
@@ -19,7 +19,7 @@ public class sampleController {
         return Arrays.asList("AAA","BBB","CCC");
     }
     @GetMapping("/doB")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<String> doB(){
         return Arrays.asList("ADMINAAA","ADMINBBB","ADMINCCC");
     }

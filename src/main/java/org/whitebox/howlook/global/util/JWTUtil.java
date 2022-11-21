@@ -33,8 +33,8 @@ public class JWTUtil {
         payloads.putAll(valueMap);
 
         //테스트 시에는 짧은 유효 기간
-        //int time = (60*24) * days; //테스트는 분단위로 나중에 60*24 (일)단위변경
-        int time = (5) * days; //테스트는 분단위로 나중에 60*24 (일)단위변경
+        int time = (60*24) * days; //테스트는 분단위로 나중에 60*24 (일)단위변경
+     //   int time = (5) * days; //테스트는 분단위로 나중에 60*24 (일)단위변경
 
         //10분 단위로 조정
         //int time = (10) * days; //테스트는 분단위로 나중에 60*24 (일)단위변경

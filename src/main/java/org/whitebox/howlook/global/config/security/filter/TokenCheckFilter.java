@@ -5,6 +5,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Log4j2
@@ -25,15 +28,26 @@ import java.util.Map;
 public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 후 정보 contextHolder에 등록
     private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
-
+//    @Value("#{${AUTH_WHITELIST_PATH}.split(',')}")
+    private String[] whiteList = {"/account","/swagger","/v3/api-docs","/api/v2"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        if(!path.startsWith("/api/")){
-            filterChain.doFilter(request,response);
-            return;
+        for(String str : whiteList){
+            if(path.matches(str+".*")) {
+                log.info("pass token filter .....");
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
+//        if (Arrays.asList(whiteList). .contains(path)) {
+//            log.info("pass token filter .....");
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
+
         log.info("Token Check Filter.....................");
         log.info("JWTUtil: "+jwtUtil);
         try{

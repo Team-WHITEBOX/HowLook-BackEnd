@@ -28,6 +28,7 @@ import org.whitebox.howlook.global.config.security.filter.RefreshTokenFilter;
 import org.whitebox.howlook.global.config.security.filter.TokenCheckFilter;
 import org.whitebox.howlook.global.config.security.handler.APILoginSuccessHandler;
 import org.whitebox.howlook.global.config.security.handler.Custom403Handler;
+import org.whitebox.howlook.global.config.security.handler.CustomAuthenticationFailureHandler;
 import org.whitebox.howlook.global.config.security.handler.CustomSocialLoginSuccessHandler;
 import org.whitebox.howlook.global.util.JWTUtil;
 
@@ -39,9 +40,11 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CustomSecurityConfig {
+
     private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -50,7 +53,7 @@ public class CustomSecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(){
-        return new CustomSocialLoginSuccessHandler(passwordEncoder());
+        return new CustomSocialLoginSuccessHandler(passwordEncoder(),jwtUtil);
     }
 
     @Bean
@@ -61,7 +64,6 @@ public class CustomSecurityConfig {
         //        .usernameParameter("loginId")    default : username
         //        .passwordParameter("password")
 
-//JWT
         //authenticationManager 설정
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
@@ -69,31 +71,44 @@ public class CustomSecurityConfig {
         //Get AuthenticationManager
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
-        //반드시 필요
-        http.authenticationManager(authenticationManager);
-
         //APILoginFilter
-        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
+        APILoginFilter apiLoginFilter = new APILoginFilter("/account/generateToken");
         apiLoginFilter.setAuthenticationManager(authenticationManager);
 
         //APILoginSuccessHandler
         APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
         //핸들러 세팅
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
+        apiLoginFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
+
+        //반드시 필요
+        http.authenticationManager(authenticationManager);
 
         //APILoginFilter 위치조정
-        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
         //api로 시작하는 모든경로 토큰체크필터 동작
-        http.addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         //refreshToken 호출처리
-        http.addFilterBefore(new RefreshTokenFilter("/refreshToken",jwtUtil), TokenCheckFilter.class);
+  //      http.addFilterBefore(new RefreshTokenFilter("/refreshToken",jwtUtil), TokenCheckFilter.class);
 
-//JWT end
 
-        http.csrf().disable();  // 간단한 학습을 위해 비활성화
+        http.httpBasic().disable();
+        http.csrf().disable();  // csrf 비활성화
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT위해 세션 사용안함
+
+        http.authorizeRequests()
+             //   .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()  //cors preflight 요청 통과
+                .antMatchers("/account/**","/swagger*/**","/v3/api-docs","/api/v2/**").permitAll()
+                .antMatchers("/sample/doB").hasAnyRole("ADMIN")
+                .antMatchers("/sample/doA","/member/**").hasAnyRole("USER")
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new RefreshTokenFilter("/refreshToken",jwtUtil), TokenCheckFilter.class);
+
         http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
         });
@@ -102,7 +117,7 @@ public class CustomSecurityConfig {
 
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
 
-        http.oauth2Login().loginPage("/member/login").successHandler(authenticationSuccessHandler());
+        http.oauth2Login().loginPage("/account/login").successHandler(authenticationSuccessHandler());
         return http.build();
     }
 
