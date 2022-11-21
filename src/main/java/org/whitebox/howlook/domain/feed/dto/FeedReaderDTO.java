@@ -16,6 +16,8 @@ public class FeedReaderDTO {
 
     private Long NPostId;       //게시글 id
 
+    private String UserId;      //string인 user의 id
+
     private Long PhotoCnt;      //업로드한 사진 개수
 
     private Long LikeCount;     //좋아요개수

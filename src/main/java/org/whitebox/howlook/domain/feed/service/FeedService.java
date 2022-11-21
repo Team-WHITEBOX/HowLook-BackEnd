@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface FeedService {
     void register(FeedRegisterDTO feedRegisterDTO);
-    FeedReaderDTO reader(Long NPostId);
+    FeedReaderDTO readerPID(Long NPostId);
+
+    //FeedReaderDTO readerUID(String UserID);
 }
