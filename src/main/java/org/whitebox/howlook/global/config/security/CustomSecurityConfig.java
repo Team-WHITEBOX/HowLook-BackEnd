@@ -84,16 +84,6 @@ public class CustomSecurityConfig {
         //반드시 필요
         http.authenticationManager(authenticationManager);
 
-        //APILoginFilter 위치조정
-//        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
-
-        //api로 시작하는 모든경로 토큰체크필터 동작
-//        http.addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class);
-
-        //refreshToken 호출처리
-  //      http.addFilterBefore(new RefreshTokenFilter("/refreshToken",jwtUtil), TokenCheckFilter.class);
-
-
         http.httpBasic().disable();
         http.csrf().disable();  // csrf 비활성화
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT위해 세션 사용안함
