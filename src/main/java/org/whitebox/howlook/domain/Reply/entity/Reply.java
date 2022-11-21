@@ -1,6 +1,7 @@
 package org.whitebox.howlook.domain.Reply.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.whitebox.howlook.domain.member.entity.Member;
 
@@ -33,7 +34,17 @@ public class Reply {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "NPostId")
-    private Post post;
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "NPostId")
+//    private Post post;
+
+    @Lob
+    @Column(name = "comment_content")
+    private String content;
+
+    @CreatedDate
+    @Column(name = "comment_upload_date")
+    private LocalDateTime uploadDate;
+
+    @
 }
