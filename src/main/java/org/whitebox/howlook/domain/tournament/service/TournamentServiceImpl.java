@@ -2,6 +2,7 @@ package org.whitebox.howlook.domain.tournament.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
@@ -19,6 +20,13 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public THistoryResponse getTHistory(LocalDate date) {
         THistoryResponse result = tournamentRepository.findTHistoryResponseByDate(date)
+                .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
+        return result;
+    }
+
+    @Override
+    public EHistoryResponse getEHistory(LocalDate date) {
+        EHistoryResponse result = tournamentRepository.findEHistoryResponseByDate(date)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
         return result;
     }

@@ -1,18 +1,11 @@
 package org.whitebox.howlook.domain.tournament.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.querydsl.core.types.dsl.DatePath;
-import com.querydsl.core.types.dsl.NumberPath;
-import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
-@ApiModel("상시 토너먼트 랭킹 기록 응답 모델")
 @Getter
-//@Builder
 public class THistoryResponse {
     Long T_history_id;
     LocalDate date;

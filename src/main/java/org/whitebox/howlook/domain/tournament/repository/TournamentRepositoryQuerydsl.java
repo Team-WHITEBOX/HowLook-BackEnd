@@ -1,5 +1,6 @@
 package org.whitebox.howlook.domain.tournament.repository;
 
+import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 
@@ -8,4 +9,5 @@ import java.util.Optional;
 
 public interface TournamentRepositoryQuerydsl {
     Optional<THistoryResponse> findTHistoryResponseByDate(LocalDate date);
+    Optional<EHistoryResponse> findEHistoryResponseByDate(LocalDate date);
 }

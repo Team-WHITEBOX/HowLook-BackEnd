@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.member.dto.UpdatePasswordRequest;
+import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.service.TournamentService;
@@ -24,11 +25,22 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 public class TournamentController {
     private final TournamentService tournamentService;
 
+    @GetMapping("/start")
+    public ResponseEntity<ResultResponse> startTournament(){
+        return null;
+    }
 
-    @GetMapping("/{date}")
+    @GetMapping("/history/{date}")
     public ResponseEntity<ResultResponse> getTHistory(@PathVariable("date") String date) {
         final THistoryResponse tHistoryResponse = tournamentService.getTHistory(LocalDate.parse(date));
 
         return ResponseEntity.ok(ResultResponse.of(UPDATE_PASSWORD_SUCCESS,tHistoryResponse));
+    }
+
+    @GetMapping("/event/{date}")
+    public ResponseEntity<ResultResponse> getEHistory(@PathVariable("date") String date) {
+        final EHistoryResponse eHistoryResponse = tournamentService.getEHistory(LocalDate.parse(date));
+
+        return ResponseEntity.ok(ResultResponse.of(UPDATE_PASSWORD_SUCCESS,eHistoryResponse));
     }
 }

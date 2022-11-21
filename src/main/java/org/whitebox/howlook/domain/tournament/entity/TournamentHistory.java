@@ -3,6 +3,8 @@ package org.whitebox.howlook.domain.tournament.entity;
 import lombok.*;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
 
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 //@ToString
 public class TournamentHistory {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long T_history_id;
     LocalDate date;
     Long lank_1;
