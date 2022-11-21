@@ -3,11 +3,9 @@ package org.whitebox.howlook.domain.member.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.whitebox.howlook.domain.member.dto.LoginDTO;
 import org.whitebox.howlook.domain.member.dto.MemberJoinDTO;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
@@ -31,11 +29,6 @@ public class MemberAccountController {
             log.info("user logout......");
         }
     }
-    @ApiOperation(value = "로그인")
-    @PostMapping(value = "/generateToken",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void loginPost(@RequestBody LoginDTO loginDTO){
-
-    }
 
     @GetMapping("/join")
     public void joinGET(){
@@ -44,7 +37,7 @@ public class MemberAccountController {
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/join")
-    public ResponseEntity<ResultResponse> joinPOST(@RequestBody MemberJoinDTO memberJoinDTO){
+    public ResponseEntity<ResultResponse> joinPOST(@RequestBody MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes){
         log.info("join post...");
         log.info(memberJoinDTO);
 
