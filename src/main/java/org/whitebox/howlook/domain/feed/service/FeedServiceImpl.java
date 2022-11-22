@@ -5,20 +5,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
+import org.whitebox.howlook.domain.feed.entity.Scrap;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
+import org.whitebox.howlook.domain.feed.repository.ScrapRepository;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
+import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
-import org.whitebox.howlook.domain.upload.entity.Upload;
 import org.whitebox.howlook.domain.upload.repository.UploadRepository;
 import org.whitebox.howlook.domain.upload.service.UploadService;
+import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
+import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.transaction.Transactional;
@@ -26,7 +28,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static org.whitebox.howlook.global.error.ErrorCode.*;
 
 @Service
 @Log4j2
@@ -38,6 +41,7 @@ public class FeedServiceImpl implements  FeedService{
     private final ModelMapper modelMapper;
     private final FeedRepository feedRepository;
     private final UploadRepository uploadRepository;
+    private final ScrapRepository scrapRepository;
     private final AccountUtil accountUtil;
 
     private final UploadService uploadService; // 업로드 서비스
@@ -126,4 +130,26 @@ public class FeedServiceImpl implements  FeedService{
 
         return result;
     }
+
+    @Override
+    public void scrapFeed(Long npost_id) {
+        final Feed feed = feedRepository.findById(npost_id).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        final Member member = accountUtil.getLoginMember();
+
+        if(scrapRepository.findByMemberAndFeed(member,feed).isPresent()){
+            throw new EntityAlreadyExistException(SCRAP_ALREADY_EXIST);
+        }
+        Scrap scrap = new Scrap(member,feed);
+        scrapRepository.save(scrap);
+    }
+
+    @Override
+    public void unScrapFeed(Long npost_id) {
+        final Feed feed = feedRepository.findById(npost_id).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        final Member member = accountUtil.getLoginMember();
+
+        Scrap scrap = scrapRepository.findByMemberAndFeed(member,feed).orElseThrow(()-> new EntityNotFoundException(SCRAP_NOT_FOUND));
+        scrapRepository.delete(scrap);
+    }
+
 }
