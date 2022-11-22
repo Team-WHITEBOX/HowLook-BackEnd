@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
+import org.whitebox.howlook.domain.feed.entity.Scrap;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
+import org.whitebox.howlook.domain.feed.repository.ScrapRepository;
 import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.entity.MemberRole;
@@ -23,6 +25,7 @@ import org.whitebox.howlook.global.util.AccountUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.whitebox.howlook.global.error.ErrorCode.*;
 
@@ -34,6 +37,7 @@ public class MemberServiceImpl implements MemberService{
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final FeedRepository feedRepository;
+    private final ScrapRepository scrapRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -103,13 +107,8 @@ public class MemberServiceImpl implements MemberService{
 
         final List<Feed> feeds = feedRepository.findByMid(usermid);
         log.info(feeds);
-        List<FeedReaderDTO> feedReaderDTOs = new ArrayList<>();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        feeds.forEach(feed -> {
-            FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
-            feedReaderDTO.setUserPostInfo(new UserPostInfoResponse(feed.getMember()));
-            feedReaderDTOs.add(feedReaderDTO);
-        });
+        List<FeedReaderDTO> feedReaderDTOs = feeds.stream().map(feed -> new FeedReaderDTO(feed)).collect(Collectors.toList());
+
         result.setMemberFeeds(feedReaderDTOs);
         return result;
     }
@@ -119,5 +118,13 @@ public class MemberServiceImpl implements MemberService{
         final UserPostInfoResponse result = memberRepository.findUserPostInfoByMid(usermid)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
         return result;
+    }
+
+    @Override
+    public List<FeedReaderDTO> getUserScrap(String usermid) {
+        final List<Scrap> scraps = scrapRepository.findAllByMid(usermid);
+        final List<FeedReaderDTO> feedReaderDTOs = scraps.stream().map(scrap -> new FeedReaderDTO(scrap.getFeed())).collect(Collectors.toList());
+
+        return feedReaderDTOs;
     }
 }
