@@ -16,8 +16,9 @@ import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
 
-import static org.whitebox.howlook.global.result.ResultCode.CREATE_POST_FAIL;
-import static org.whitebox.howlook.global.result.ResultCode.REGISTER_SUCCESS;
+import java.util.List;
+
+import static org.whitebox.howlook.global.result.ResultCode.*;
 
 @RestController
 @RequestMapping("/eval")
@@ -40,8 +41,8 @@ public class EvalController {
         return ResponseEntity.ok(ResultResponse.of(REGISTER_SUCCESS, true));
     }
 
-    //게시물 불러오는 GET으로 매핑한 API구현해야함
-    @GetMapping("/read")
+    // 게시글 아이디로 게시글 정보 가져오기
+    @GetMapping("/readbypid")
     public EvalReaderDTO readEval(Long NPostId) {
         EvalReaderDTO evalReaderDTO = evalService.reader(NPostId);
 
@@ -49,4 +50,14 @@ public class EvalController {
 
         return evalReaderDTO;
     }
+
+    @GetMapping("/readbyuid")
+    public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
+        List<EvalReaderDTO> evals = evalService.readerUID(UserID);
+
+        log.info(evals);
+
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evals));
+    }
+    
 }

@@ -23,7 +23,6 @@ public class Feed extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long NPostId;       //게시글 id
 
-//    private String mid;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mid")
     private Member member;
@@ -54,8 +53,4 @@ public class Feed extends BaseEntity{
     public void setMember(Member member){
         this.member = member;
     }
-
-//    public void setMid(String mid){
-//        this.mid=mid;
-//    }
 }

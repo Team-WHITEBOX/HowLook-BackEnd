@@ -43,7 +43,6 @@ public class FeedServiceImpl implements  FeedService{
     private final UploadService uploadService; // 업로드 서비스
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
-    final AccountUtil accountUtil;
 
     //전달받은 FeedRegisterDTO값을 데이터베이스에 저장
     @Override
@@ -124,11 +123,6 @@ public class FeedServiceImpl implements  FeedService{
                     .modDate(feed.getModDate()).regDate(feed.getRegDate()).build();
             result.add(feedReaderDTO);
         }
-        //log.info(feed);
-
-        //modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        //FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
-
         return result;
     }
 }
