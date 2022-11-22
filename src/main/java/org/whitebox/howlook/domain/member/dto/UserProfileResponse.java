@@ -4,7 +4,10 @@ import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
+import org.whitebox.howlook.domain.feed.entity.Feed;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +36,7 @@ public class UserProfileResponse {
     //랭킹
 
     @ApiModelProperty(value = "게시글 목록", example = "['사진1','사진2','사진3']")
-    private List<String> memberPosts;
+    private List<FeedReaderDTO> memberFeeds;
 
     @ApiModelProperty(value = "본인 여부", example = "false")
     private boolean isMe;
@@ -48,8 +51,8 @@ public class UserProfileResponse {
         this.profilePhotoId = profilePhotoId;
         this.isMe = isMe;
     }
-    public void setMemberPosts(List<String> posts){
-        this.memberPosts = posts.stream().collect(Collectors.toList());
+    public void setMemberFeeds(List<FeedReaderDTO> feeds){
+        this.memberFeeds = feeds.stream().collect(Collectors.toList());
     }
 
 }

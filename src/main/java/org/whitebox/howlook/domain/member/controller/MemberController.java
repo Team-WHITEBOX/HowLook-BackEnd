@@ -43,7 +43,7 @@ public class MemberController {
     public ResponseEntity<ResultResponse> getUserPostInfo(@PathVariable("usermid") String usermid) {
         final UserPostInfoResponse userPostInfoResponse = memberService.getUserPostInfo(usermid);
 
-        return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS));
+        return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS,userPostInfoResponse));
     }
 
     @ApiOperation(value = "회원 프로필 수정 GET")
