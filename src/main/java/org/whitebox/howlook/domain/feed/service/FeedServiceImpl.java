@@ -13,6 +13,7 @@ import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
+import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.entity.Upload;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -47,7 +49,7 @@ public class FeedServiceImpl implements  FeedService{
     public void register(FeedRegisterDTO feedRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
-        feed.setMid(accountUtil.getLoginMemberId());
+        feed.setMember(accountUtil.getLoginMember());
         feedRepository.save(feed);
 
         UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();
@@ -100,20 +102,28 @@ public class FeedServiceImpl implements  FeedService{
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
+        feedReaderDTO.setUserPostInfo(new UserPostInfoResponse(feed.getMember()));
 
         return feedReaderDTO;
     }
 
-//    @Override
-//    public Collection<Feed> readerUID(String UserID) {
-//        Collection<Feed> result = feedRepository.findByUID(UserID);
-//
-//        Feed feed = result.orElseThrow();
-//        log.info(feed);
-//
-//        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-//        FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
-//
-//        return
-//    }
+    @Override
+    public List<FeedReaderDTO> readerUID(String UserID) {
+        List<Feed> feeds = feedRepository.findByMid(UserID);
+        List<FeedReaderDTO> result = new ArrayList<>();
+        for(Feed feed : feeds){
+            FeedReaderDTO feedReaderDTO = new FeedReaderDTO().builder()
+                    .NPostId(feed.getNPostId()).userPostInfo(new UserPostInfoResponse(feed.getMember()))
+                    .PhotoCnt(feed.getPhotoCnt()).LikeCount(feed.getLikeCount()).CommentCount(feed.getCommentCount())
+                    .ViewCnt(feed.getViewCnt()).Content(feed.getContent()).MainPhotoPath(feed.getMainPhotoPath())
+                    .modDate(feed.getModDate()).regDate(feed.getRegDate()).build();
+            result.add(feedReaderDTO);
+        }
+        //log.info(feed);
+
+        //modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        //FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
+
+        return result;
+    }
 }

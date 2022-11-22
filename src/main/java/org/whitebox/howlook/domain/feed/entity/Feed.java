@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "member")
 @DynamicInsert
 public class Feed extends BaseEntity{
 
@@ -22,7 +22,10 @@ public class Feed extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long NPostId;       //게시글 id
 
-    private String mid;
+//    private String mid;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mid")
+    private Member member;
 
     @Column(columnDefinition = "INT default 0")
     private Long PhotoCnt;      //업로드한 사진 개수
@@ -46,7 +49,11 @@ public class Feed extends BaseEntity{
     @Builder.Default
     private List<Upload> uploads = new ArrayList<>();
 
-    public void setMid(String mid){
-        this.mid=mid;
+    public void setMember(Member member){
+        this.member = member;
     }
+
+//    public void setMid(String mid){
+//        this.mid=mid;
+//    }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
+import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.service.FeedService;
 import org.whitebox.howlook.global.error.ErrorCode;
 import org.whitebox.howlook.global.error.ErrorResponse;
@@ -34,13 +35,8 @@ public class FeedController {
 
     //게시글 등록하는 POST로 매핑된 API구현
     @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResultResponse> registerPost(@Valid @ModelAttribute FeedRegisterDTO feedRegisterDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<ResultResponse> registerPost(@Valid @ModelAttribute FeedRegisterDTO feedRegisterDTO) {
         log.info("Feed POST register!");
-        if(bindingResult.hasErrors()) {
-            log.info("has errors..");
-            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-            //return ResponseEntity.ok(ErrorResponse.of(POST_CANT_UPLOAD));
-        }
 
         log.info(feedRegisterDTO);
 
@@ -60,15 +56,12 @@ public class FeedController {
     }
 
 
-//    @GetMapping("/readbyuid")
-//    public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
-//        FeedReaderDTO feedReaderDTO = feedService.readerUID(UserID);
-//
-//        //String sql = "SELECT path FROM s5532957.feed WHERE UserID = ?";
-//        //List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, UserID);
-//
-//        log.info(feedReaderDTO);
-//
-//        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS, feedReaderDTO));
-//    }
+    @GetMapping("/readbyuid")
+    public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
+        List<FeedReaderDTO> feeds = feedService.readerUID(UserID);
+
+        log.info(feeds);
+
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,feeds));
+    }
 }
