@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.whitebox.howlook.domain.member.entity.Member;
 
 @ApiModel("게시글 작성자 정보 응답 모델")
 @Getter
@@ -32,4 +33,12 @@ public class UserPostInfoResponse {
         this.memberWeight=memberWeight;
         this.profilePhotoId=profilePhotoId;
     };
+
+    public UserPostInfoResponse(Member member){
+        this.memberId=member.getMid();
+        this.memberNickName=member.getNickName();
+        this.memberHeight=member.getHeight();
+        this.memberWeight=member.getWeight();
+        this.profilePhotoId=member.getProfilePhotoId();
+    }
 }

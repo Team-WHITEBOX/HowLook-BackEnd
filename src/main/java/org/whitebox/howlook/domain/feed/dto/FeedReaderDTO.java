@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,10 @@ import java.time.LocalDateTime;
 public class FeedReaderDTO {
 
     private Long NPostId;       //게시글 id
+
+    //private String UserId;      //string인 user의 id
+
+    UserPostInfoResponse userPostInfo;
 
     private Long PhotoCnt;      //업로드한 사진 개수
 
