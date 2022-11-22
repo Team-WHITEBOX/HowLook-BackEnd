@@ -1,6 +1,7 @@
 package org.whitebox.howlook.domain.feed.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,7 +14,10 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(value = { AuditingEntityListener.class })
 @Getter
-abstract class BaseEntity {
+@Setter
+public abstract class BaseEntity {
+    @Column(name = "writer", updatable = false)
+    private String writer;
 
     @CreatedDate
     @Column(name = "regdate", updatable = false)
