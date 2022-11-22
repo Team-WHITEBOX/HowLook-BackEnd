@@ -24,7 +24,6 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 public class TournamentController {
     private final TournamentService tournamentService;
 
-
     @GetMapping("/{date}")
     public ResponseEntity<ResultResponse> getTHistory(@PathVariable("date") String date) {
         final THistoryResponse tHistoryResponse = tournamentService.getTHistory(LocalDate.parse(date));

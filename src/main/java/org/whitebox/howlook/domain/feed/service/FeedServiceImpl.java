@@ -18,6 +18,7 @@ import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.entity.Upload;
 import org.whitebox.howlook.domain.upload.repository.UploadRepository;
 import org.whitebox.howlook.domain.upload.service.UploadService;
+import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class FeedServiceImpl implements  FeedService{
     private final UploadService uploadService; // 업로드 서비스
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
+    final AccountUtil accountUtil;
 
     //전달받은 FeedRegisterDTO값을 데이터베이스에 저장
     @Override
@@ -49,20 +51,15 @@ public class FeedServiceImpl implements  FeedService{
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
 
-//        Upload upload = new Upload(feedRegisterDTO.getUploadFileDTO(),feed);
-        //Upload temp = modelMapper.map(feedRegisterDTO.getUploadFileDTO(), Upload.class);
-        feedRepository.save(feed);
-
-     //   UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();
         UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();
         // 사진 업로드 코드
         log.info(uploadFileDTO);
-        final List<UploadResultDTO> list = new ArrayList<>();
 
         if(uploadFileDTO.getFiles() != null)
         {
-            // forEach 문으로 선택한 사진 수 만큼 실행 됨
-            uploadFileDTO.getFiles().forEach(multipartFile -> {
+            for(int i = 0; i < uploadFileDTO.getFiles().size(); i++)
+            {
+                var multipartFile = uploadFileDTO.getFiles().get(i);
                 String originalName = multipartFile.getOriginalFilename();
                 String uuid = UUID.randomUUID().toString();
 
@@ -78,21 +75,29 @@ public class FeedServiceImpl implements  FeedService{
                 // 여기까지는 사진을 Server에 저장하는 코드
                 // 여기서부터 사진 정보를 DB에 저장하는 코드
                 // UploadFileDTO를 통해 db에 사진 저장경로를 Insert
-                Long pId = uploadFileDTO.getNPostId();
-                log.info(pId);
-                //UploadResultDTO temp = UploadResultDTO.builder().Path(uploadPath+"\\"+uuid+"_"+originalName).NPostId(pId).build();
-                UploadResultDTO temp = UploadResultDTO.builder().Path(uploadPath+"\\"+uuid+"_"+originalName).feed(feed).build();
-                list.add(temp);
-                log.info(pId);
-                log.info(temp);
+                String m_path = uploadPath+"\\"+uuid+"_"+originalName;
+
+
+                // Falcon : MainPhotoPath 및 PhotoCnt 저장하기
+                if(i == 0)
+                {
+                    feed.setMainPhotoPath(m_path);
+                }
+
+                if(i+1 == uploadFileDTO.getFiles().size())
+                {
+                    feed.setPhotoCnt(Long.valueOf(i+1));
+                }
+
+                UploadResultDTO temp = UploadResultDTO.builder().Path(m_path).feed(feed).build();
                 uploadService.register(temp);
 
-            });
+            }
+            // 작성자 닉네임 컬럼에 값 추가
+            feed.setWriter(accountUtil.getLoginMemberId());
+
+            feedRepository.save(feed);
         }
-//
-//        Upload upload = new Upload(feed, "C:\\upload");
-//        uploadRepository.save(upload);
-        //feed.getPhotoCnt()
     }
 
     @Override

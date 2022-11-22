@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,6 +36,7 @@ public class Feed extends BaseEntity{
 
     private String Content;     //내용
 
+    // npost_id를 통해 사진을 가져오는 get Method가 구현되어서 엔티티 구조 변경
     private String MainPhotoPath; //사진 경로
     
     private Long FeedLocation;    //해당피드 위치정보

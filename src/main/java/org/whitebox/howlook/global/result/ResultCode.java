@@ -59,6 +59,7 @@ public enum ResultCode {
 
     // Feed
     CREATE_POST_SUCCESS(200, "F001", "게시물 업로드에 성공하였습니다."),
+    CREATE_POST_FAIL(200, "F020", "게시물 업로드에 실패하였습니다."),
     DELETE_POST_SUCCESS(200, "F002", "게시물 삭제에 성공하였습니다."),
     FIND_POST_PAGE_SUCCESS(200, "F003", "게시물 목록 페이지 조회에 성공하였습니다."),
     FIND_POST_SUCCESS(200, "F004", "게시물 조회에 성공하였습니다."),
