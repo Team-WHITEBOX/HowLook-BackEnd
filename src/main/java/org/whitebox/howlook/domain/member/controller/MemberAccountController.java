@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.whitebox.howlook.domain.member.dto.MemberJoinDTO;
+import org.whitebox.howlook.domain.member.dto.loginDTO;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
@@ -30,8 +31,9 @@ public class MemberAccountController {
         }
     }
 
+    @ApiOperation(value = "로그인")
     @PostMapping("/generateToken")
-    public void loginPost(@RequestBody String mid,@RequestBody String mpw){
+    public void loginPost(@RequestBody loginDTO loginDTO){
         log.info("로그인");
     }
 
