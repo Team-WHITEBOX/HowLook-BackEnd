@@ -46,7 +46,7 @@ public class FeedServiceImpl implements  FeedService{
 
     //전달받은 FeedRegisterDTO값을 데이터베이스에 저장
     @Override
-    public void register(FeedRegisterDTO feedRegisterDTO) {
+    public void registerPOST(FeedRegisterDTO feedRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
         feed.setMember(accountUtil.getLoginMember());

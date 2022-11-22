@@ -1,5 +1,6 @@
 package org.whitebox.howlook.domain.feed.controller;
 
+import io.swagger.annotations.ApiOperation;
 import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -40,7 +41,7 @@ public class FeedController {
 
         log.info(feedRegisterDTO);
 
-        feedService.register(feedRegisterDTO);
+        feedService.registerPOST(feedRegisterDTO);
         return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS));
     }
 
@@ -63,5 +64,13 @@ public class FeedController {
         log.info(feeds);
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,feeds));
+    }
+
+    @ApiOperation(value = "게시물 목록 페이징 조회")
+    @GetMapping
+    public ResponseEntity<ResultResponse> readPostPage(@RequestParam Long page) {
+
+
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS));
     }
 }
