@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -17,9 +18,9 @@ public class TournamentPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long T_Post_id;
-    Long history_id;
+    LocalDate date;
     Long feed_id;
-    Long photo_id;
-    Long member_id;
+    String photo;
+    String member_id;
     Long score;
 }
