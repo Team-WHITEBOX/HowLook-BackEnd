@@ -2,6 +2,7 @@ package org.whitebox.howlook.domain.feed.entity;
 
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.persister.walking.internal.FetchStrategyHelper;
 
 import javax.persistence.*;
 
@@ -37,11 +38,14 @@ public class Hashtag {
     @Column(columnDefinition = "BOOLEAN default false")
     private Boolean guitar;     //EATER EGG
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Feed feed;
+    @OneToOne
+    //@JoinColumn(name = "NpostId")
+    private Feed f;
 
+    /*
     @Builder
     public Hashtag(Feed feed) {
         this.feed = feed;
     }
+     */
 }

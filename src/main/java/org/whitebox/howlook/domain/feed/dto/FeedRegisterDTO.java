@@ -23,7 +23,6 @@ public class FeedRegisterDTO {
 
     private String Content;         //내용
 
-
     private Long FeedLocation;      //해당피드 위치정보
 
     private LocalDateTime regDate;

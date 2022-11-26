@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
+import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
+import org.whitebox.howlook.domain.feed.entity.Hashtag;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
@@ -36,8 +38,8 @@ public class FeedServiceImpl implements  FeedService{
 
     private final UploadRepository uploadRepository;
     private final AccountUtil accountUtil;
-
     private final UploadService uploadService; // 업로드 서비스
+    private final HashtagService hashtagService;
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
 
@@ -48,6 +50,9 @@ public class FeedServiceImpl implements  FeedService{
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
         feed.setMember(accountUtil.getLoginMember());
+
+        HashtagDTO hashtagDTO = feedRegisterDTO.getHashtagDTO();
+        hashtagService.registerHashtag(hashtagDTO);
 
         feedRepository.save(feed);
 

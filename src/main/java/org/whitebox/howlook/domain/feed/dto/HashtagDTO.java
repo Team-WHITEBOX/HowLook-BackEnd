@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class HashtagDTO {
+    private Long HashtagId;
     private Boolean minimal;
     private Boolean casual;
     private Boolean street;

@@ -40,9 +40,7 @@ public class Member {
 //
 //    }
 
-    public void updatePassword(String mpw){
-        this.mpw = mpw;
-    }
+    public void updatePassword(String mpw){ this.mpw = mpw; }
     public void updateNickName(String nickName){
         this.nickName = nickName;
     }
