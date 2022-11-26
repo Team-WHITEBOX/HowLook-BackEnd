@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
+import org.whitebox.howlook.domain.feed.entity.Hashtag;
 
 import java.time.LocalDateTime;
 
@@ -29,5 +30,8 @@ public class FeedRegisterDTO {
 
     private LocalDateTime modDate;
 
-    private UploadFileDTO uploadFileDTO;
+    private UploadFileDTO uploadFileDTO;    //upload 도메인에서 불러온 DTO
+
+    //동일 도메인이지만 Hashtag DTO를 불러와 게시글 입력시 같이 사용
+    private HashtagDTO hashtagDTO;
 }

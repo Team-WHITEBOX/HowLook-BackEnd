@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
@@ -16,7 +14,6 @@ import org.whitebox.howlook.domain.feed.repository.FeedRepository;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
-import org.whitebox.howlook.domain.upload.entity.Upload;
 import org.whitebox.howlook.domain.upload.repository.UploadRepository;
 import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.util.AccountUtil;
@@ -26,7 +23,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -37,6 +33,7 @@ public class FeedServiceImpl implements  FeedService{
 
     private final ModelMapper modelMapper;
     private final FeedRepository feedRepository;
+
     private final UploadRepository uploadRepository;
     private final AccountUtil accountUtil;
 
@@ -45,11 +42,13 @@ public class FeedServiceImpl implements  FeedService{
     private String uploadPath; // 저장될 경로
 
     //전달받은 FeedRegisterDTO값을 데이터베이스에 저장
+    //해당 Post 자체데이터 + 사진데이터 테이블 + 해시테그 테이블 함께저장
     @Override
     public void registerPOST(FeedRegisterDTO feedRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
         feed.setMember(accountUtil.getLoginMember());
+
         feedRepository.save(feed);
 
         UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();

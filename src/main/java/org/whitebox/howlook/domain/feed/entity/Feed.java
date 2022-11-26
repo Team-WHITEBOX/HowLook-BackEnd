@@ -7,7 +7,9 @@ import org.whitebox.howlook.domain.upload.entity.Upload;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -22,7 +24,7 @@ public class Feed extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long NPostId;       //게시글 id
 
-//    private String mid;
+    //private String mid;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mid")
     private Member member;
@@ -48,6 +50,10 @@ public class Feed extends BaseEntity{
     @OneToMany(mappedBy = "feed")
     @Builder.Default
     private List<Upload> uploads = new ArrayList<>();
+
+    @OneToMany(mappedBy = "feed")   //해시태그 매핑
+    @Builder.Default
+    private Set<Hashtag> hashtag = new HashSet<>();
 
     public void setMember(Member member){
         this.member = member;

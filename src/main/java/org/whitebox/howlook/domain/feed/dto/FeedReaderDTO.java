@@ -33,9 +33,9 @@ public class FeedReaderDTO {
 
     private String MainPhotoPath; //사진 경로
 
-    @JsonProperty("regDate")
+    //@JsonProperty("regDate")
     private LocalDateTime regDate;
 
-    @JsonProperty("modDate")
+    //@JsonProperty("modDate")
     private LocalDateTime modDate;
 }
