@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.service.FeedService;
+import org.whitebox.howlook.domain.member.service.MemberService;
+import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
@@ -15,6 +18,9 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
+
+import static org.whitebox.howlook.global.result.ResultCode.CREATE_POST_FAIL;
+import static org.whitebox.howlook.global.result.ResultCode.REGISTER_SUCCESS;
 
 @RestController
 @RequestMapping("/feed")

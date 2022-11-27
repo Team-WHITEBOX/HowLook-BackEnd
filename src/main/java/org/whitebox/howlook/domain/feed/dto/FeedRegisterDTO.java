@@ -14,10 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FeedRegisterDTO {
-
     //@NotNull
     private Long NPostId;           //게시글 id
-
     //@NotNull
     private Long PhotoCnt;          //업로드한 사진 개수
 

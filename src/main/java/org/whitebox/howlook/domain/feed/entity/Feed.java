@@ -1,6 +1,8 @@
 package org.whitebox.howlook.domain.feed.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.DynamicInsert;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.upload.entity.Upload;
@@ -13,6 +15,7 @@ import java.util.Set;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,7 +27,6 @@ public class Feed extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long NPostId;       //게시글 id
 
-    //private String mid;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mid")
     private Member member;
@@ -43,6 +45,7 @@ public class Feed extends BaseEntity{
 
     private String Content;     //내용
 
+    // npost_id를 통해 사진을 가져오는 get Method가 구현되어서 엔티티 구조 변경
     private String MainPhotoPath; //사진 경로
     
     private Long FeedLocation;    //해당피드 위치정보
@@ -61,7 +64,4 @@ public class Feed extends BaseEntity{
     public void setMember(Member member){
         this.member = member;
     }
-//    public void setMid(String mid){
-//        this.mid=mid;
-//    }
 }
