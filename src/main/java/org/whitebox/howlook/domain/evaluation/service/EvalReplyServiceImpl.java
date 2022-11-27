@@ -41,13 +41,19 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         EvalReply evalReply = modelMapper.map(evalReplyDTO, EvalReply.class);
         evalReply.setMember(accountUtil.getLoginMember());
 
+        // 현재 내가 쓰려고하는 포스트 아이디
         Long pid = evalReplyDTO.getPid();
 
-        Evaluation evaluation = evalRepository.findByPid(pid);
-        evalReply.setEvaluation(evaluation);
+        // 이미 달은 평가라면 달리지않게 find 후 조건문 생성
+        EvalReply temp = evalReplyRepository.findByPostid(pid);
+        if(temp == null) {
+
+            Evaluation evaluation = evalRepository.findByPid(pid);
+            evalReply.setEvaluation(evaluation);
 
 
-        evalReplyRepository.save(evalReply);
+            evalReplyRepository.save(evalReply);
+        }
     }
 
 }

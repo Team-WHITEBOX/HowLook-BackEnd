@@ -10,8 +10,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalRegisterDTO;
 import org.whitebox.howlook.domain.evaluation.service.EvalService;
-import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
-import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
@@ -49,6 +47,30 @@ public class EvalController {
         log.info(evalReaderDTO);
 
         return evalReaderDTO;
+    }
+
+//
+//    // 게시글 아이디로 게시글 정보 가져오기
+//    @GetMapping("/readAnyEval")
+//    public List<EvalReaderDTO> readAnyEval() {
+//        List<EvalReaderDTO> evalReaderDTO = evalService.readAll();
+//
+//        return evalReaderDTO;
+//    }
+
+
+    // 게시글 아이디로 게시글 정보 가져오기
+    @GetMapping("/readAnyEval")
+    public ResponseEntity<ResultResponse> readAnyEval() {
+        List<EvalReaderDTO> evalReaderDTO = evalService.readAll();
+
+        log.info(evalReaderDTO.size());
+        if(evalReaderDTO.size() == 0)
+        {
+            return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL,evalReaderDTO));
+        }
+
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTO));
     }
 
     @GetMapping("/readbyuid")

@@ -9,4 +9,6 @@ public interface EvalService {
     void register(EvalRegisterDTO evalRegisterDTO);
     EvalReaderDTO reader(Long NPostId);
     public List<EvalReaderDTO> readerUID(String UserID);
+
+    public List<EvalReaderDTO> readAll();
 }

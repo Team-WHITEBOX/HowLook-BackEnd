@@ -6,7 +6,7 @@ import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 
 import java.util.List;
 
-public interface EvalRepository extends JpaRepository<Evaluation, Long> {
+public interface EvalRepository extends JpaRepository<Evaluation, Long>, EvalSearch {
 
     @Query("select e from Evaluation e where e.member.mid = :mid")
     List<Evaluation> findByMid(String mid);

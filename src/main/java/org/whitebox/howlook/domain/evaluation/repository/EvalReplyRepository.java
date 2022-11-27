@@ -11,5 +11,7 @@ public interface EvalReplyRepository  extends JpaRepository<EvalReply, Long> {
 
     @Query("select e from EvalReply e where e.member.mid = :mid")
     EvalReply findByMid(String mid);
+    @Query("select e from EvalReply e where e.evaluation.NPostId = :pid")
+    EvalReply findByPostid(Long pid);
 
 }

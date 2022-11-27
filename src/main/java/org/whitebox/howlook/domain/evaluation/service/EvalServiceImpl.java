@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalRegisterDTO;
+import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
+import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
@@ -34,6 +36,7 @@ import java.util.UUID;
 public class EvalServiceImpl implements EvalService{
     private final ModelMapper modelMapper;
     final EvalRepository evalRepository;
+    final EvalReplyRepository evalReplyRepository;
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
 
@@ -79,6 +82,32 @@ public class EvalServiceImpl implements EvalService{
         evalReaderDTO.setUserPostInfo(new UserPostInfoResponse(eval.getMember()));
 
         return evalReaderDTO;
+    }
+
+    @Override
+    public List<EvalReaderDTO> readAll()
+    {
+        List<Evaluation> evalList = evalRepository.findAll();
+        List<EvalReaderDTO> readerDTOList = new ArrayList<>();
+
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+
+
+        for(int i = 0; i < evalList.size(); i++) {
+
+            EvalReaderDTO evalReaderDTO = modelMapper.map(evalList.get(i), EvalReaderDTO.class);
+            evalReaderDTO.setUserPostInfo(new UserPostInfoResponse(evalList.get(i).getMember()));
+
+
+            // 이미 달은 평가라면 반환하지 않게
+            EvalReply temp = evalReplyRepository.findByPostid(evalReaderDTO.getNPostId());
+            if(temp == null) {
+                readerDTOList.add(evalReaderDTO);
+            }
+
+        }
+        return readerDTOList;
     }
     @Override
     public List<EvalReaderDTO> readerUID(String UserID) {
