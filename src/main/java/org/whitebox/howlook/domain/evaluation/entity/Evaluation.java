@@ -1,9 +1,9 @@
-package org.whitebox.howlook.domain.feed.entity;
+package org.whitebox.howlook.domain.evaluation.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.web.multipart.MultipartFile;
+import org.whitebox.howlook.domain.feed.entity.BaseEntity;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.upload.entity.Upload;
 
@@ -13,13 +13,14 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "member")
+@ToString
 @DynamicInsert
-public class Feed extends BaseEntity{
+@Setter
+
+public class Evaluation extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +28,7 @@ public class Feed extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mid")
-    private Member member;
-
-    @Column(columnDefinition = "INT default 0")
-    private Long PhotoCnt;      //업로드한 사진 개수
+    private Member member; // 작성자 정보
 
     @Column(columnDefinition = "INT default 0")
     private Long LikeCount;     //좋아요개수
@@ -38,19 +36,9 @@ public class Feed extends BaseEntity{
     @Column(columnDefinition = "INT default 0")
     private Long CommentCount;  //댓글개수
 
-    @Column(columnDefinition = "INT default 0")
-    private Long ViewCnt;       //조회수
-
     private String Content;     //내용
 
-    // npost_id를 통해 사진을 가져오는 get Method가 구현되어서 엔티티 구조 변경
     private String MainPhotoPath; //사진 경로
-    
-    private Long FeedLocation;    //해당피드 위치정보
-
-    @OneToMany(mappedBy = "feed")
-    @Builder.Default
-    private List<Upload> uploads = new ArrayList<>();
 
     public void setMember(Member member){
         this.member = member;

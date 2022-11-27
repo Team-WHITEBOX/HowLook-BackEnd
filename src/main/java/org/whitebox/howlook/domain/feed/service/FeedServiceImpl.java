@@ -55,12 +55,12 @@ public class FeedServiceImpl implements  FeedService{
         UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();
         // 사진 업로드 코드
         log.info(uploadFileDTO);
-        final List<UploadResultDTO> list = new ArrayList<>();
 
         if(uploadFileDTO.getFiles() != null)
         {
-            // forEach 문으로 선택한 사진 수 만큼 실행 됨
-            uploadFileDTO.getFiles().forEach(multipartFile -> {
+            for(int i = 0; i < uploadFileDTO.getFiles().size(); i++)
+            {
+                var multipartFile = uploadFileDTO.getFiles().get(i);
                 String originalName = multipartFile.getOriginalFilename();
                 String uuid = UUID.randomUUID().toString();
 
@@ -76,21 +76,25 @@ public class FeedServiceImpl implements  FeedService{
                 // 여기까지는 사진을 Server에 저장하는 코드
                 // 여기서부터 사진 정보를 DB에 저장하는 코드
                 // UploadFileDTO를 통해 db에 사진 저장경로를 Insert
-                Long pId = uploadFileDTO.getNPostId();
-                log.info(pId);
-                //UploadResultDTO temp = UploadResultDTO.builder().Path(uploadPath+"\\"+uuid+"_"+originalName).NPostId(pId).build();
-                UploadResultDTO temp = UploadResultDTO.builder().Path(uploadPath+"\\"+uuid+"_"+originalName).feed(feed).build();
-                list.add(temp);
-                log.info(pId);
-                log.info(temp);
+                String m_path = uploadPath+"\\"+uuid+"_"+originalName;
+
+
+                // Falcon : MainPhotoPath 및 PhotoCnt 저장하기
+                if(i == 0)
+                {
+                    feed.setMainPhotoPath(m_path);
+                }
+
+                if(i+1 == uploadFileDTO.getFiles().size())
+                {
+                    feed.setPhotoCnt(Long.valueOf(i+1));
+                }
+
+                UploadResultDTO temp = UploadResultDTO.builder().Path(m_path).feed(feed).build();
                 uploadService.register(temp);
 
-            });
+            }
         }
-//
-//        Upload upload = new Upload(feed, "C:\\upload");
-//        uploadRepository.save(upload);
-        //feed.getPhotoCnt()
     }
 
     @Override
@@ -103,6 +107,9 @@ public class FeedServiceImpl implements  FeedService{
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
         feedReaderDTO.setUserPostInfo(new UserPostInfoResponse(feed.getMember()));
+
+        // 사진 경로 가져오기
+        feedReaderDTO.setPhotoPaths(uploadService.getPath(NPostId));
 
         return feedReaderDTO;
     }
@@ -119,11 +126,6 @@ public class FeedServiceImpl implements  FeedService{
                     .modDate(feed.getModDate()).regDate(feed.getRegDate()).build();
             result.add(feedReaderDTO);
         }
-        //log.info(feed);
-
-        //modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        //FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
-
         return result;
     }
 }

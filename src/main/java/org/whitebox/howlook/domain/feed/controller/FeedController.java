@@ -13,6 +13,7 @@ import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.service.FeedService;
+import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.error.ErrorCode;
 import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.result.ResultResponse;
@@ -26,6 +27,9 @@ import java.util.Map;
 import static org.whitebox.howlook.global.error.ErrorCode.POST_CANT_UPLOAD;
 import static org.whitebox.howlook.global.result.ResultCode.*;
 
+import static org.whitebox.howlook.global.result.ResultCode.CREATE_POST_FAIL;
+import static org.whitebox.howlook.global.result.ResultCode.REGISTER_SUCCESS;
+
 @RestController
 @RequestMapping("/feed")
 @Log4j2
@@ -37,8 +41,6 @@ public class FeedController {
     @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerPost(@Valid @ModelAttribute FeedRegisterDTO feedRegisterDTO) {
         log.info("Feed POST register!");
-
-        log.info(feedRegisterDTO);
 
         feedService.register(feedRegisterDTO);
         return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS));
