@@ -1,6 +1,8 @@
 package org.whitebox.howlook.domain.feed.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.DynamicInsert;
 import org.whitebox.howlook.domain.upload.entity.Upload;
 

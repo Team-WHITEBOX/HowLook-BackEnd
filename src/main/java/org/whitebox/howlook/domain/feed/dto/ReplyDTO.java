@@ -18,4 +18,6 @@ public class ReplyDTO {
     private long NPostId;
 
     private String Contents;
+
+    private long parentId;
 }

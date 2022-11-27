@@ -12,20 +12,17 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@Table(name = "Comment_like_History")
+@Table(name = "comment_likes")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReplyLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Comment_like_id")
-    private int id;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "commentId")
     private Reply reply;
 
     @Builder

@@ -28,16 +28,25 @@ public class Reply {
     @ManyToOne(fetch = FetchType.LAZY)
     private Feed feed;
 
-    private int parentsId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-
     private String contents;
 
     private LocalDateTime Date;
 
+    private Long parentsId;
+
+    private Long LikeCount = 0L;
+
     public void changeText(String text) {
         this.contents = text;
+    }
+
+    public void Up_LikeCount() {
+        this.LikeCount++;
+    }
+
+    public void Down_LikeCount() {
+        this.LikeCount--;
     }
 }
