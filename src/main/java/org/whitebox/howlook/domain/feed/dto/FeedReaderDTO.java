@@ -38,4 +38,7 @@ public class FeedReaderDTO {
 
     //@JsonProperty("modDate")
     private LocalDateTime modDate;
+
+    private HashtagDTO hashtagDTO;
+
 }

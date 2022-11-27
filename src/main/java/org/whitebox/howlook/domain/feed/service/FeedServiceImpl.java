@@ -111,6 +111,8 @@ public class FeedServiceImpl implements  FeedService{
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
+
+        feedReaderDTO.setHashtagDTO(new HashtagDTO(feed.getH()));
         feedReaderDTO.setUserPostInfo(new UserPostInfoResponse(feed.getMember()));
 
         return feedReaderDTO;

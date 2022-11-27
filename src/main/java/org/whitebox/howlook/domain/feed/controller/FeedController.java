@@ -44,7 +44,6 @@ public class FeedController {
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS, feedReaderDTO));
     }
 
-
     @GetMapping("/readbyuid")
     public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
         List<FeedReaderDTO> feeds = feedService.readerUID(UserID);
