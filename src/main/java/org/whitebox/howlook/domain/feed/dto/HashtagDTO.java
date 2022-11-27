@@ -1,9 +1,13 @@
 package org.whitebox.howlook.domain.feed.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.whitebox.howlook.domain.feed.entity.Hashtag;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HashtagDTO {
     //private Long HashtagId;
     private Boolean minimal;
