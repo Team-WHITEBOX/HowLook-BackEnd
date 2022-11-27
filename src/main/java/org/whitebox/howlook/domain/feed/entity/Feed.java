@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "member")
+@ToString(exclude = {"member", "h"})
 @DynamicInsert
 public class Feed extends BaseEntity{
 
@@ -47,20 +47,16 @@ public class Feed extends BaseEntity{
     
     private Long FeedLocation;    //해당피드 위치정보
 
-    //public Long HashtagId;  //feedServiceImpl에서 해당 값 직접수정하기 위해 public사용
-
     @OneToMany(mappedBy = "feed")
     @Builder.Default
     private List<Upload> uploads = new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name = "HashtagId")
     private Hashtag h;
-    /*
-    @OneToMany(mappedBy = "feed")   //해시태그 매핑
-    @Builder.Default
-    private Set<Hashtag> hashtag = new HashSet<>();
-     *///이거 왜 없어도 돌아가는지 확인
+
+    public void setHashtag(Hashtag hashtag){
+        this.h = hashtag;
+    }
 
     public void setMember(Member member){
         this.member = member;

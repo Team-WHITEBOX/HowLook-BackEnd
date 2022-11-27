@@ -2,6 +2,9 @@ package org.whitebox.howlook.domain.feed.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 @Data
 public class HashtagDTO {
     private Long HashtagId;

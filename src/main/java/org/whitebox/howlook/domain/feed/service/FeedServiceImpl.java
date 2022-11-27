@@ -13,6 +13,7 @@ import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.entity.Hashtag;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
+import org.whitebox.howlook.domain.feed.repository.HashtagRepository;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
@@ -35,11 +36,11 @@ public class FeedServiceImpl implements  FeedService{
 
     private final ModelMapper modelMapper;
     private final FeedRepository feedRepository;
+    private final HashtagRepository hashtagRepository;
 
     private final UploadRepository uploadRepository;
     private final AccountUtil accountUtil;
     private final UploadService uploadService; // 업로드 서비스
-    private final HashtagService hashtagService;
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
 
@@ -52,8 +53,12 @@ public class FeedServiceImpl implements  FeedService{
         feed.setMember(accountUtil.getLoginMember());
 
         HashtagDTO hashtagDTO = feedRegisterDTO.getHashtagDTO();
-        hashtagService.registerHashtag(hashtagDTO);
+        Hashtag hashtag = modelMapper.map(hashtagDTO, Hashtag.class);
+        hashtag.setFeed(feed);
 
+        hashtagRepository.save(hashtag);
+
+        feed.setHashtag(hashtag);
         feedRepository.save(feed);
 
         UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();

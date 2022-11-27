@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.service.FeedService;
-import org.whitebox.howlook.domain.feed.service.HashtagService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
