@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -32,6 +33,8 @@ public class FeedReaderDTO {
     private String Content;     //내용
 
     private String MainPhotoPath; //사진 경로
+
+    private List<String> PhotoPaths;
 
     @JsonProperty("regDate")
     private LocalDateTime regDate;

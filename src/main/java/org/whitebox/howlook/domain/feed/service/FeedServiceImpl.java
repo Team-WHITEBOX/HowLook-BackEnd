@@ -108,6 +108,9 @@ public class FeedServiceImpl implements  FeedService{
         FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
         feedReaderDTO.setUserPostInfo(new UserPostInfoResponse(feed.getMember()));
 
+        // 사진 경로 가져오기
+        feedReaderDTO.setPhotoPaths(uploadService.getPath(NPostId));
+
         return feedReaderDTO;
     }
 
