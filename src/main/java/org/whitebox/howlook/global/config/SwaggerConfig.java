@@ -33,12 +33,12 @@ public class SwaggerConfig {
     }
 
     private ApiKey apiKey() {
-        return new ApiKey("Authorization", "Bearer Token", "header");
+        return new ApiKey("Authorization", "Authorization", "header");
     }
 
     private SecurityContext securityContext() {  // '/api/'경로에 대해 토큰필요
-        return SecurityContext.builder().securityReferences(defaultAuth())
-                .operationSelector(selector -> selector.requestMappingPattern().startsWith("/api/")).build();
+        return SecurityContext.builder().securityReferences(defaultAuth()).build();
+               // .operationSelector(selector -> selector.requestMappingPattern().startsWith("/**")).build();
     }
     private List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "global access");
