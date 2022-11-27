@@ -7,6 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
@@ -150,6 +153,18 @@ public class FeedServiceImpl implements  FeedService{
             result.add(feedReaderDTO);
         }
         return result;
+    }
+
+    @Override
+    public Page<FeedReaderDTO> getFeedPage(int size, int page) {
+        final Pageable pageable = PageRequest.of(page, size);
+        log.info(pageable);
+        log.info(pageable.getOffset());
+        Page<FeedReaderDTO> feedPage = feedRepository.findFeedReaderDTOPage(pageable);
+        feedPage.forEach(feedReaderDTO -> {
+            feedReaderDTO.setPhotoPaths(uploadService.getPath(feedReaderDTO.getNPostId()));
+        });
+        return feedPage;
     }
 
     @Override

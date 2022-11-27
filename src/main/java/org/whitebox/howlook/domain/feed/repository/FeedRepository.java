@@ -8,10 +8,7 @@ import org.whitebox.howlook.domain.feed.entity.Feed;
 import java.util.List;
 
 
-public interface FeedRepository extends JpaRepository<Feed, Long> {
-    //public List<Feed> getFeedByUserID(String UserID);
-
-    //private final JPAQueryFactory queryFactory;
+public interface FeedRepository extends JpaRepository<Feed, Long>,FeedRepositoryQuerydsl {
     @Query("select f from Feed f where f.member.mid = :mid")
     List<Feed> findByMid(String mid);
 }

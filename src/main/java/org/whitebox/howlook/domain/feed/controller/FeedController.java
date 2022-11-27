@@ -59,6 +59,13 @@ public class FeedController {
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,feeds));
     }
 
+    @GetMapping("/recent")
+    public ResponseEntity<ResultResponse> getRecent10Posts(@RequestParam int page) {
+        final List<FeedReaderDTO> postList = feedService.getFeedPage(2, page).getContent();
+
+        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
+    }
+
     @PostMapping("/scrap")
     public ResponseEntity<ResultResponse> scrapFeed(@RequestParam Long npost_id){
         feedService.scrapFeed(npost_id);
