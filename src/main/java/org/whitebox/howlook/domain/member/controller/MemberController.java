@@ -5,11 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
 
@@ -38,12 +41,20 @@ public class MemberController {
         return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS, userProfileResponse));
     }
 
+    @ApiOperation(value = "유저 스크랩 게시물 조회")
+    @GetMapping("/{usermid}/scrap")
+    public ResponseEntity<ResultResponse> getUserScrap(@PathVariable("usermid") String usermid) {
+        final List<FeedReaderDTO> userScraps = memberService.getUserScrap(usermid);
+
+        return ResponseEntity.ok(ResultResponse.of(GET_MEMBER_SAVED_POSTS_SUCCESS,userScraps));
+    }
+
     @ApiOperation(value = "게시글 작성자 정보 조회")
     @GetMapping(value = "/{usermid}/postinfo")
     public ResponseEntity<ResultResponse> getUserPostInfo(@PathVariable("usermid") String usermid) {
         final UserPostInfoResponse userPostInfoResponse = memberService.getUserPostInfo(usermid);
 
-        return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS));
+        return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS,userPostInfoResponse));
     }
 
     @ApiOperation(value = "회원 프로필 수정 GET")

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 
 import java.time.LocalDateTime;
@@ -44,4 +45,17 @@ public class FeedReaderDTO {
 
     private HashtagDTO hashtagDTO;
 
+
+    public FeedReaderDTO(Feed feed){
+        this.NPostId = feed.getNPostId();
+        this.userPostInfo = new UserPostInfoResponse(feed.getMember());
+        this.PhotoCnt = feed.getPhotoCnt();
+        this.LikeCount = feed.getLikeCount();
+        this.CommentCount = feed.getCommentCount();
+        this.ViewCnt = feed.getViewCnt();
+        this.Content = feed.getContent();
+        this.MainPhotoPath = feed.getMainPhotoPath();
+        this.regDate = feed.getRegDate();
+        this.modDate = feed.getModDate();
+    }
 }

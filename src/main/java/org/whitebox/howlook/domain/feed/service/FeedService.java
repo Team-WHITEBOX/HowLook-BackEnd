@@ -10,4 +10,8 @@ public interface FeedService {
     FeedReaderDTO readerPID(Long NPostId);
 
     List<FeedReaderDTO> readerUID(String UserID);
+
+    public void scrapFeed(Long npost_id);
+
+    public void unScrapFeed(Long npost_id);
 }

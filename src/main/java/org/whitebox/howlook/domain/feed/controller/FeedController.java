@@ -58,4 +58,17 @@ public class FeedController {
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,feeds));
     }
+
+    @PostMapping("/scrap")
+    public ResponseEntity<ResultResponse> scrapFeed(@RequestParam Long npost_id){
+        feedService.scrapFeed(npost_id);
+        return ResponseEntity.ok(ResultResponse.of(BOOKMARK_POST_SUCCESS));
+    }
+
+    @DeleteMapping("/scrap")
+    public ResponseEntity<ResultResponse> unScrapFeed(@RequestParam Long npost_id) {
+        feedService.unScrapFeed(npost_id);
+
+        return ResponseEntity.ok(ResultResponse.of(UN_BOOKMARK_POST_SUCCESS));
+    }
 }
