@@ -173,4 +173,9 @@ public class FeedServiceImpl implements  FeedService{
         scrapRepository.delete(scrap);
     }
 
+    @Override
+    public void searchFeedByHashtag(HashtagDTO hashtagDTO) {
+
+    }
+
 }

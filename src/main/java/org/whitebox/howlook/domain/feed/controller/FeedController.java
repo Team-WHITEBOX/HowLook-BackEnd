@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
+import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 import org.whitebox.howlook.domain.feed.service.FeedService;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.error.ErrorCode;
@@ -14,6 +15,7 @@ import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
+import javax.xml.transform.Result;
 
 import java.util.List;
 
@@ -70,5 +72,12 @@ public class FeedController {
         feedService.unScrapFeed(npost_id);
 
         return ResponseEntity.ok(ResultResponse.of(UN_BOOKMARK_POST_SUCCESS));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResultResponse> searchByHashtag(HashtagDTO hashtagDTO) {
+        feedService.searchFeedByHashtag(hashtagDTO);
+
+        return ResponseEntity.ok(ResultResponse.of(GET_HASHTAG_FEED_SUCCESS));
     }
 }
