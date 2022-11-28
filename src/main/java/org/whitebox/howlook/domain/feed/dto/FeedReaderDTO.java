@@ -1,6 +1,7 @@
 package org.whitebox.howlook.domain.feed.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -45,7 +46,7 @@ public class FeedReaderDTO {
 
     private HashtagDTO hashtagDTO;
 
-
+    @QueryProjection
     public FeedReaderDTO(Feed feed){
         this.NPostId = feed.getNPostId();
         this.userPostInfo = new UserPostInfoResponse(feed.getMember());
@@ -57,5 +58,6 @@ public class FeedReaderDTO {
         this.MainPhotoPath = feed.getMainPhotoPath();
         this.regDate = feed.getRegDate();
         this.modDate = feed.getModDate();
+        this.hashtagDTO = new HashtagDTO(feed.getH());
     }
 }

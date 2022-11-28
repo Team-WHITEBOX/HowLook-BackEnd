@@ -1,5 +1,6 @@
 package org.whitebox.howlook.domain.feed.service;
 
+import org.springframework.data.domain.Page;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
@@ -11,6 +12,8 @@ public interface FeedService {
     FeedReaderDTO readerPID(Long NPostId);
 
     List<FeedReaderDTO> readerUID(String UserID);
+
+    Page<FeedReaderDTO> getFeedPage(int size,int page);
 
     public void scrapFeed(Long npost_id);
 
