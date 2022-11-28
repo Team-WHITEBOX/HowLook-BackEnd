@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.whitebox.howlook.global.error.ErrorCode.*;
 
@@ -143,15 +144,7 @@ public class FeedServiceImpl implements  FeedService{
     @Override
     public List<FeedReaderDTO> readerUID(String UserID) {
         List<Feed> feeds = feedRepository.findByMid(UserID);
-        List<FeedReaderDTO> result = new ArrayList<>();
-        for(Feed feed : feeds){
-            FeedReaderDTO feedReaderDTO = new FeedReaderDTO().builder()
-                    .NPostId(feed.getNPostId()).userPostInfo(new UserPostInfoResponse(feed.getMember()))
-                    .PhotoCnt(feed.getPhotoCnt()).LikeCount(feed.getLikeCount()).CommentCount(feed.getCommentCount())
-                    .ViewCnt(feed.getViewCnt()).Content(feed.getContent()).MainPhotoPath(feed.getMainPhotoPath())
-                    .modDate(feed.getModDate()).regDate(feed.getRegDate()).build();
-            result.add(feedReaderDTO);
-        }
+        List<FeedReaderDTO> result = feeds.stream().map(feed ->  new FeedReaderDTO(feed)).collect(Collectors.toList());
         return result;
     }
 
