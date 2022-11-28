@@ -42,41 +42,41 @@ public class ReplyController {
 
         Map<String,Long> resultMap = new HashMap<>();
 
-        long CommendId = replyService.register(replyDTO);
+        long ReplyId = replyService.register_reply(replyDTO);
 
-        resultMap.put("CommendId",CommendId);
+        resultMap.put("ReplyId",ReplyId);
 
         return resultMap;
     }
 
     @ApiOperation(value = "Read Reply", notes = "댓글 목록 불러오기") // 특정 댓글 불러오기
-    @GetMapping(value = "/{commentId}")
-    public ReplyDTO getReplyDTO( @PathVariable("commentId") long CommentId) {
+    @GetMapping(value = "/{ReplyId}")
+    public ReplyDTO getReplyDTO( @PathVariable("ReplyId") long ReplyId) {
 
-        ReplyDTO replyDTO = replyService.read(CommentId);
+        ReplyDTO replyDTO = replyService.read(ReplyId);
 
         return replyDTO;
     }
 
     @ApiOperation(value = "Delete Reply" , notes  = "DELETE 방식으로 특정 댓글 삭제") // 특정 댓글 삭제
-    @DeleteMapping("/{commentId}")
-    public Map<String,Long> remove (@PathVariable("commentId") Long commentId) {
-        replyService.remove(commentId);
+    @DeleteMapping("/{ReplyId}")
+    public Map<String,Long> remove (@PathVariable("ReplyId") Long ReplyId) {
+        replyService.remove(ReplyId);
 
         Map<String, Long> resultMap = new HashMap<>();
 
-        resultMap.put("commentId",commentId);
+        resultMap.put("ReplyId",ReplyId);
 
         return resultMap;
     }
 
     @ApiOperation(value = "Modify Reply", notes = "PUT 방식으로 특정 댓글 수정")
-    @PutMapping(value = "/{CommentId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Long> modify(@PathVariable("CommentId") Long CommentId, @RequestBody ReplyDTO replyDTO) {
-        replyDTO.setCommentId(CommentId);
+    @PutMapping(value = "/{ReplyId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Long> modify(@PathVariable("ReplyId") Long ReplyId, @RequestBody ReplyDTO replyDTO) {
+        replyDTO.setReplyId(ReplyId);
         replyService.modify(replyDTO);
         Map<String, Long> resultMap = new HashMap<>();
-        resultMap.put("CommentId",CommentId);
+        resultMap.put("ReplyId",ReplyId);
         return resultMap;
     }
 
@@ -88,7 +88,7 @@ public class ReplyController {
 
         for(int i = 0; i < responseDTO.size(); i++) {
             ReplyDTO replyDTO = new ReplyDTO();
-            replyDTO.setCommentId(responseDTO.get(i).getCommentId());
+            replyDTO.setReplyId(responseDTO.get(i).getReplyId());
             replyDTO.setContents(responseDTO.get(i).getContents());
             replyDTO.setNPostId(responseDTO.get(i).getFeed().getNPostId());
             replyDTO.setParentId(responseDTO.get(i).getParentsId());
@@ -100,15 +100,15 @@ public class ReplyController {
 
     @ApiOperation(value = "댓글 좋아요", notes = "POST 방식으로 추가")
     @PostMapping("/like")
-    public ResponseEntity<ResultResponse> likeReply(@RequestParam Long commentId) {
-        replyService.likeReply(commentId);
+    public ResponseEntity<ResultResponse> likeReply(@RequestParam Long ReplyId) {
+        replyService.likeReply(ReplyId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.LIKE_COMMENT_SUCCESS));
     }
 
     @ApiOperation(value = "댓글 좋아요 취소", notes = "Delete 방식으로 삭제")
     @DeleteMapping("/like")
-    public ResponseEntity<ResultResponse> unlikeReply(@RequestParam Long commentId) {
-        replyService.unlikeReply(commentId);
+    public ResponseEntity<ResultResponse> unlikeReply(@RequestParam Long ReplyId) {
+        replyService.unlikeReply(ReplyId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.UNLIKE_COMMENT_SUCCESS));
     }
 }
