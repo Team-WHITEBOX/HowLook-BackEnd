@@ -55,10 +55,10 @@ public class Feed extends BaseEntity{
     private List<Upload> uploads = new ArrayList<>();
 
     @OneToOne
-    private Hashtag h;
+    private Hashtag hashtag;
 
     public void setHashtag(Hashtag hashtag){
-        this.h = hashtag;
+        this.hashtag = hashtag;
     }
 
     public void setMember(Member member){

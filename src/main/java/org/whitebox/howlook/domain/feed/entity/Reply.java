@@ -36,7 +36,7 @@ public class Reply {
 
     private Long parentsId;
 
-    private Long LikeCount = 0L;
+    private Long LikeCount;
 
     public void changeText(String text) {
         this.contents = text;
