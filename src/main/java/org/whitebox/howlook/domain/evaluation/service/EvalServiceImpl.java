@@ -101,7 +101,9 @@ public class EvalServiceImpl implements EvalService{
 
 
             // 이미 달은 평가라면 반환하지 않게
-            EvalReply temp = evalReplyRepository.findByPostid(evalReaderDTO.getNPostId());
+            EvalReply temp = evalReplyRepository
+                    .findMyReplyByPostid(evalReaderDTO.getNPostId(),accountUtil.getLoginMember().getMid());
+
             if(temp == null) {
                 readerDTOList.add(evalReaderDTO);
             }

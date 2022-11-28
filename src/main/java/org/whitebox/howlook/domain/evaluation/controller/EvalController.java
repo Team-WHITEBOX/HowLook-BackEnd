@@ -49,16 +49,6 @@ public class EvalController {
         return evalReaderDTO;
     }
 
-//
-//    // 게시글 아이디로 게시글 정보 가져오기
-//    @GetMapping("/readAnyEval")
-//    public List<EvalReaderDTO> readAnyEval() {
-//        List<EvalReaderDTO> evalReaderDTO = evalService.readAll();
-//
-//        return evalReaderDTO;
-//    }
-
-
     // 게시글 아이디로 게시글 정보 가져오기
     @GetMapping("/readAnyEval")
     public ResponseEntity<ResultResponse> readAnyEval() {
