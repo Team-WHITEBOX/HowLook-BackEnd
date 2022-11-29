@@ -63,6 +63,17 @@ public class EvalController {
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTO));
     }
 
+    @GetMapping("/readNextEval")
+    public ResponseEntity<ResultResponse> getNextEvaluation(@RequestParam int page)
+    {
+        final List<EvalReaderDTO> evalList = evalService.getEvalPage(page,1).getContent();
+
+        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS,evalList));
+    }
+
+
+
+
     @GetMapping("/readbyuid")
     public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
         List<EvalReaderDTO> evals = evalService.readerUID(UserID);
