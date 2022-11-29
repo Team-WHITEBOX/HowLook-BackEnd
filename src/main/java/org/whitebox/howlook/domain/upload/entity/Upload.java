@@ -21,7 +21,6 @@ public class Upload {
 
     private String Path;        //사진 경로
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="NPostId")
     private Feed feed;
