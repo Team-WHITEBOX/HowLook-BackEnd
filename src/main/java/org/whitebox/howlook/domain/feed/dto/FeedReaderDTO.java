@@ -58,6 +58,6 @@ public class FeedReaderDTO {
         this.MainPhotoPath = feed.getMainPhotoPath();
         this.regDate = feed.getRegDate();
         this.modDate = feed.getModDate();
-        this.hashtagDTO = new HashtagDTO(feed.getH());
+        this.hashtagDTO = new HashtagDTO(feed.getHashtag());
     }
 }

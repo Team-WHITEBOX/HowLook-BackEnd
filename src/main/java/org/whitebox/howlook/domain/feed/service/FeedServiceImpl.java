@@ -5,12 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
@@ -131,7 +129,7 @@ public class FeedServiceImpl implements  FeedService{
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         FeedReaderDTO feedReaderDTO = modelMapper.map(feed, FeedReaderDTO.class);
 
-        feedReaderDTO.setHashtagDTO(new HashtagDTO(feed.getH()));
+        feedReaderDTO.setHashtagDTO(new HashtagDTO(feed.getHashtag()));
         feedReaderDTO.setUserPostInfo(new UserPostInfoResponse(feed.getMember()));
 
         // 사진 경로 가져오기
@@ -193,4 +191,21 @@ public class FeedServiceImpl implements  FeedService{
 
     }
 
+    @Override
+    public void deleteFeed(Long npost_id) {
+        final Feed feed = feedRepository.findById(npost_id).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        Long hashtagid = feed.getHashtag().getHashtagId();
+
+        final Hashtag hashtag = hashtagRepository.findById(hashtagid).orElseThrow(() -> new EntityNotFoundException(HASHTAG_NOT_FOUND));
+        log.info(hashtagid);
+
+        final List<Upload> uploads = uploadRepository.findByMid(npost_id);
+        for(Upload u : uploads)
+        {
+            u.setFeed(null);
+        }
+
+        hashtagRepository.delete(hashtag);
+        feedRepository.delete(feed);
+    }
 }

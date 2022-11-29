@@ -1,17 +1,13 @@
 package org.whitebox.howlook.domain.feed.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.DynamicInsert;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.upload.entity.Upload;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -22,7 +18,6 @@ import java.util.Set;
 @ToString(exclude = {"member", "h"})
 @DynamicInsert
 public class Feed extends BaseEntity{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long NPostId;       //게시글 id
@@ -55,10 +50,10 @@ public class Feed extends BaseEntity{
     private List<Upload> uploads = new ArrayList<>();
 
     @OneToOne
-    private Hashtag h;
+    private Hashtag hashtag;
 
     public void setHashtag(Hashtag hashtag){
-        this.h = hashtag;
+        this.hashtag = hashtag;
     }
 
     public void setMember(Member member){

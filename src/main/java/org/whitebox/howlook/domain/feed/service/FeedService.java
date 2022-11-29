@@ -20,4 +20,6 @@ public interface FeedService {
     public void unScrapFeed(Long npost_id);
 
     public void searchFeedByHashtag(HashtagDTO hashtagDTO);
+
+    public void deleteFeed(Long npost_id);
 }
