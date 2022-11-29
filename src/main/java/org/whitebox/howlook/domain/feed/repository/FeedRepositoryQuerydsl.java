@@ -6,4 +6,5 @@ import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 
 public interface FeedRepositoryQuerydsl {
     public Page<FeedReaderDTO> findFeedReaderDTOPage(Pageable pageable);
+    public Page<FeedReaderDTO> findNearFeedReaderDTOPage(Pageable pageable,float latitude, float longitude);
 }
