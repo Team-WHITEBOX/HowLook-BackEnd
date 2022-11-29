@@ -1,9 +1,12 @@
 package org.whitebox.howlook.domain.evaluation.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
+import org.whitebox.howlook.domain.feed.entity.Feed;
 
 @Data
 @Builder
@@ -25,4 +28,10 @@ public class EvalDataDTO {
     private Long maleCount = 0L; // 남자 평가 개수
 
     private Long femaleCount = 0L; // 여자 평가 개수
+
+    private float[] maleScores = new float[5];
+    private float[] femaleScores = new float[5];
+
+    private Long[] maleCounts = new Long[5];
+    private Long[] femaleCounts = new Long[5];
 }
