@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface TournamentRepository extends JpaRepository<TournamentPost,Long>,TournamentRepositoryQuerydsl {
     List<TournamentPost> findByDate(LocalDate date);
+    List<TournamentPost> findTop4ByDateOrderByScoreDesc(LocalDate date);
 }

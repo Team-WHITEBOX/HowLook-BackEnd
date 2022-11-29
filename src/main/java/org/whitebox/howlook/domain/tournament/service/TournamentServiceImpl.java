@@ -44,7 +44,6 @@ public class TournamentServiceImpl implements TournamentService {
         // posts 없으면 예외
         //
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        //List<TournamentPostDTO> result = modelMapper.map(posts,TournamentPostDTO.class);
         List<TournamentPostDTO> result = posts.stream().map(post -> modelMapper.map(post,TournamentPostDTO.class)).collect(Collectors.toList());
         return result;
     }

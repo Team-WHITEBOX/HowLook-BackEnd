@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
+import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
+import org.whitebox.howlook.domain.tournament.repository.HistoryRepository;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
 
 import java.time.LocalDate;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class TournamentTask {
     private final FeedRepository feedRepository;
     private final TournamentRepository tournamentRepository;
+    private final HistoryRepository historyRepository;
 
     public void feedToTPost() {
         List<Feed> feeds = feedRepository.findAll();  //모두 가져옴 -> 수정필요
@@ -30,6 +33,8 @@ public class TournamentTask {
     }
 
     public void resultTournament(){
-        
+        List<TournamentPost> posts = tournamentRepository.findTop4ByDateOrderByScoreDesc(LocalDate.now().minusDays(1)); //전날 게시글
+        TournamentHistory history = new TournamentHistory(posts);
+        historyRepository.save(history);
     }
 }

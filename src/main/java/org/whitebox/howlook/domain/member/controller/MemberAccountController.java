@@ -44,7 +44,7 @@ public class MemberAccountController {
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/join")
-    public ResponseEntity<ResultResponse> joinPOST(@RequestBody MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes){
+    public ResponseEntity<ResultResponse> joinPOST(@RequestBody MemberJoinDTO memberJoinDTO){
         log.info("join post...");
         log.info(memberJoinDTO);
 

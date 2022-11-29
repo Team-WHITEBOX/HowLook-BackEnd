@@ -15,4 +15,8 @@ public class TournamentTests {
     public void taskTest(){
         tournamentTask.feedToTPost();
     }
+    @Test
+    public void taskTest2(){
+        tournamentTask.resultTournament();
+    }
 }

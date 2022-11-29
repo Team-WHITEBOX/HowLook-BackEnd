@@ -19,7 +19,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"member", "h"})
+@ToString(exclude = {"member", "hashtag"})
 @DynamicInsert
 public class Feed extends BaseEntity{
 
