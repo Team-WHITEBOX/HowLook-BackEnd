@@ -34,7 +34,7 @@ public class ReplyServiceImpl implements ReplyService{
 
     private final ReplyLikeRepository replyLikeRepository;
     @Override
-    public long register(ReplyDTO replyDTO) {
+    public long register_reply(ReplyDTO replyDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Reply reply =  modelMapper.map(replyDTO, Reply.class);
         Member member = accountUtil.getLoginMember();
@@ -44,28 +44,29 @@ public class ReplyServiceImpl implements ReplyService{
         reply.setMember(member);
         reply.setFeed(feed);
         reply.setLikeCount(0L);
-        long CommentId = replyRepository.save(reply).getCommentId();
-        return CommentId;
+        long ReplyId = replyRepository.save(reply).getReplyId();
+        return ReplyId;
     }
 
     @Override
-    public ReplyDTO read(Long commentId) {
-        Optional<Reply> replyOptional = replyRepository.findById(commentId);
+    public ReplyDTO read(Long ReplyId) {
+        Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
 
         Reply reply = replyOptional.orElseThrow();
 
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper.map(reply, ReplyDTO.class);
     }
 
     @Override
-    public void remove(Long CommentId) {
-        replyRepository.deleteById(CommentId);
+    public void remove(Long ReplyId) {
+        replyRepository.deleteById(ReplyId);
     }
 
     @Override
     public void modify(ReplyDTO replyDTO) {
 
-        Optional<Reply> replyOptional = replyRepository.findById(replyDTO.getCommentId());
+        Optional<Reply> replyOptional = replyRepository.findById(replyDTO.getReplyId());
 
         Reply reply = replyOptional.orElseThrow();
 
@@ -81,8 +82,8 @@ public class ReplyServiceImpl implements ReplyService{
     }
 
     @Override
-    public void likeReply(Long commentId) { // 댓글 좋아요
-        Optional<Reply> replyOptional = replyRepository.findById(commentId);
+    public void likeReply(Long ReplyId) { // 댓글 좋아요
+        Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
 
         Reply reply = replyOptional.orElseThrow();
 
@@ -94,8 +95,8 @@ public class ReplyServiceImpl implements ReplyService{
     }
 
     @Override
-    public void unlikeReply(Long commentId) {
-        Optional<Reply> replyOptional = replyRepository.findById(commentId);
+    public void unlikeReply(Long ReplyId) {
+        Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
 
         Reply reply = replyOptional.orElseThrow();
 
