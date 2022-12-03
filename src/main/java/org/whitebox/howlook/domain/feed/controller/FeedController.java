@@ -1,5 +1,6 @@
 package org.whitebox.howlook.domain.feed.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
+import javax.xml.transform.Result;
 
 import java.util.List;
 
@@ -77,5 +79,19 @@ public class FeedController {
         feedService.unScrapFeed(npost_id);
 
         return ResponseEntity.ok(ResultResponse.of(UN_BOOKMARK_POST_SUCCESS));
+    }
+
+    @ApiOperation(value = "게시물 좋아요", notes = "POST 방식으로 추가")
+    @PostMapping("/like")
+    public ResponseEntity<ResultResponse> likeFeed(@RequestParam Long NPostId) {
+        feedService.likeFeed(NPostId);
+        return ResponseEntity.ok(ResultResponse.of(LIKE_POST_SUCCESS));
+    }
+
+    @ApiOperation(value = "게시물 좋아요 해제", notes = "Delete 방식으로 제거")
+    @DeleteMapping("/like")
+    public ResponseEntity<ResultResponse> unlikeFeed(@RequestParam Long NPostId) {
+        feedService.unlikeFeed(NPostId);
+        return ResponseEntity.ok(ResultResponse.of(UN_LIKE_POST_SUCCESS));
     }
 }

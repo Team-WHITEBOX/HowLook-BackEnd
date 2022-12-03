@@ -1,16 +1,18 @@
 package org.whitebox.howlook.domain.feed.service;
 
 import org.whitebox.howlook.domain.feed.dto.ReplyDTO;
+import org.whitebox.howlook.domain.feed.dto.ReplyReadDTO;
+import org.whitebox.howlook.domain.feed.dto.ReplyRegisterDTO;
 import org.whitebox.howlook.domain.feed.entity.Reply;
 
 import java.util.List;
 
 public interface ReplyService {
     // 댓글등록 + 대댓글등록 추가구현
-    long register_reply(ReplyDTO replyDTO);
+    long register_reply(ReplyRegisterDTO replyRegisterDTO);
 
     // 특정 댓글 조회
-    ReplyDTO read(Long ReplyId);
+    ReplyReadDTO read(Long ReplyId);
 
     // 특정 댓글 삭제
     void remove(Long ReplyId);

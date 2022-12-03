@@ -17,4 +17,8 @@ public interface FeedService {
     public void scrapFeed(Long npost_id);
 
     public void unScrapFeed(Long npost_id);
+
+    public void likeFeed(Long NPostId);
+
+    public void unlikeFeed(Long NPostId);
 }

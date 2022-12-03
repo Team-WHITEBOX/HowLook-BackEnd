@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.feed.dto.ReplyDTO;
+import org.whitebox.howlook.domain.feed.dto.ReplyReadDTO;
+import org.whitebox.howlook.domain.feed.dto.ReplyRegisterDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.entity.Reply;
 import org.whitebox.howlook.domain.feed.entity.ReplyLike;
@@ -21,7 +19,6 @@ import org.whitebox.howlook.global.util.AccountUtil;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,31 +28,31 @@ public class ReplyServiceImpl implements ReplyService{
     private final FeedRepository feedRepository;
     private final AccountUtil accountUtil;
     private final ModelMapper modelMapper;
-
     private final ReplyLikeRepository replyLikeRepository;
     @Override
-    public long register_reply(ReplyDTO replyDTO) {
+    public long register_reply(ReplyRegisterDTO replyRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        Reply reply =  modelMapper.map(replyDTO, Reply.class);
+        Reply reply =  modelMapper.map(replyRegisterDTO, Reply.class);
         Member member = accountUtil.getLoginMember();
-        log.info(replyDTO);
-        Feed feed = feedRepository.findById(replyDTO.getNPostId()).orElseThrow();
+        log.info(replyRegisterDTO);
+        Feed feed = feedRepository.findById(replyRegisterDTO.getNPostId()).orElseThrow();
         log.info(feed);
         reply.setMember(member);
         reply.setFeed(feed);
+        reply.setNickName(member.getNickName());
+        reply.setProfilePhotoId(member.getProfilePhotoId());
+        reply.setParentsId(replyRegisterDTO.getParentId());
         reply.setLikeCount(0L);
         long ReplyId = replyRepository.save(reply).getReplyId();
         return ReplyId;
     }
 
     @Override
-    public ReplyDTO read(Long ReplyId) {
+    public ReplyReadDTO read(Long ReplyId) {
         Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
-
         Reply reply = replyOptional.orElseThrow();
-
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return modelMapper.map(reply, ReplyDTO.class);
+        return modelMapper.map(reply, ReplyReadDTO.class);
     }
 
     @Override
