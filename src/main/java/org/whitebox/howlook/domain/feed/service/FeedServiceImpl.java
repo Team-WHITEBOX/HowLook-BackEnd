@@ -1,5 +1,6 @@
 package org.whitebox.howlook.domain.feed.service;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -48,11 +49,9 @@ public class FeedServiceImpl implements  FeedService{
     private final ModelMapper modelMapper;
     private final FeedRepository feedRepository;
     private final HashtagRepository hashtagRepository;
-
     private final UploadRepository uploadRepository;
     private final ScrapRepository scrapRepository;
     private final AccountUtil accountUtil;
-
     private final UploadService uploadService; // 업로드 서비스
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
@@ -187,11 +186,18 @@ public class FeedServiceImpl implements  FeedService{
     }
 
     @Override
-    public void searchFeedByHashtag(HashtagDTO hashtagDTO) {
+    public List<FeedReaderDTO> searchFeedByHashtag(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender,
+                                                   int page, int size) {
+        final Pageable pageable = PageRequest.of(page, size);
+        //해당 함수를 통해 hashtagDTO에서 true로 설정된 값만 있는 feed의 ID를 불러온다.
+        List<FeedReaderDTO> feeds = feedRepository.findFeedByCategories(hashtagDTO, heightHigh, heightLow, weightHigh, weightLow, gender, pageable);
 
+
+        return feeds;
     }
 
     @Override
+    @ApiOperation(value = "게시글 해시태그와 함께 삭제된다. 사진은 삭제되지 않음")
     public void deleteFeed(Long npost_id) {
         final Feed feed = feedRepository.findById(npost_id).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         Long hashtagid = feed.getHashtag().getHashtagId();

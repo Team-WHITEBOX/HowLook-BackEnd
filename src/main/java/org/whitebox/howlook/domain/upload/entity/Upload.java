@@ -32,8 +32,4 @@ public class Upload {
         this.feed = feed;
         this.Path = path;
     }
-
-    public void deleteFeed(Feed feed) {
-
-    }
 }

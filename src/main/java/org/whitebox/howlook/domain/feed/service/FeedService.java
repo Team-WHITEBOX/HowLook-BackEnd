@@ -6,6 +6,7 @@ import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FeedService {
     void registerPOST(FeedRegisterDTO feedRegisterDTO);
@@ -19,7 +20,7 @@ public interface FeedService {
 
     public void unScrapFeed(Long npost_id);
 
-    public void searchFeedByHashtag(HashtagDTO hashtagDTO);
+    public List<FeedReaderDTO> searchFeedByHashtag(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender, int page, int size);
 
     public void deleteFeed(Long npost_id);
 }
