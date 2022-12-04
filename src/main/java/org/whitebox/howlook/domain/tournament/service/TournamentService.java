@@ -10,8 +10,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface TournamentService {
+    List<TournamentPostDTO> getPosts(LocalDate date);
+    void UpdatePosts(List<TournamentPostDTO> postDTOs);
     THistoryResponse getTHistory(LocalDate date);
     EHistoryResponse getEHistory(LocalDate date);
 
-    List<TournamentPostDTO> getPosts(LocalDate date);
 }

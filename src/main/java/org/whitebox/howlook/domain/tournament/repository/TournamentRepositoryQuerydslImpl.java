@@ -25,7 +25,7 @@ public class TournamentRepositoryQuerydslImpl implements TournamentRepositoryQue
     public Optional<THistoryResponse> findTHistoryResponseByDate(LocalDate date) {
         return Optional.ofNullable(queryFactory
                 .select(new QTHistoryResponse(
-                        tournamentHistory.T_history_id,
+                        tournamentHistory.t_history_id,
                         tournamentHistory.date,
                         tournamentHistory.lank_1,
                         tournamentHistory.lank_2,
@@ -43,7 +43,7 @@ public class TournamentRepositoryQuerydslImpl implements TournamentRepositoryQue
     public Optional<EHistoryResponse> findEHistoryResponseByDate(LocalDate date) {
         return Optional.ofNullable(queryFactory
                 .select(new QEHistoryResponse(
-                        eventHistory.E_history_id,
+                        eventHistory.e_history_id,
                         eventHistory.date,
                         eventHistory.eventType,
                         eventHistory.lank_1,

@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Getter
 public class TournamentPostDTO {
-    Long T_Post_id;
+    Long t_post_id;
     LocalDate date;
     Long feed_id;
     String photo;

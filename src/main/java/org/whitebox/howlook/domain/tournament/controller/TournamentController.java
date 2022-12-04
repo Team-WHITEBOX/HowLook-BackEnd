@@ -30,20 +30,26 @@ public class TournamentController {
     @GetMapping("/post/{date}")
     public ResponseEntity<ResultResponse> getPosts(@PathVariable("date") String date){
         List<TournamentPostDTO> result = tournamentService.getPosts(LocalDate.parse(date));
-        return ResponseEntity.ok(ResultResponse.of(UPDATE_PASSWORD_SUCCESS,result));
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,result));
+    }
+
+    @PutMapping("/result")
+    public ResponseEntity<ResultResponse> resultTournament(@RequestBody List<TournamentPostDTO> result){
+        tournamentService.UpdatePosts(result);
+        return ResponseEntity.ok(ResultResponse.of(UPDATE_TOURNAMENT_SCORE_SUCCESS));
     }
 
     @GetMapping("/history/{date}")
     public ResponseEntity<ResultResponse> getTHistory(@PathVariable("date") String date) {
         final THistoryResponse tHistoryResponse = tournamentService.getTHistory(LocalDate.parse(date));
 
-        return ResponseEntity.ok(ResultResponse.of(UPDATE_PASSWORD_SUCCESS,tHistoryResponse));
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_HISTORY_SUCCESS,tHistoryResponse));
     }
 
     @GetMapping("/event/{date}")
     public ResponseEntity<ResultResponse> getEHistory(@PathVariable("date") String date) {
         final EHistoryResponse eHistoryResponse = tournamentService.getEHistory(LocalDate.parse(date));
 
-        return ResponseEntity.ok(ResultResponse.of(UPDATE_PASSWORD_SUCCESS,eHistoryResponse));
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_EVENT_HISTORY_SUCCESS,eHistoryResponse));
     }
 }

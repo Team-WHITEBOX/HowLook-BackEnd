@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class EventHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long E_history_id;
+    Long e_history_id;
     LocalDate date;
     String eventType;
     Long lank_1;

@@ -106,7 +106,13 @@ public enum ResultCode {
     DELETE_RECENT_SEARCH_SUCCESS(200, "SE005", "최근 검색 기록 삭제에 성공하였습니다."),
     DELETE_ALL_RECENT_SEARCH_SUCCESS(200, "SE006", "최근 검색 기록 전체 삭제에 성공하였습니다."),
     GET_MEMBER_AUTO_COMPLETE_SUCCESS(200, "SE007", "멤버 자동완성 조회에 성공하였습니다."),
-    GET_HASHTAG_AUTO_COMPLETE_SUCCESS(200, "SE008", "해시태그 자동완성 조회에 성공하였습니다.");
+    GET_HASHTAG_AUTO_COMPLETE_SUCCESS(200, "SE008", "해시태그 자동완성 조회에 성공하였습니다."),
+
+    // Tournament
+    GET_TOURNAMENT_POST_SUCCESS(200, "T001", "토너먼트 게시글 조회에 성공하였습니다."),
+    UPDATE_TOURNAMENT_SCORE_SUCCESS(200, "T002", "토너먼트 결과 업데이트에 성공하였습니다."),
+    GET_TOURNAMENT_HISTORY_SUCCESS(200, "T003", "토너먼트 기록 조회에 성공하였습니다."),
+    GET_TOURNAMENT_EVENT_HISTORY_SUCCESS(200, "T004", "이벤트 토너먼트 기록 조회에 성공하였습니다.");
 
     private final int status;
     private final String code;

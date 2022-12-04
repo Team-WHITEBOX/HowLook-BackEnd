@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.whitebox.howlook.domain.feed.entity.Feed;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,10 +16,14 @@ import java.time.LocalDate;
 public class TournamentPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long T_Post_id;
+    Long t_post_id;
     LocalDate date;
     Long feed_id;
     String photo;
     String member_id;
     Long score;
+
+    public void setScore(Long score){
+        this.score = score;
+    }
 }

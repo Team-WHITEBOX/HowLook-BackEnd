@@ -1,6 +1,5 @@
 package org.whitebox.howlook.domain.tournament.entity;
 
-import com.jayway.jsonpath.internal.function.numeric.Sum;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -9,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -20,7 +18,7 @@ import java.util.stream.Collectors;
 public class TournamentHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long T_history_id;
+    Long t_history_id;
     LocalDate date;
     Long lank_1;
     Long lank_2;
@@ -30,10 +28,10 @@ public class TournamentHistory {
 
     public TournamentHistory(List<TournamentPost> posts){
         this.date = posts.get(0).getDate();
-        this.lank_1 = posts.get(0).getT_Post_id();
-        this.lank_2 = posts.get(1).getT_Post_id();
-        this.lank_3 = posts.get(2).getT_Post_id();
-        this.lank_4 = posts.get(3).getT_Post_id();
+        this.lank_1 = posts.get(0).getT_post_id();
+        this.lank_2 = posts.get(1).getT_post_id();
+        this.lank_3 = posts.get(2).getT_post_id();
+        this.lank_4 = posts.get(3).getT_post_id();
         this.vote_count = posts.stream().mapToLong(i -> i.score).sum();
     }
 }
