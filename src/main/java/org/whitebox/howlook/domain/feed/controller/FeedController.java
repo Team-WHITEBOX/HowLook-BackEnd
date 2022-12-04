@@ -1,5 +1,6 @@
 package org.whitebox.howlook.domain.feed.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -29,7 +30,7 @@ import static org.whitebox.howlook.global.result.ResultCode.REGISTER_SUCCESS;
 public class FeedController {
     private final FeedService feedService;
 
-    //게시글 등록하는 POST로 매핑된 API구현
+    @ApiOperation(value = "피드 게시글 등록")
     @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerPost(@Valid @ModelAttribute FeedRegisterDTO feedRegisterDTO) {
         log.info("Feed POST register!");
@@ -39,8 +40,8 @@ public class FeedController {
         feedService.registerPOST(feedRegisterDTO);
         return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS));
     }
-    
-    //게시물 불러오는 GET으로 매핑한 API구현해야함
+
+    @ApiOperation(value = "게시글 id로 피드 게시글 조회")
     @GetMapping("/readbypid")
     public ResponseEntity<ResultResponse> readFeedbyPID(Long NPostId) {
         FeedReaderDTO feedReaderDTO = feedService.readerPID(NPostId);
@@ -49,7 +50,7 @@ public class FeedController {
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS, feedReaderDTO));
     }
-
+    @ApiOperation(value = "멤버 id로 피드 게시글 모두 조회")
     @GetMapping("/readbyuid")
     public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
         List<FeedReaderDTO> feeds = feedService.readerUID(UserID);
@@ -58,20 +59,20 @@ public class FeedController {
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,feeds));
     }
-
+    @ApiOperation(value = "최근 피드 게시글 10개 조회")
     @GetMapping("/recent")
     public ResponseEntity<ResultResponse> getRecent10Posts(@RequestParam int page) {
-        final List<FeedReaderDTO> postList = feedService.getFeedPage(2, page).getContent();
+        final List<FeedReaderDTO> postList = feedService.getFeedPage(10, page).getContent();
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
     }
-
+    @ApiOperation(value = "스크랩")
     @PostMapping("/scrap")
     public ResponseEntity<ResultResponse> scrapFeed(@RequestParam Long npost_id){
         feedService.scrapFeed(npost_id);
         return ResponseEntity.ok(ResultResponse.of(BOOKMARK_POST_SUCCESS));
     }
-
+    @ApiOperation(value = "스크랩 취소")
     @DeleteMapping("/scrap")
     public ResponseEntity<ResultResponse> unScrapFeed(@RequestParam Long npost_id) {
         feedService.unScrapFeed(npost_id);

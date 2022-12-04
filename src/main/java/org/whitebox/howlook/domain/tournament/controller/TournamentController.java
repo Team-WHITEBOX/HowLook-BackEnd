@@ -1,5 +1,6 @@
 package org.whitebox.howlook.domain.tournament.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -26,26 +27,26 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 @RequiredArgsConstructor
 public class TournamentController {
     private final TournamentService tournamentService;
-
+    @ApiOperation(value = "날짜로 토너먼트 게시글 가져오기")
     @GetMapping("/post/{date}")
     public ResponseEntity<ResultResponse> getPosts(@PathVariable("date") String date){
         List<TournamentPostDTO> result = tournamentService.getPosts(LocalDate.parse(date));
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,result));
     }
-
+    @ApiOperation(value = "토너먼트 결과 반영")
     @PutMapping("/result")
     public ResponseEntity<ResultResponse> resultTournament(@RequestBody List<TournamentPostDTO> result){
         tournamentService.UpdatePosts(result);
         return ResponseEntity.ok(ResultResponse.of(UPDATE_TOURNAMENT_SCORE_SUCCESS));
     }
-
+    @ApiOperation(value = "날짜로 토너먼트 기록 조회")
     @GetMapping("/history/{date}")
     public ResponseEntity<ResultResponse> getTHistory(@PathVariable("date") String date) {
         final THistoryResponse tHistoryResponse = tournamentService.getTHistory(LocalDate.parse(date));
 
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_HISTORY_SUCCESS,tHistoryResponse));
     }
-
+    @ApiOperation(value = "날짜로 이벤트 토너먼트 기록 조회")
     @GetMapping("/event/{date}")
     public ResponseEntity<ResultResponse> getEHistory(@PathVariable("date") String date) {
         final EHistoryResponse eHistoryResponse = tournamentService.getEHistory(LocalDate.parse(date));
