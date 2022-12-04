@@ -61,6 +61,7 @@ public enum ErrorCode {
     REPLY_CANT_UPLOAD(400, "F013", "최상위 댓글에만 답글을 업로드할 수 있습니다."),
     POST_TAGS_EXCEED(400, "F014", "사용자 태그는 최대 20명까지 가능합니다."),
     POST_CANT_UPLOAD(400, "F015", "게시글을 등록할 수 없습니다."),
+    POST_CANT_FOUND(400, "F016", "해당 정보에 부합하는 게시글을 찾을 수 없습니다."),
 
     // Chat
     CHAT_ROOM_NOT_FOUND(400, "C001", "존재하지 않는 채팅방입니다."),

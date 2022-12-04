@@ -11,6 +11,8 @@ import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.service.FeedService;
+import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
