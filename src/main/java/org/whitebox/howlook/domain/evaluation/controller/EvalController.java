@@ -49,16 +49,6 @@ public class EvalController {
         return evalReaderDTO;
     }
 
-//
-//    // 게시글 아이디로 게시글 정보 가져오기
-//    @GetMapping("/readAnyEval")
-//    public List<EvalReaderDTO> readAnyEval() {
-//        List<EvalReaderDTO> evalReaderDTO = evalService.readAll();
-//
-//        return evalReaderDTO;
-//    }
-
-
     // 게시글 아이디로 게시글 정보 가져오기
     @GetMapping("/readAnyEval")
     public ResponseEntity<ResultResponse> readAnyEval() {
@@ -72,6 +62,17 @@ public class EvalController {
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTO));
     }
+
+    @GetMapping("/readNextEval")
+    public ResponseEntity<ResultResponse> getNextEvaluation(@RequestParam int page)
+    {
+        final List<EvalReaderDTO> evalList = evalService.getEvalPage(page,1).getContent();
+
+        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS,evalList));
+    }
+
+
+
 
     @GetMapping("/readbyuid")
     public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {

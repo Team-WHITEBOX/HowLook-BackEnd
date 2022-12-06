@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.entity.Upload;
 import org.whitebox.howlook.domain.upload.repository.UploadRepository;
@@ -39,7 +40,23 @@ public class UploadServiceImpl implements UploadService{
         Upload upload = modelMapper.map(uploadResultDTO, Upload.class);
         uploadRepository.save(upload);
     }
-    
+
+    public List<PhotoDTO> getPhtoData(Long NPostId)
+    {
+        List<Upload> uploads = uploadRepository.findByPostId(NPostId);
+        List<PhotoDTO> photoDTOS = new ArrayList<>();
+
+        for(Upload u : uploads)
+        {
+            PhotoDTO temp = new PhotoDTO();
+            temp.setPath(u.getPath());
+            temp.setPhotoId(u.getPhotoId());
+
+            photoDTOS.add(temp);
+        }
+
+        return photoDTOS;
+    }
     @Override // DB로 부터 입력받은 ID에 붙은 사진 경로를 가져오는 함수
     public List<String> getPath(Long NPostId) {
         List<Map<String, Object>> cnt = new ArrayList<>();
@@ -54,5 +71,11 @@ public class UploadServiceImpl implements UploadService{
             }
         }
         return str;
+    }
+
+    @Override
+    public String getPathByPhotoId(Long PhotoId)
+    {
+        return uploadRepository.findByPhotoId(PhotoId).getPath();
     }
 }

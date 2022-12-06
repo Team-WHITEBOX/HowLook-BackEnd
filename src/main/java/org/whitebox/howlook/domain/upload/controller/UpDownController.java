@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.service.UploadService;
@@ -73,47 +74,22 @@ public class UpDownController {
         return list;
     }
 
-
     // 게시글 아이디에 붙어있는 사진 경로를 반환
-    @ApiOperation(value = "readPhoto Get", notes = "Get 방식으로 사진 경로 조회")
+    @ApiOperation(value = "Get photo by postid", notes = "Get 방식으로 게시글에 붙은 사진 경로 조회")
     @GetMapping("/read")
-    public List<String> readPhoto(Long NPostId) {
-        List<String> list = new ArrayList<>();
-        list = uploadService.getPath(NPostId);
-
-        for(String path: list) {
-            System.out.println(path);
-        }
+    public List<PhotoDTO> readPhoto(Long NPostId) {
+        List<PhotoDTO> list = new ArrayList<>();
+        list = uploadService.getPhtoData(NPostId);
 
         return list;
     }
 
-//    @GetMapping("/read")
-//    public ResponseEntity<Resource> readPhoto(Long NPostId) {
-//        //List<UploadResultDTO> list = new ArrayList<>();
-//        //list.addAll(uploadService.reader(NPostId));
-//        //log.info(list);
-//        List<String> list = new ArrayList<>();
-//        list = uploadService.getPath(NPostId);
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        Resource resource = new FileSystemResource("");
-//
-//        for(String path: list) {
-//            System.out.println(path);
-//            resource = new FileSystemResource(path);
-//            String resourceName = resource.getFilename();
-//
-//            try{
-//                headers.add("Content-Type", Files.probeContentType( resource.getFile().toPath() ));
-//            } catch(Exception e){
-//                return ResponseEntity.internalServerError().build();
-//            }
-//        }
-//
-//        return ResponseEntity.ok().headers(headers).body(resource);
-//    }
-
+    // 게시글 아이디에 붙어있는 사진 경로를 반환
+    @ApiOperation(value = "Get photo by photoid", notes = "Get 방식으로 포토아이디로 사진 경로 조회")
+    @GetMapping("/readbypid")
+    public String readPhotoByPhotoId(Long PhotoId) {
+        return uploadService.getPathByPhotoId(PhotoId);
+    }
 
     // 파일경로를 통해 사진 가져오는 Get Method
     // postID로 가져오는 거 구현해야함

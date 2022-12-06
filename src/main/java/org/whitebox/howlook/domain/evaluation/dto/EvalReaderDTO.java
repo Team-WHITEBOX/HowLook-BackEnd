@@ -1,10 +1,13 @@
 package org.whitebox.howlook.domain.evaluation.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
+import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 
 import java.time.LocalDateTime;
@@ -16,8 +19,6 @@ import java.time.LocalDateTime;
 public class EvalReaderDTO {
 
     private Long NPostId;       //게시글 id
-
-    private Long PhotoCnt;      //업로드한 사진 개수
 
     UserPostInfoResponse userPostInfo;
 
@@ -34,4 +35,17 @@ public class EvalReaderDTO {
 
     @JsonProperty("modDate")
     private LocalDateTime modDate;
+
+
+    @QueryProjection
+    public EvalReaderDTO(Evaluation eval) {
+        this.NPostId = eval.getNPostId();
+        this.userPostInfo = new UserPostInfoResponse(eval.getMember());
+        this.LikeCount = eval.getLikeCount();
+        this.CommentCount = eval.getCommentCount();
+        this.Content = eval.getContent();
+        this.MainPhotoPath = eval.getMainPhotoPath();
+        this.regDate = eval.getRegDate();
+        this.modDate = eval.getModDate();
+    }
 }

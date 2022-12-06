@@ -7,6 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
@@ -92,8 +95,6 @@ public class EvalServiceImpl implements EvalService{
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-
-
         for(int i = 0; i < evalList.size(); i++) {
 
             EvalReaderDTO evalReaderDTO = modelMapper.map(evalList.get(i), EvalReaderDTO.class);
@@ -101,7 +102,9 @@ public class EvalServiceImpl implements EvalService{
 
 
             // 이미 달은 평가라면 반환하지 않게
-            EvalReply temp = evalReplyRepository.findByPostid(evalReaderDTO.getNPostId());
+            EvalReply temp = evalReplyRepository
+                    .findMyReplyByPostid(evalReaderDTO.getNPostId(),accountUtil.getLoginMember().getMid());
+
             if(temp == null) {
                 readerDTOList.add(evalReaderDTO);
             }
@@ -120,5 +123,35 @@ public class EvalServiceImpl implements EvalService{
             result.add(feedReaderDTO);
         }
         return result;
+    }
+
+    @Override
+    public Page<EvalReaderDTO> getEvalPage(int page,int size)
+    {
+        final Pageable pageable = PageRequest.of(page,size);
+
+        Page<EvalReaderDTO> evalPage = evalRepository.findEvalReaderDTOPage(pageable);
+        List<EvalReaderDTO> evalList = evalPage.getContent();
+
+        List<EvalReaderDTO> readerDTOList = new ArrayList<>();
+
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        for(int i = 0; i < evalList.size(); i++) {
+
+            EvalReaderDTO evalReaderDTO = modelMapper.map(evalList.get(i), EvalReaderDTO.class);
+            evalReaderDTO.setUserPostInfo(evalList.get(i).getUserPostInfo());
+
+
+            // 이미 달은 평가라면 반환하지 않게
+            EvalReply temp = evalReplyRepository
+                    .findMyReplyByPostid(evalReaderDTO.getNPostId(),accountUtil.getLoginMember().getMid());
+
+            if(temp == null) {
+                readerDTOList.add(evalReaderDTO);
+            }
+
+        }
+        return evalPage;
     }
 }

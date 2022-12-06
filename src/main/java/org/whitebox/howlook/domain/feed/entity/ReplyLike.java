@@ -12,7 +12,7 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@Table(name = "comment_likes")
+@Table(name = "Reply_likes")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReplyLike {

@@ -16,6 +16,8 @@ public interface FeedService {
 
     Page<FeedReaderDTO> getFeedPage(int size,int page);
 
+    Page<FeedReaderDTO> getNearFeedPage(int size,int page,float latitude, float longitude);
+
     public void scrapFeed(Long npost_id);
 
     public void unScrapFeed(Long npost_id);

@@ -11,4 +11,5 @@ public interface FeedRepositoryQuerydsl {
     public Page<FeedReaderDTO> findFeedReaderDTOPage(Pageable pageable);
 
     public List<FeedReaderDTO> findFeedByCategories(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender, Pageable pageable);
+    public Page<FeedReaderDTO> findNearFeedReaderDTOPage(Pageable pageable,float latitude, float longitude);
 }

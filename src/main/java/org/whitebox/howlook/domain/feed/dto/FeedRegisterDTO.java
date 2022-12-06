@@ -21,7 +21,8 @@ public class FeedRegisterDTO {
 
     private String Content;         //내용
 
-    private Long FeedLocation;      //해당피드 위치정보
+    private float latitude;         //위도
+    private float longitude;        //경도
 
     private LocalDateTime regDate;
 

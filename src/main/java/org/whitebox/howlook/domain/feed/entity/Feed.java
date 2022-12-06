@@ -43,11 +43,12 @@ public class Feed extends BaseEntity{
     // npost_id를 통해 사진을 가져오는 get Method가 구현되어서 엔티티 구조 변경
     private String MainPhotoPath; //사진 경로
     
-    private Long FeedLocation;    //해당피드 위치정보
-
     @OneToMany(mappedBy = "feed")
     @Builder.Default
     private List<Upload> uploads = new ArrayList<>();
+
+    private float latitude; // 위도
+    private float longitude; // 경도
 
     @OneToOne
     private Hashtag hashtag;

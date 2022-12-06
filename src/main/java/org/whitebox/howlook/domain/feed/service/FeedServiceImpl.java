@@ -98,7 +98,8 @@ public class FeedServiceImpl implements  FeedService{
                 // 여기까지는 사진을 Server에 저장하는 코드
                 // 여기서부터 사진 정보를 DB에 저장하는 코드
                 // UploadFileDTO를 통해 db에 사진 저장경로를 Insert
-                String m_path = uploadPath+"\\"+uuid+"_"+originalName;
+                //String m_path = uploadPath+"\\"+uuid+"_"+originalName;
+                String m_path = uuid+"_"+originalName;
 
 
                 // Falcon : MainPhotoPath 및 PhotoCnt 저장하기
@@ -133,7 +134,7 @@ public class FeedServiceImpl implements  FeedService{
         feedReaderDTO.setUserPostInfo(new UserPostInfoResponse(feed.getMember()));
 
         // 사진 경로 가져오기
-        feedReaderDTO.setPhotoPaths(uploadService.getPath(NPostId));
+        feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(NPostId));
 
         return feedReaderDTO;
     }
@@ -152,7 +153,19 @@ public class FeedServiceImpl implements  FeedService{
         log.info(pageable.getOffset());
         Page<FeedReaderDTO> feedPage = feedRepository.findFeedReaderDTOPage(pageable);
         feedPage.forEach(feedReaderDTO -> {
-            feedReaderDTO.setPhotoPaths(uploadService.getPath(feedReaderDTO.getNPostId()));
+            feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(feedReaderDTO.getNPostId()));
+        });
+        return feedPage;
+    }
+
+    @Override
+    public Page<FeedReaderDTO> getNearFeedPage(int size,int page,float latitude, float longitude)
+    {
+        final Pageable pageable = PageRequest.of(page, size);
+
+        Page<FeedReaderDTO> feedPage = feedRepository.findNearFeedReaderDTOPage(pageable, latitude, longitude);
+        feedPage.forEach(feedReaderDTO -> {
+            feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(feedReaderDTO.getNPostId()));
         });
         return feedPage;
     }

@@ -1,5 +1,6 @@
 package org.whitebox.howlook.domain.upload.service;
 
+import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 
 import java.util.List;
@@ -10,4 +11,9 @@ public interface UploadService{
 
         // 경로를 가져와 문자열 리스트를 반환
         public List<String> getPath(Long NPostId);
+
+        public List<PhotoDTO> getPhtoData(Long NPostId);
+
+        // 사진 아이디로 경로를 반환
+        public String getPathByPhotoId(Long PhotoId);
 }

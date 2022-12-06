@@ -1,6 +1,8 @@
 package org.whitebox.howlook.domain.feed.entity;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.whitebox.howlook.domain.member.entity.Member;
@@ -20,10 +22,11 @@ import static javax.persistence.FetchType.LAZY;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Reply {
+@DynamicInsert
+public class Reply extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long CommentId;
+    private Long ReplyId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Feed feed;
@@ -32,10 +35,8 @@ public class Reply {
     private Member member;
     private String contents;
 
-    private LocalDateTime Date;
-
+    @ColumnDefault("0")
     private Long parentsId;
-
     private Long LikeCount;
 
     public void changeText(String text) {
