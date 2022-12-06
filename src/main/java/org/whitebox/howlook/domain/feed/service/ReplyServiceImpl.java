@@ -42,8 +42,6 @@ public class ReplyServiceImpl implements ReplyService{
         log.info(feed);
         reply.setMember(member);
         reply.setFeed(feed);
-  //      reply.setNickName(member.getNickName());
-//        reply.setProfilePhotoId(member.getProfilePhoto());
         reply.setParentsId(replyRegisterDTO.getParentId());
         reply.setLikeCount(0L);
         long ReplyId = replyRepository.save(reply).getReplyId();
@@ -56,7 +54,11 @@ public class ReplyServiceImpl implements ReplyService{
         Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
         Reply reply = replyOptional.orElseThrow();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return modelMapper.map(reply, ReplyReadDTO.class);
+        ReplyReadDTO dto = modelMapper.map(reply, ReplyReadDTO.class);
+        dto.setNpostId(reply.getFeed().getNPostId());
+        dto.setNickName(reply.getMember().getNickName());
+        dto.setProfilePhoto(reply.getMember().getProfilePhoto());
+        return dto;
     }
 
     @Override
