@@ -18,5 +18,5 @@ public class ReplyListDTO {
 
     //사용자 정보
     private String Nickname; // 사용자 닉네임
-    private long profilePhotoId; // 프로필 사진
+    private String profilePhoto; // 프로필 사진
 }

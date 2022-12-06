@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Member member = result.get();
         MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(
                 member.getMid(), member.getMpw(), member.getName(),member.getNickName(),member.getPhone(), member.getHeight(),
-                member.getWeight(),member.getBirthDay(),member.getGender(),member.getProfilePhotoId(), member.isDel(), false,
+                member.getWeight(),member.getBirthDay(),member.getGender(),member.getProfilePhoto(), member.isDel(), false,
                 member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority("ROLE_"+memberRole.name())).collect(Collectors.toList())
         );
         log.info("memberSecurityDTO");

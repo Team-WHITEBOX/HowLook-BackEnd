@@ -18,10 +18,7 @@ import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.entity.FeedLike;
 import org.whitebox.howlook.domain.feed.entity.Hashtag;
 import org.whitebox.howlook.domain.feed.entity.Scrap;
-import org.whitebox.howlook.domain.feed.repository.FeedLikeRepository;
-import org.whitebox.howlook.domain.feed.repository.FeedRepository;
-import org.whitebox.howlook.domain.feed.repository.HashtagRepository;
-import org.whitebox.howlook.domain.feed.repository.ScrapRepository;
+import org.whitebox.howlook.domain.feed.repository.*;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
@@ -68,6 +65,7 @@ public class FeedServiceImpl implements  FeedService{
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
         feed.setMember(accountUtil.getLoginMember());
         feed.setLikeCount(0L);
+        feed.setCommentCount(0L);
         HashtagDTO hashtagDTO = feedRegisterDTO.getHashtagDTO();
         Hashtag hashtag = modelMapper.map(hashtagDTO, Hashtag.class);
         hashtag.setFeed(feed);
@@ -76,7 +74,6 @@ public class FeedServiceImpl implements  FeedService{
 
         feed.setHashtag(hashtag);
         feedRepository.save(feed);
-
         UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();
         // 사진 업로드 코드
         log.info(uploadFileDTO);
@@ -227,6 +224,11 @@ public class FeedServiceImpl implements  FeedService{
     public void likeFeed(Long NPostId) {
         Feed feed = feedRepository.findById(NPostId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         Member member = accountUtil.getLoginMember();
+
+        if(feedLikeRepository.findByMemberAndFeed(member,feed).isPresent()) {
+            throw new EntityAlreadyExistException(POST_LIKE_ALREADY_EXIST);
+        }
+
         feed.UplikeCount();
         feedLikeRepository.save(new FeedLike(member,feed));
     }

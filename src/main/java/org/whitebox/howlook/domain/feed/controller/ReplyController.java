@@ -94,8 +94,8 @@ public class ReplyController {
             replyListDTO.setReplyId(responseDTO.get(i).getReplyId());
 
             // 회원정보
-            replyListDTO.setNickname(responseDTO.get(i).getNickName());
-            replyListDTO.setProfilePhotoId(responseDTO.get(i).getProfilePhotoId());
+            replyListDTO.setNickname(responseDTO.get(i).getMember().getNickName());
+            replyListDTO.setProfilePhoto(responseDTO.get(i).getMember().getProfilePhoto());
             list.add(replyListDTO);
         }
         return list;

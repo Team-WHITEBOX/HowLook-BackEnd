@@ -28,7 +28,7 @@ public class Member {
     private Long weight;
     private LocalDate birthDay;
     private char gender;
-    private Long profilePhotoId;
+    private String profilePhoto;
     private boolean del;
     private boolean social;
     @ElementCollection(fetch = FetchType.LAZY)
@@ -59,8 +59,8 @@ public class Member {
     public void updateSocial(boolean social){
         this.social = social;
     }
-    public void updateProfilePhotoId(Long profilePhotoId){
-        this.profilePhotoId = profilePhotoId;
+    public void updateProfilePhotoId(String profilePhoto){
+        this.profilePhoto = profilePhoto;
     }
     public void addRole(MemberRole memberRole){
         this.roleSet.add(memberRole);

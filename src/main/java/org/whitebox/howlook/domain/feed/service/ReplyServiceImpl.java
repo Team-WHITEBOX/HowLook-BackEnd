@@ -15,6 +15,8 @@ import org.whitebox.howlook.domain.feed.repository.FeedRepository;
 import org.whitebox.howlook.domain.feed.repository.ReplyLikeRepository;
 import org.whitebox.howlook.domain.feed.repository.ReplyRepository;
 import org.whitebox.howlook.domain.member.entity.Member;
+import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import java.util.List;
@@ -36,14 +38,14 @@ public class ReplyServiceImpl implements ReplyService{
         Member member = accountUtil.getLoginMember();
         log.info(replyRegisterDTO);
         Feed feed = feedRepository.findById(replyRegisterDTO.getNPostId()).orElseThrow();
+        feed.UpCommentCount();
         log.info(feed);
         reply.setMember(member);
         reply.setFeed(feed);
-        reply.setNickName(member.getNickName());
-        reply.setProfilePhotoId(member.getProfilePhotoId());
         reply.setParentsId(replyRegisterDTO.getParentId());
         reply.setLikeCount(0L);
         long ReplyId = replyRepository.save(reply).getReplyId();
+        feedRepository.save(feed);
         return ReplyId;
     }
 
@@ -52,11 +54,19 @@ public class ReplyServiceImpl implements ReplyService{
         Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
         Reply reply = replyOptional.orElseThrow();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return modelMapper.map(reply, ReplyReadDTO.class);
+        ReplyReadDTO dto = modelMapper.map(reply, ReplyReadDTO.class);
+        dto.setNpostId(reply.getFeed().getNPostId());
+        dto.setNickName(reply.getMember().getNickName());
+        dto.setProfilePhoto(reply.getMember().getProfilePhoto());
+        return dto;
     }
 
     @Override
     public void remove(Long ReplyId) {
+        Reply reply = replyRepository.findById(ReplyId).orElseThrow();
+        Feed feed = feedRepository.findById(reply.getFeed().getNPostId()).orElseThrow();
+        feed.DownCommentCount();
+        feedRepository.save(feed);
         replyRepository.deleteById(ReplyId);
     }
 
@@ -87,6 +97,9 @@ public class ReplyServiceImpl implements ReplyService{
         reply.Up_LikeCount();
 
         Member member = accountUtil.getLoginMember();
+
+        if(replyLikeRepository.findByMemberAndReply(member,reply).isPresent())
+            throw new EntityAlreadyExistException(ErrorCode.COMMENT_LIKE_ALREADY_EXIST);
 
         replyLikeRepository.save(new ReplyLike(member,reply));
     }

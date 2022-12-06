@@ -17,5 +17,5 @@ public class ReplyReadDTO {
 
     // 유저 정보
     private String nickName;
-    private Long profilePhotoId;
+    private String profilePhoto;
 }

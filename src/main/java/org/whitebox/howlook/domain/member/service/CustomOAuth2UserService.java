@@ -99,7 +99,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                             member.getWeight(),
                             member.getBirthDay(),
                             member.getGender(),
-                            member.getProfilePhotoId(),
+                            member.getProfilePhoto(),
                             member.isDel(),
                             member.isSocial(),
                             member.getRoleSet()

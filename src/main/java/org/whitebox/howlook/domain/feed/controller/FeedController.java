@@ -48,7 +48,7 @@ public class FeedController {
         return ResponseEntity.ok(ResultResponse.of(DELETE_POST_SUCCESS));
     }
 
-    //게시물 불러오는 GET으로 매핑한 API구현해야함
+    @ApiOperation(value = "게시글 id로 피드 게시글 조회")
     @GetMapping("/readbypid")
     public ResponseEntity<ResultResponse> readFeedbyPID(Long NPostId) {
         FeedReaderDTO feedReaderDTO = feedService.readerPID(NPostId);

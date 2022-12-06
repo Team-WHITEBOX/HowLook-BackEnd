@@ -22,7 +22,7 @@ public class MemberProfileRepositoryImpl implements MemberProfileRepository{
                         member.nickName,
                         member.height,
                         member.weight,
-                        member.profilePhotoId,
+                        member.profilePhoto,
                         member.mid.eq(loginMemberId)))
                 .from(member)
                 .where(member.mid.eq(usermid))
@@ -37,7 +37,7 @@ public class MemberProfileRepositoryImpl implements MemberProfileRepository{
                         member.nickName,
                         member.height,
                         member.weight,
-                        member.profilePhotoId))
+                        member.profilePhoto))
                 .from(member)
                 .where(member.mid.eq(usermid))
                 .fetchOne());

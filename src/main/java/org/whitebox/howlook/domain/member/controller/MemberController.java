@@ -72,4 +72,12 @@ public class MemberController {
 
         return ResponseEntity.ok(ResultResponse.of(EDIT_PROFILE_SUCCESS));
     }
+
+    @ApiOperation(value = "회원 프로필 대표 사진 등록")
+    @PutMapping(value = "/photo")
+    public ResponseEntity<ResultResponse> editProfilePhoto(Long feedId) {
+        memberService.editProfilePhoto(feedId);
+
+        return ResponseEntity.ok(ResultResponse.of(GET_EDIT_PROFILE_SUCCESS));
+    }
 }
