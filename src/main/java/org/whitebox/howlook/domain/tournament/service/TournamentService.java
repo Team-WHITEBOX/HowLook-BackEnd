@@ -15,4 +15,6 @@ public interface TournamentService {
     THistoryResponse getTHistory(LocalDate date);
     EHistoryResponse getEHistory(LocalDate date);
 
+    TournamentPostDTO getPostById(Long postId);
+
 }

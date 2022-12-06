@@ -16,6 +16,7 @@ import org.whitebox.howlook.global.result.ResultResponse;
 import javax.validation.Valid;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
@@ -43,6 +44,7 @@ public class TournamentController {
     @GetMapping("/history/{date}")
     public ResponseEntity<ResultResponse> getTHistory(@PathVariable("date") String date) {
         final THistoryResponse tHistoryResponse = tournamentService.getTHistory(LocalDate.parse(date));
+        List<TournamentPostDTO> postDTOs = new ArrayList<>();
 
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_HISTORY_SUCCESS,tHistoryResponse));
     }
@@ -52,5 +54,13 @@ public class TournamentController {
         final EHistoryResponse eHistoryResponse = tournamentService.getEHistory(LocalDate.parse(date));
 
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_EVENT_HISTORY_SUCCESS,eHistoryResponse));
+    }
+
+    @ApiOperation(value = "id로 토너먼트 게시글 조회")
+    @GetMapping("getbyid")
+    public ResponseEntity<ResultResponse> getPostById(Long postId) {
+        final TournamentPostDTO tournamentPostDTO = tournamentService.getPostById(postId);
+
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_EVENT_HISTORY_SUCCESS,tournamentPostDTO));
     }
 }

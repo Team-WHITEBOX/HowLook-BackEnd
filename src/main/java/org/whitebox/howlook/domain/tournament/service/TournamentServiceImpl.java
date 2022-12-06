@@ -4,11 +4,9 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
-import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
-import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
@@ -18,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.whitebox.howlook.global.error.ErrorCode.MEMBER_NOT_FOUND;
+import static org.whitebox.howlook.global.error.ErrorCode.POST_NOT_FOUND;
 
 @Log4j2
 @Service
@@ -57,5 +56,12 @@ public class TournamentServiceImpl implements TournamentService {
         EHistoryResponse result = tournamentRepository.findEHistoryResponseByDate(date)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
         return result;
+    }
+
+    @Override
+    public TournamentPostDTO getPostById(Long postId) {
+        TournamentPost post = tournamentRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        TournamentPostDTO dto = modelMapper.map(post,TournamentPostDTO.class);
+        return dto;
     }
 }
