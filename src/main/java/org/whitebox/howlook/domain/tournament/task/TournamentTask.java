@@ -25,11 +25,13 @@ public class TournamentTask {
 
     public void feedToTPost() {
         List<Feed> feeds = feedRepository.findAll();  //모두 가져옴 -> 수정필요
-        feeds.forEach(feed -> {
-            TournamentPost tournamentPost = TournamentPost.builder()
-                    .date(LocalDate.now()).feed_id(feed.getNPostId()).photo(feed.getMainPhotoPath()).member_id(feed.getMember().getMid()).build();
-            tournamentRepository.save((tournamentPost));
-        });
+        if(feeds.size() == 32){    //게시글 수가 32개보다 적으면 토너먼트 안함
+            feeds.forEach(feed -> {
+                TournamentPost tournamentPost = TournamentPost.builder()
+                        .date(LocalDate.now()).feed_id(feed.getNPostId()).photo(feed.getMainPhotoPath()).member_id(feed.getMember().getMid()).build();
+                tournamentRepository.save((tournamentPost));
+            });
+        }
     }
 
     public void resultTournament(){

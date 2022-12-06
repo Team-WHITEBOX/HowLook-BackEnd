@@ -61,6 +61,6 @@ public class TournamentController {
     public ResponseEntity<ResultResponse> getPostById(Long postId) {
         final TournamentPostDTO tournamentPostDTO = tournamentService.getPostById(postId);
 
-        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_EVENT_HISTORY_SUCCESS,tournamentPostDTO));
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,tournamentPostDTO));
     }
 }

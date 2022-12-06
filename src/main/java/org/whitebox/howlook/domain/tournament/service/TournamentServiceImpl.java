@@ -15,8 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.whitebox.howlook.global.error.ErrorCode.MEMBER_NOT_FOUND;
-import static org.whitebox.howlook.global.error.ErrorCode.POST_NOT_FOUND;
+import static org.whitebox.howlook.global.error.ErrorCode.*;
 
 @Log4j2
 @Service
@@ -27,7 +26,8 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public List<TournamentPostDTO> getPosts(LocalDate date) {
-        List<TournamentPost> posts = tournamentRepository.findByDate(date);
+        List<TournamentPost> posts = tournamentRepository.findByDate(date)
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUNT));
         // posts 없으면 예외
         //
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -47,20 +47,21 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public THistoryResponse getTHistory(LocalDate date) {
         THistoryResponse result = tournamentRepository.findTHistoryResponseByDate(date)
-                .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUNT));
         return result;
     }
 
     @Override
     public EHistoryResponse getEHistory(LocalDate date) {
         EHistoryResponse result = tournamentRepository.findEHistoryResponseByDate(date)
-                .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUNT));
         return result;
     }
 
     @Override
     public TournamentPostDTO getPostById(Long postId) {
-        TournamentPost post = tournamentRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        TournamentPost post = tournamentRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         TournamentPostDTO dto = modelMapper.map(post,TournamentPostDTO.class);
         return dto;
     }
