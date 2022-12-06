@@ -15,6 +15,8 @@ import org.whitebox.howlook.domain.feed.repository.FeedRepository;
 import org.whitebox.howlook.domain.feed.repository.ReplyLikeRepository;
 import org.whitebox.howlook.domain.feed.repository.ReplyRepository;
 import org.whitebox.howlook.domain.member.entity.Member;
+import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import java.util.List;
@@ -93,6 +95,9 @@ public class ReplyServiceImpl implements ReplyService{
         reply.Up_LikeCount();
 
         Member member = accountUtil.getLoginMember();
+
+        if(replyLikeRepository.findByMemberAndReply(member,reply).isPresent())
+            throw new EntityAlreadyExistException(ErrorCode.COMMENT_LIKE_ALREADY_EXIST);
 
         replyLikeRepository.save(new ReplyLike(member,reply));
     }

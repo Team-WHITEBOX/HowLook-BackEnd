@@ -18,10 +18,7 @@ import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.entity.FeedLike;
 import org.whitebox.howlook.domain.feed.entity.Hashtag;
 import org.whitebox.howlook.domain.feed.entity.Scrap;
-import org.whitebox.howlook.domain.feed.repository.FeedLikeRepository;
-import org.whitebox.howlook.domain.feed.repository.FeedRepository;
-import org.whitebox.howlook.domain.feed.repository.HashtagRepository;
-import org.whitebox.howlook.domain.feed.repository.ScrapRepository;
+import org.whitebox.howlook.domain.feed.repository.*;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
@@ -227,6 +224,11 @@ public class FeedServiceImpl implements  FeedService{
     public void likeFeed(Long NPostId) {
         Feed feed = feedRepository.findById(NPostId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         Member member = accountUtil.getLoginMember();
+
+        if(feedLikeRepository.findByMemberAndFeed(member,feed).isPresent()) {
+            throw new EntityAlreadyExistException(POST_LIKE_ALREADY_EXIST);
+        }
+
         feed.UplikeCount();
         feedLikeRepository.save(new FeedLike(member,feed));
     }
