@@ -3,7 +3,6 @@ package org.whitebox.howlook.domain.feed.entity;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.persister.walking.internal.FetchStrategyHelper;
 
 import javax.persistence.*;
 
@@ -51,11 +50,4 @@ public class Hashtag {
     public void setFeed(Feed feed){
         this.f = feed;
     }
-
-    /*
-    @Builder
-    public Hashtag(Feed feed) {
-        this.feed = feed;
-    }
-     */
 }

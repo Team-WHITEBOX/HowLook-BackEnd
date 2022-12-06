@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +23,7 @@ public class Upload {
     private String Path;        //사진 경로
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="NPostId")
     private Feed feed;
 
@@ -30,7 +31,5 @@ public class Upload {
     public Upload(Feed feed, String path) {
         this.feed = feed;
         this.Path = path;
-        //this.NPostId = feed.getNPostId();
     }
-
 }
