@@ -78,7 +78,7 @@ public class FeedController {
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
     }
-    @ApiOperation(value = "스크랩")
+
 
     @GetMapping("/near")
     public ResponseEntity<ResultResponse> getNear10Posts(@RequestParam int page,float latitude, float longitude) {
@@ -86,7 +86,7 @@ public class FeedController {
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
     }
-
+    @ApiOperation(value = "스크랩")
     @PostMapping("/scrap")
     public ResponseEntity<ResultResponse> scrapFeed(@RequestParam Long npost_id){
         feedService.scrapFeed(npost_id);
