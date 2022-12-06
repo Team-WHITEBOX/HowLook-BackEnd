@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 
 @Getter
@@ -26,13 +25,13 @@ public class MemberSecurityDTO extends User implements OAuth2User {
     private Long weight;
     private LocalDate birthDay;
     private char gender;
-    private Long profilePhotoId;
+    private String profilePhoto;
     private boolean del;
     private boolean social;
     private Map<String,Object> props; //소셜 로그인 정보
 
     public MemberSecurityDTO(String username, String password,String name, String nickName,
-                             String phone,Long height,Long weight, LocalDate birthDay,char gender,Long profilePhotoId,
+                             String phone,Long height,Long weight, LocalDate birthDay,char gender,String profilePhoto,
                              boolean del, boolean social, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
         this.mid = username;
@@ -44,7 +43,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
         this.weight = weight;
         this.birthDay = birthDay;
         this.gender = gender;
-        this.profilePhotoId = profilePhotoId;
+        this.profilePhoto = profilePhoto;
         this.del = del;
         this.social = social;
     }

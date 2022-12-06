@@ -5,9 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
-import org.whitebox.howlook.domain.feed.entity.Feed;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +26,7 @@ public class UserProfileResponse {
     private Long memberWeight;
 
     @ApiModelProperty(value = "프로필사진")
-    private Long profilePhotoId;
+    private String profilePhoto;
 
 //    @ApiModelProperty(value = "해시태그", example = "#미니멀, #스트릿")
 //    private String memberTag;
@@ -42,13 +40,13 @@ public class UserProfileResponse {
     private boolean isMe;
 
     @QueryProjection
-    public UserProfileResponse(String memberId, String memberNickName, Long memberHeight, Long memberWeight, Long profilePhotoId,
+    public UserProfileResponse(String memberId, String memberNickName, Long memberHeight, Long memberWeight, String profilePhoto,
                                boolean isMe) {
         this.memberId = memberId;
         this.memberNickName = memberNickName;
         this.memberHeight = memberHeight;
         this.memberWeight = memberWeight;
-        this.profilePhotoId = profilePhotoId;
+        this.profilePhoto = profilePhoto;
         this.isMe = isMe;
     }
     public void setMemberFeeds(List<FeedReaderDTO> feeds){

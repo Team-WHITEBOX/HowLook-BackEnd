@@ -40,8 +40,8 @@ public class ReplyServiceImpl implements ReplyService{
         log.info(feed);
         reply.setMember(member);
         reply.setFeed(feed);
-        reply.setNickName(member.getNickName());
-        reply.setProfilePhotoId(member.getProfilePhotoId());
+  //      reply.setNickName(member.getNickName());
+//        reply.setProfilePhotoId(member.getProfilePhoto());
         reply.setParentsId(replyRegisterDTO.getParentId());
         reply.setLikeCount(0L);
         long ReplyId = replyRepository.save(reply).getReplyId();
