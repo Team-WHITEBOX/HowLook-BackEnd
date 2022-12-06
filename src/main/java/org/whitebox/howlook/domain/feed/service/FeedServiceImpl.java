@@ -214,7 +214,7 @@ public class FeedServiceImpl implements  FeedService{
         final Hashtag hashtag = hashtagRepository.findById(hashtagid).orElseThrow(() -> new EntityNotFoundException(HASHTAG_NOT_FOUND));
         log.info(hashtagid);
 
-        final List<Upload> uploads = uploadRepository.findByMid(npost_id);
+        final List<Upload> uploads = uploadRepository.findByPostId(npost_id);
         for(Upload u : uploads)
         {
             u.setFeed(null);
