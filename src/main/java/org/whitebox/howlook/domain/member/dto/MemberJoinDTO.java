@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 public class MemberJoinDTO {
@@ -18,7 +17,7 @@ public class MemberJoinDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDay;
     private char gender;
-    private Long profilePhotoId;
+    private String profilePhoto;
     private boolean del;
     private boolean social;
 }
