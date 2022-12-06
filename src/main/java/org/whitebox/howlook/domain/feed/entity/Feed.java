@@ -70,4 +70,8 @@ public class Feed extends BaseEntity{
     public void DownLikeCount() {
         this.LikeCount--;
     }
+
+    public void UpCommentCount() {this.CommentCount++;};
+
+    public void DownCommentCount() {this.CommentCount--;};
 }

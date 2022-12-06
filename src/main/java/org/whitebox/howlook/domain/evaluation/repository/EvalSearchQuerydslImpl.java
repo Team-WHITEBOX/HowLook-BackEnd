@@ -40,5 +40,4 @@ public class EvalSearchQuerydslImpl implements EvalSearchQuerydsl{
 
         return new PageImpl<>(evalDTOs, pageable, total);
     }
-
 }

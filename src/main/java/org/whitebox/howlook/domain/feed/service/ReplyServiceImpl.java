@@ -36,6 +36,7 @@ public class ReplyServiceImpl implements ReplyService{
         Member member = accountUtil.getLoginMember();
         log.info(replyRegisterDTO);
         Feed feed = feedRepository.findById(replyRegisterDTO.getNPostId()).orElseThrow();
+        feed.UpCommentCount();
         log.info(feed);
         reply.setMember(member);
         reply.setFeed(feed);
@@ -44,6 +45,7 @@ public class ReplyServiceImpl implements ReplyService{
         reply.setParentsId(replyRegisterDTO.getParentId());
         reply.setLikeCount(0L);
         long ReplyId = replyRepository.save(reply).getReplyId();
+        feedRepository.save(feed);
         return ReplyId;
     }
 
@@ -57,6 +59,10 @@ public class ReplyServiceImpl implements ReplyService{
 
     @Override
     public void remove(Long ReplyId) {
+        Reply reply = replyRepository.findById(ReplyId).orElseThrow();
+        Feed feed = feedRepository.findById(reply.getFeed().getNPostId()).orElseThrow();
+        feed.DownCommentCount();
+        feedRepository.save(feed);
         replyRepository.deleteById(ReplyId);
     }
 

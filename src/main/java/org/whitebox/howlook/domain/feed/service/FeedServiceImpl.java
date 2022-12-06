@@ -68,6 +68,7 @@ public class FeedServiceImpl implements  FeedService{
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
         feed.setMember(accountUtil.getLoginMember());
         feed.setLikeCount(0L);
+        feed.setCommentCount(0L);
         HashtagDTO hashtagDTO = feedRegisterDTO.getHashtagDTO();
         Hashtag hashtag = modelMapper.map(hashtagDTO, Hashtag.class);
         hashtag.setFeed(feed);
@@ -76,7 +77,6 @@ public class FeedServiceImpl implements  FeedService{
 
         feed.setHashtag(hashtag);
         feedRepository.save(feed);
-
         UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();
         // 사진 업로드 코드
         log.info(uploadFileDTO);
