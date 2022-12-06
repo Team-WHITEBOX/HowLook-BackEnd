@@ -5,8 +5,9 @@ import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface TournamentRepository extends JpaRepository<TournamentPost,Long>,TournamentRepositoryQuerydsl {
-    List<TournamentPost> findByDate(LocalDate date);
+    Optional<List<TournamentPost>> findByDate(LocalDate date);
     List<TournamentPost> findTop4ByDateOrderByScoreDesc(LocalDate date);
 }
