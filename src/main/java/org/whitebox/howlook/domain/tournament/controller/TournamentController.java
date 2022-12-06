@@ -11,6 +11,7 @@ import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.service.TournamentService;
+import org.whitebox.howlook.domain.tournament.task.TournamentTask;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 @RequiredArgsConstructor
 public class TournamentController {
     private final TournamentService tournamentService;
+    private final TournamentTask tournamentTask;
     @ApiOperation(value = "날짜로 토너먼트 게시글 가져오기")
     @GetMapping("/post/{date}")
     public ResponseEntity<ResultResponse> getPosts(@PathVariable("date") String date){
@@ -57,10 +59,22 @@ public class TournamentController {
     }
 
     @ApiOperation(value = "id로 토너먼트 게시글 조회")
-    @GetMapping("getbyid")
+    @GetMapping("/getbyid")
     public ResponseEntity<ResultResponse> getPostById(Long postId) {
         final TournamentPostDTO tournamentPostDTO = tournamentService.getPostById(postId);
 
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,tournamentPostDTO));
+    }
+    @ApiOperation(value = "post Task 수동으로 수행")
+    @GetMapping("/feedtopost")
+    public ResponseEntity<ResultResponse> feedToPost() {
+        tournamentTask.feedToTPost();
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS));
+    }
+    @ApiOperation(value = "result Task 수동으로 수행")
+    @GetMapping("/resulttournament")
+    public ResponseEntity<ResultResponse> resultTournament() {
+        tournamentTask.resultTournament();
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS));
     }
 }
