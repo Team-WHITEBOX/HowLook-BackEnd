@@ -99,6 +99,15 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    public void editProfilePhoto(Long feedId) {
+        final Member member = accountUtil.getLoginMember();
+
+        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        member.updateProfilePhotoId(feed.getMainPhotoPath());
+        memberRepository.save(member);
+    }
+
+    @Override
     public UserProfileResponse getUserProfile(String usermid) {
         final String loginMemberId = accountUtil.getLoginMemberId();
 
