@@ -9,8 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
-import org.whitebox.howlook.domain.feed.dto.ReplyDTO;
+import org.whitebox.howlook.domain.feed.dto.*;
 import org.whitebox.howlook.domain.feed.entity.Reply;
 import org.whitebox.howlook.domain.feed.service.FeedService;
 import org.whitebox.howlook.domain.feed.service.ReplyService;
@@ -32,9 +31,9 @@ public class ReplyController {
     private final ReplyService replyService;
     @ApiOperation(value = "Replies POST", notes = "POST 방식으로 댓글 등록")
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String,Long> register(@Valid @RequestBody ReplyDTO replyDTO) // 댓글 등록
+    public Map<String,Long> register(@Valid @RequestBody ReplyRegisterDTO replyRegisterDTO) // 댓글 등록
     {
-        log.info(replyDTO);
+        log.info(replyRegisterDTO);
 
 //        if(bindingResult.hasErrors()) {
 //            throw new BindException(bindingResult);
@@ -42,7 +41,7 @@ public class ReplyController {
 
         Map<String,Long> resultMap = new HashMap<>();
 
-        long ReplyId = replyService.register_reply(replyDTO);
+        long ReplyId = replyService.register_reply(replyRegisterDTO);
 
         resultMap.put("ReplyId",ReplyId);
 
@@ -51,11 +50,11 @@ public class ReplyController {
 
     @ApiOperation(value = "Read Reply", notes = "댓글 목록 불러오기") // 특정 댓글 불러오기
     @GetMapping(value = "/{ReplyId}")
-    public ReplyDTO getReplyDTO( @PathVariable("ReplyId") long ReplyId) {
+    public ReplyReadDTO getReplyDTO( @PathVariable("ReplyId") long ReplyId) {
 
-        ReplyDTO replyDTO = replyService.read(ReplyId);
+        ReplyReadDTO replyReadDTO = replyService.read(ReplyId);
 
-        return replyDTO;
+        return replyReadDTO;
     }
 
     @ApiOperation(value = "Delete Reply" , notes  = "DELETE 방식으로 특정 댓글 삭제") // 특정 댓글 삭제
@@ -82,19 +81,23 @@ public class ReplyController {
 
     @ApiOperation(value = "Replies of Feed", notes = "GET 방식으로 특정 게시물의 댓글 목록") // 한 게시물의 댓글
     @GetMapping(value = "/list/{NpostId}")
-    public List<ReplyDTO> getList(@PathVariable("NpostId") Long NpostId) {
+    public List<ReplyListDTO> getList(@PathVariable("NpostId") Long NpostId) {
         List<Reply> responseDTO = replyService.getListOfFeed(NpostId);
-        List<ReplyDTO> list = new ArrayList<>();
+        List<ReplyListDTO> list = new ArrayList<>();
 
         for(int i = 0; i < responseDTO.size(); i++) {
-            ReplyDTO replyDTO = new ReplyDTO();
-            replyDTO.setReplyId(responseDTO.get(i).getReplyId());
-            replyDTO.setContents(responseDTO.get(i).getContents());
-            replyDTO.setNPostId(responseDTO.get(i).getFeed().getNPostId());
-            replyDTO.setParentId(responseDTO.get(i).getParentsId());
-            list.add(replyDTO);
-        }
+            ReplyListDTO replyListDTO = new ReplyListDTO();
+            // 댓글정보
+            replyListDTO.setContents(responseDTO.get(i).getContents());
+            replyListDTO.setNPostId(responseDTO.get(i).getFeed().getNPostId());
+            replyListDTO.setParentId(responseDTO.get(i).getParentsId());
+            replyListDTO.setReplyId(responseDTO.get(i).getReplyId());
 
+            // 회원정보
+            replyListDTO.setNickname(responseDTO.get(i).getNickName());
+            replyListDTO.setProfilePhotoId(responseDTO.get(i).getProfilePhotoId());
+            list.add(replyListDTO);
+        }
         return list;
     }
 

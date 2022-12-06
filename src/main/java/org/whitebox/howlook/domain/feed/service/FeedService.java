@@ -25,4 +25,8 @@ public interface FeedService {
     public List<FeedReaderDTO> searchFeedByHashtag(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender, int page, int size);
 
     public void deleteFeed(Long npost_id);
+
+    public void likeFeed(Long NPostId);
+
+    public void unlikeFeed(Long NPostId);
 }

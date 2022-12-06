@@ -17,6 +17,7 @@ import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
+import javax.xml.transform.Result;
 
 import java.util.List;
 import java.util.Optional;
@@ -109,5 +110,19 @@ public class FeedController {
         List<FeedReaderDTO> feeds = feedService.searchFeedByHashtag(hashtagDTO, heightHigh, heightLow, weightHigh, weightLow, gender, page, 5);
 
         return ResponseEntity.ok(ResultResponse.of(GET_HASHTAG_FEED_SUCCESS, feeds));
+    }
+
+    @ApiOperation(value = "게시물 좋아요", notes = "POST 방식으로 추가")
+    @PostMapping("/like")
+    public ResponseEntity<ResultResponse> likeFeed(@RequestParam Long NPostId) {
+        feedService.likeFeed(NPostId);
+        return ResponseEntity.ok(ResultResponse.of(LIKE_POST_SUCCESS));
+    }
+
+    @ApiOperation(value = "게시물 좋아요 해제", notes = "Delete 방식으로 제거")
+    @DeleteMapping("/like")
+    public ResponseEntity<ResultResponse> unlikeFeed(@RequestParam Long NPostId) {
+        feedService.unlikeFeed(NPostId);
+        return ResponseEntity.ok(ResultResponse.of(UN_LIKE_POST_SUCCESS));
     }
 }

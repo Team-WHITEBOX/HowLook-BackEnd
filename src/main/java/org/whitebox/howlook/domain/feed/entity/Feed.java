@@ -1,6 +1,8 @@
 package org.whitebox.howlook.domain.feed.entity;
 
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.upload.entity.Upload;
@@ -42,7 +44,7 @@ public class Feed extends BaseEntity{
 
     // npost_id를 통해 사진을 가져오는 get Method가 구현되어서 엔티티 구조 변경
     private String MainPhotoPath; //사진 경로
-    
+
     @OneToMany(mappedBy = "feed")
     @Builder.Default
     private List<Upload> uploads = new ArrayList<>();
@@ -59,5 +61,13 @@ public class Feed extends BaseEntity{
 
     public void setMember(Member member){
         this.member = member;
+    }
+
+    public void UplikeCount() {
+        this.LikeCount++;
+    }
+
+    public void DownLikeCount() {
+        this.LikeCount--;
     }
 }

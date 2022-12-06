@@ -33,10 +33,16 @@ public class Reply extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    private String nickName;
+
+    private Long profilePhotoId;
     private String contents;
 
+//    public Long photoId; // 프로필ID
     @ColumnDefault("0")
     private Long parentsId;
+
     private Long LikeCount;
 
     public void changeText(String text) {

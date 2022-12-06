@@ -15,8 +15,10 @@ import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
+import org.whitebox.howlook.domain.feed.entity.FeedLike;
 import org.whitebox.howlook.domain.feed.entity.Hashtag;
 import org.whitebox.howlook.domain.feed.entity.Scrap;
+import org.whitebox.howlook.domain.feed.repository.FeedLikeRepository;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
 import org.whitebox.howlook.domain.feed.repository.HashtagRepository;
 import org.whitebox.howlook.domain.feed.repository.ScrapRepository;
@@ -53,6 +55,7 @@ public class FeedServiceImpl implements  FeedService{
     private final UploadRepository uploadRepository;
     private final ScrapRepository scrapRepository;
     private final AccountUtil accountUtil;
+    private final FeedLikeRepository feedLikeRepository;
     private final UploadService uploadService; // 업로드 서비스
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
@@ -64,7 +67,7 @@ public class FeedServiceImpl implements  FeedService{
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
         feed.setMember(accountUtil.getLoginMember());
-
+        feed.setLikeCount(0L);
         HashtagDTO hashtagDTO = feedRegisterDTO.getHashtagDTO();
         Hashtag hashtag = modelMapper.map(hashtagDTO, Hashtag.class);
         hashtag.setFeed(feed);
@@ -219,5 +222,21 @@ public class FeedServiceImpl implements  FeedService{
 
         hashtagRepository.delete(hashtag);
         feedRepository.delete(feed);
+    }
+    @Override
+    public void likeFeed(Long NPostId) {
+        Feed feed = feedRepository.findById(NPostId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        Member member = accountUtil.getLoginMember();
+        feed.UplikeCount();
+        feedLikeRepository.save(new FeedLike(member,feed));
+    }
+
+    @Override
+    public void unlikeFeed(Long NPostId) {
+        Feed feed = feedRepository.findById(NPostId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        Member member = accountUtil.getLoginMember();
+        feed.DownLikeCount();
+        FeedLike feedLike = feedLikeRepository.findByMemberAndFeed(member,feed).orElseThrow();
+        feedLikeRepository.delete(feedLike);
     }
 }
