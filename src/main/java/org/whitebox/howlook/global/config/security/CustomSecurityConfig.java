@@ -22,6 +22,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.whitebox.howlook.domain.member.repository.MemberRepository;
+import org.whitebox.howlook.domain.member.service.CustomOAuth2UserService;
 import org.whitebox.howlook.domain.member.service.CustomUserDetailsService;
 import org.whitebox.howlook.global.config.security.filter.APILoginFilter;
 import org.whitebox.howlook.global.config.security.filter.RefreshTokenFilter;
@@ -45,6 +47,7 @@ public class CustomSecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    private final MemberRepository memberRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -95,6 +98,7 @@ public class CustomSecurityConfig {
 
 
         http.httpBasic().disable();
+        http.formLogin().disable();
         http.csrf().disable();  // csrf 비활성화
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT위해 세션 사용안함
 
@@ -117,7 +121,7 @@ public class CustomSecurityConfig {
 
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
 
-        http.oauth2Login().loginPage("/account/login").successHandler(authenticationSuccessHandler());
+        http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService()).and().successHandler(authenticationSuccessHandler());
         return http.build();
     }
 
@@ -126,6 +130,9 @@ public class CustomSecurityConfig {
         return new Custom403Handler();
     }
 
+    public CustomOAuth2UserService customOAuth2UserService(){
+        return new CustomOAuth2UserService(memberRepository,passwordEncoder());
+    }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
         log.info("-----------web configure---------");
