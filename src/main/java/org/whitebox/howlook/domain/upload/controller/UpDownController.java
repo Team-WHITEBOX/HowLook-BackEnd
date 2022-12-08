@@ -11,10 +11,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.service.UploadService;
+import org.whitebox.howlook.global.util.LocalUploader;
+import org.whitebox.howlook.global.util.S3Uploader;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/photo")
@@ -107,5 +111,26 @@ public class UpDownController {
             return ResponseEntity.internalServerError().build();
         }
         return ResponseEntity.ok().headers(headers).body(resource);
+    }
+
+    private final LocalUploader localUploader;
+    private final S3Uploader s3Uploader;
+
+    @PostMapping("/S3Upload")
+    public List<String> S3Upload(UploadFileDTO sampleDTO){
+
+        List<MultipartFile> files = sampleDTO.getFiles();
+        if(files == null || files.size() == 0){
+            return null;
+        }
+        List<String> uploadedFilePaths = new ArrayList<>();
+        for(MultipartFile file:files){
+            uploadedFilePaths.addAll(localUploader.uploadLocal(file));
+        }
+        log.info("----------------------------");
+        log.info(uploadedFilePaths);
+        List<String> s3Paths =
+                uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
+        return s3Paths;
     }
 }
