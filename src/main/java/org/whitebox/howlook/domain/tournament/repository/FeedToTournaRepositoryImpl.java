@@ -23,10 +23,8 @@ public abstract class FeedToTournaRepositoryImpl implements FeedToTournaReposito
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private final JPAQueryFactory queryFactory;
-
     @Override
-    public List<String> FindTop32FeedByDateForTourna()
+    public List<String> findTop32FeedByDateForTourna()
     {
         List<Map<String, Object>> cnt = new ArrayList<>();
         List<String> str = new ArrayList<>();

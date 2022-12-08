@@ -40,7 +40,7 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public List<String> getTopPosts()
     {
-        List<String> result = feedToTournaRepository.FindTop32FeedByDateForTourna();
+        List<String> result = feedToTournaRepository.findTop32FeedByDateForTourna();
         return result;
     }
 
