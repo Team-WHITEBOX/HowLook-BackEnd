@@ -14,7 +14,7 @@ public interface TournamentService {
     void UpdatePosts(List<TournamentPostDTO> postDTOs);
     THistoryResponse getTHistory(LocalDate date);
     EHistoryResponse getEHistory(LocalDate date);
-
+    List<String> getTopPosts();
     TournamentPostDTO getPostById(Long postId);
 
 }

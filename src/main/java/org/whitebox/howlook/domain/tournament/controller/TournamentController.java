@@ -36,6 +36,15 @@ public class TournamentController {
         List<TournamentPostDTO> result = tournamentService.getPosts(LocalDate.parse(date));
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,result));
     }
+
+
+    @ApiOperation(value = "어제 날짜 탑 32 피드 게시글 가져오기")
+    @GetMapping("/top32")
+    public ResponseEntity<ResultResponse> yesterdayPosts(){
+        List<String> result = tournamentService.getTopPosts();
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,result));
+    }
+
     @ApiOperation(value = "토너먼트 결과 반영")
     @PutMapping("/result")
     public ResponseEntity<ResultResponse> resultTournament(@RequestBody List<TournamentPostDTO> result){

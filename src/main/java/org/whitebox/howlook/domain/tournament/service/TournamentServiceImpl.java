@@ -8,6 +8,7 @@ import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
+import org.whitebox.howlook.domain.tournament.repository.FeedToTournaRepository;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 
@@ -22,6 +23,7 @@ import static org.whitebox.howlook.global.error.ErrorCode.*;
 @RequiredArgsConstructor
 public class TournamentServiceImpl implements TournamentService {
     private final TournamentRepository tournamentRepository;
+    private final FeedToTournaRepository feedToTournaRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -32,6 +34,13 @@ public class TournamentServiceImpl implements TournamentService {
         //
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         List<TournamentPostDTO> result = posts.stream().map(post -> modelMapper.map(post,TournamentPostDTO.class)).collect(Collectors.toList());
+        return result;
+    }
+
+    @Override
+    public List<String> getTopPosts()
+    {
+        List<String> result = feedToTournaRepository.FindTop32FeedByDateForTourna();
         return result;
     }
 
