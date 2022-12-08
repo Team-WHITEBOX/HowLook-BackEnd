@@ -19,6 +19,7 @@ import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.util.LocalUploader;
 import org.whitebox.howlook.global.util.S3Uploader;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -116,8 +117,11 @@ public class UpDownController {
     private final LocalUploader localUploader;
     private final S3Uploader s3Uploader;
 
-    @PostMapping("/S3Upload")
-    public List<String> S3Upload(UploadFileDTO sampleDTO){
+    @PostMapping(value = "/S3Upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public List<String> S3Upload(@Valid @ModelAttribute UploadFileDTO sampleDTO){
+        log.info(sampleDTO);
+        log.info(sampleDTO.getFiles().toString());
+        log.info(sampleDTO.getFiles());
 
         List<MultipartFile> files = sampleDTO.getFiles();
         if(files == null || files.size() == 0){
