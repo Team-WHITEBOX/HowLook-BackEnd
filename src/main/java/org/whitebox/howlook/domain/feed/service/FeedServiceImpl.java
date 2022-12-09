@@ -115,7 +115,6 @@ public class FeedServiceImpl implements  FeedService{
 
                 UploadResultDTO temp = UploadResultDTO.builder().Path(m_path).feed(feed).build();
                 uploadService.register(temp);
-
             }
         }
     }
@@ -123,7 +122,7 @@ public class FeedServiceImpl implements  FeedService{
     @Override
     public FeedReaderDTO readerPID(Long NPostId) {
         Optional<Feed> result = feedRepository.findById(NPostId);
-
+        Member member = accountUtil.getLoginMember();
         Feed feed = result.orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         log.info(feed);
 
@@ -136,6 +135,15 @@ public class FeedServiceImpl implements  FeedService{
         // 사진 경로 가져오기
         feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(NPostId));
 
+        // 유저의 게시글 좋아요 체크
+        if(feedLikeRepository.findByMemberAndFeed(member,feed).isPresent()) {
+            feedReaderDTO.setLike_chk(true);
+        }
+
+        else {
+            feedReaderDTO.setLike_chk(false);
+        }
+
         return feedReaderDTO;
     }
 
@@ -143,6 +151,8 @@ public class FeedServiceImpl implements  FeedService{
     public List<FeedReaderDTO> readerUID(String UserID) {
         List<Feed> feeds = feedRepository.findByMid(UserID);
         List<FeedReaderDTO> result = feeds.stream().map(feed ->  new FeedReaderDTO(feed)).collect(Collectors.toList());
+        
+        // 유저별 좋아요 체크
         return result;
     }
 

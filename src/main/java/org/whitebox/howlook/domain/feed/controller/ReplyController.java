@@ -58,9 +58,7 @@ public class ReplyController {
     @ApiOperation(value = "Delete Reply" , notes  = "DELETE 방식으로 특정 댓글 삭제") // 특정 댓글 삭제
     @DeleteMapping("/{ReplyId}")
     public ResponseEntity<ResultResponse> remove(@PathVariable("ReplyId") Long ReplyId) {
-
         replyService.remove(ReplyId);
-
         return ResponseEntity.ok(ResultResponse.of(ResultCode.DELETE_COMMENT_SUCCESS));
     }
 

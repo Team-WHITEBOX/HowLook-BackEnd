@@ -59,14 +59,23 @@ public class ReplyServiceImpl implements ReplyService{
     public ReplyReadDTO read(Long ReplyId) {
         Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
         Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+        Member member = accountUtil.getLoginMember();
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         ReplyReadDTO dto = modelMapper.map(reply, ReplyReadDTO.class);
 
+        if(replyLikeRepository.findByMemberAndReply(member, reply).isPresent()) {
+            dto.setLike_chk(true);
+        }
+
+        else {
+            dto.setLike_chk(false);
+        }
+
         dto.setNpostId(reply.getFeed().getNPostId());
         dto.setNickName(reply.getMember().getNickName());
         dto.setProfilePhoto(reply.getMember().getProfilePhoto());
-
+        dto.setLikeCount(reply.getLikeCount());
         return dto;
     }
 
@@ -94,7 +103,14 @@ public class ReplyServiceImpl implements ReplyService{
     @Override // 게시글에 해당하는 댓글 읽어오기.
     public List<ReplyReadDTO> getListOfFeed(Long NpostId) {
         List<Reply> replies = replyRepository.listOfFeed(NpostId);
+        Member member = accountUtil.getLoginMember();
         List<ReplyReadDTO> result = replies.stream().map(reply -> new ReplyReadDTO(reply)).collect(Collectors.toList());
+
+       for(ReplyReadDTO replyReadDTO: result) {
+            if(replyLikeRepository.findByMidAndReplyId(member.getMid(), replyReadDTO.getReplyId()).isPresent()) {
+                replyReadDTO.setLike_chk(true);
+            }
+       }
         return result;
     }
 
