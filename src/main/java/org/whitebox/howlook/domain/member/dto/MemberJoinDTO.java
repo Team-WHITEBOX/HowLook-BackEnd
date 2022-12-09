@@ -1,11 +1,14 @@
 package org.whitebox.howlook.domain.member.dto;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class MemberJoinDTO {
     private String mid;
     private String mpw;

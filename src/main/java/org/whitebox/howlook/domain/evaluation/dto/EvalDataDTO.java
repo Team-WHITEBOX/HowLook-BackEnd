@@ -29,9 +29,15 @@ public class EvalDataDTO {
 
     private Long femaleCount; // 여자 평가 개수
 
+    @Builder.Default
     private float[] maleScores = new float[5];
+
+    @Builder.Default
     private float[] femaleScores = new float[5];
 
+    @Builder.Default
     private Long[] maleCounts = new Long[5];
+
+    @Builder.Default
     private Long[] femaleCounts = new Long[5];
 }
