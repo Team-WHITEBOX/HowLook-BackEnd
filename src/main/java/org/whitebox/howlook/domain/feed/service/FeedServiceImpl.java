@@ -124,7 +124,7 @@ public class FeedServiceImpl implements  FeedService{
     public FeedReaderDTO readerPID(Long NPostId) {
         Optional<Feed> result = feedRepository.findById(NPostId);
 
-        Feed feed = result.orElseThrow();
+        Feed feed = result.orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         log.info(feed);
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);

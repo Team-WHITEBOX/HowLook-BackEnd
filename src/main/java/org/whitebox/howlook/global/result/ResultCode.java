@@ -71,7 +71,8 @@ public enum ResultCode {
     DELETE_COMMENT_SUCCESS(200, "F011", "댓글 삭제에 성공하였습니다."),
     GET_COMMENT_PAGE_SUCCESS(200, "F012", "댓글 목록 페이지 조회에 성공하였습니다."),
     GET_REPLY_PAGE_SUCCESS(200, "F013", "답글 목록 페이지 조회에 성공하였습니다."),
-    GET_POST_LIKES_SUCCESS(200, "F014", "게시물에 좋아요한 회원 목록 페이지 조회에 성공하였습니다."),
+    GET_REPLY_SUCCESS(200,"F014", "댓글 조회에 성공하였습니다."),
+
     LIKE_COMMENT_SUCCESS(200, "F015", "댓글 좋아요에 성공하였습니다."),
     UNLIKE_COMMENT_SUCCESS(200, "F016", "댓글 좋아요 해제에 성공하였습니다."),
     GET_COMMENT_LIKES_SUCCESS(200, "F017", "댓글에 좋아요한 회원 목록 페이지 조회에 성공하였습니다."),
@@ -79,6 +80,9 @@ public enum ResultCode {
     GET_HASHTAG_POSTS_SUCCESS(200, "F019", "해시태그 게시물 목록 페이징 조회 성공"),
     CREATE_POST_FAIL(200, "F020", "게시물 업로드에 실패하였습니다."),
     FIND_POST_FAIL(200, "F021", "게시물 조회에 실패하였습니다."),
+    GET_POST_LIKES_SUCCESS(200, "F022", "게시물에 좋아요한 회원 목록 페이지 조회에 성공하였습니다."),
+    MODIFY_REPLY_SUCCESS(200,"F023","댓글 수정에 성공하였습니다."),
+    GET_REPLY_IN_FEED_SUCESS(200,"F024","게시글 댓글 조회에 성공하였습니다."),
 
     // Chat
     CREATE_CHAT_ROOM_SUCCESS(200, "C001", "채팅방 생성에 성공하였습니다."),
