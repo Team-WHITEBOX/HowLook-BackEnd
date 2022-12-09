@@ -11,16 +11,21 @@ import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.service.FeedService;
+import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.error.ErrorCode;
 import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
+import javax.xml.transform.Result;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
 
+import static org.whitebox.howlook.global.result.ResultCode.CREATE_POST_FAIL;
+import static org.whitebox.howlook.global.result.ResultCode.REGISTER_SUCCESS;
 
 @RestController
 @RequestMapping("/feed")
@@ -29,7 +34,7 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 public class FeedController {
     private final FeedService feedService;
 
-    //게시글 등록하는 POST로 매핑된 API구현
+    @ApiOperation(value = "피드 게시글 등록")
     @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerPost(@Valid @ModelAttribute FeedRegisterDTO feedRegisterDTO) {
         log.info("Feed POST register!");
@@ -57,7 +62,7 @@ public class FeedController {
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS, feedReaderDTO));
     }
-
+    @ApiOperation(value = "멤버 id로 피드 게시글 모두 조회")
     @GetMapping("/readbyuid")
     public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
         List<FeedReaderDTO> feeds = feedService.readerUID(UserID);
@@ -66,14 +71,13 @@ public class FeedController {
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,feeds));
     }
-
+    @ApiOperation(value = "최근 피드 게시글 10개 조회")
     @GetMapping("/recent")
     public ResponseEntity<ResultResponse> getRecent10Posts(@RequestParam int page) {
         final List<FeedReaderDTO> postList = feedService.getFeedPage(10, page).getContent();
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
     }
-
 
     @GetMapping("/near")
     public ResponseEntity<ResultResponse> getNear10Posts(@RequestParam int page,float latitude, float longitude) {
@@ -87,7 +91,7 @@ public class FeedController {
         feedService.scrapFeed(npost_id);
         return ResponseEntity.ok(ResultResponse.of(BOOKMARK_POST_SUCCESS));
     }
-
+    @ApiOperation(value = "스크랩 취소")
     @DeleteMapping("/scrap")
     public ResponseEntity<ResultResponse> unScrapFeed(@RequestParam Long npost_id) {
         feedService.unScrapFeed(npost_id);
@@ -103,5 +107,19 @@ public class FeedController {
         List<FeedReaderDTO> feeds = feedService.searchFeedByHashtag(hashtagDTO, heightHigh, heightLow, weightHigh, weightLow, gender, page, 5);
 
         return ResponseEntity.ok(ResultResponse.of(GET_HASHTAG_FEED_SUCCESS, feeds));
+    }
+
+    @ApiOperation(value = "게시물 좋아요", notes = "POST 방식으로 추가")
+    @PostMapping("/like")
+    public ResponseEntity<ResultResponse> likeFeed(@RequestParam Long NPostId) {
+        feedService.likeFeed(NPostId);
+        return ResponseEntity.ok(ResultResponse.of(LIKE_POST_SUCCESS));
+    }
+
+    @ApiOperation(value = "게시물 좋아요 해제", notes = "Delete 방식으로 제거")
+    @DeleteMapping("/like")
+    public ResponseEntity<ResultResponse> unlikeFeed(@RequestParam Long NPostId) {
+        feedService.unlikeFeed(NPostId);
+        return ResponseEntity.ok(ResultResponse.of(UN_LIKE_POST_SUCCESS));
     }
 }

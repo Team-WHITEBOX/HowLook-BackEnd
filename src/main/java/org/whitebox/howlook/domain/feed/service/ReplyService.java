@@ -1,5 +1,4 @@
 package org.whitebox.howlook.domain.feed.service;
-
 import org.whitebox.howlook.domain.feed.dto.ReplyDTO;
 import org.whitebox.howlook.domain.feed.dto.ReplyReadDTO;
 import org.whitebox.howlook.domain.feed.dto.ReplyRegisterDTO;
@@ -20,7 +19,7 @@ public interface ReplyService {
     // 특정 댓글 수정
     void modify(ReplyDTO replyDTO);
 
-    List<Reply> getListOfFeed(Long NpostId); // 게시글에 해당하는 댓글들 읽어오기
+    List<ReplyReadDTO> getListOfFeed(Long NpostId); // 게시글에 해당하는 댓글들 읽어오기
 
     void likeReply(Long ReplyId); // 댓글 좋아요
 

@@ -17,10 +17,12 @@ import org.whitebox.howlook.domain.feed.repository.ReplyRepository;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.global.error.ErrorCode;
 import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
+import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,10 +38,14 @@ public class ReplyServiceImpl implements ReplyService{
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Reply reply =  modelMapper.map(replyRegisterDTO, Reply.class);
         Member member = accountUtil.getLoginMember();
-        log.info(replyRegisterDTO);
-        Feed feed = feedRepository.findById(replyRegisterDTO.getNPostId()).orElseThrow();
+
+//        log.info(replyRegisterDTO);
+
+        Feed feed = feedRepository.findById(replyRegisterDTO.getNPostId()).orElseThrow(()
+                -> new EntityNotFoundException(ErrorCode.POST_CANT_FOUND));
+
         feed.UpCommentCount();
-        log.info(feed);
+//        log.info(feed);
         reply.setMember(member);
         reply.setFeed(feed);
         reply.setParentsId(replyRegisterDTO.getParentId());
@@ -52,19 +58,31 @@ public class ReplyServiceImpl implements ReplyService{
     @Override
     public ReplyReadDTO read(Long ReplyId) {
         Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
-        Reply reply = replyOptional.orElseThrow();
+        Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+        Member member = accountUtil.getLoginMember();
+
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         ReplyReadDTO dto = modelMapper.map(reply, ReplyReadDTO.class);
+
+        if(replyLikeRepository.findByMemberAndReply(member, reply).isPresent()) {
+            dto.setLike_chk(true);
+        }
+
+        else {
+            dto.setLike_chk(false);
+        }
+
         dto.setNpostId(reply.getFeed().getNPostId());
         dto.setNickName(reply.getMember().getNickName());
         dto.setProfilePhoto(reply.getMember().getProfilePhoto());
+        dto.setLikeCount(reply.getLikeCount());
         return dto;
     }
 
     @Override
     public void remove(Long ReplyId) {
-        Reply reply = replyRepository.findById(ReplyId).orElseThrow();
-        Feed feed = feedRepository.findById(reply.getFeed().getNPostId()).orElseThrow();
+        Reply reply = replyRepository.findById(ReplyId).orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+        Feed feed = feedRepository.findById(reply.getFeed().getNPostId()).orElseThrow(() -> new EntityNotFoundException(ErrorCode.POST_NOT_FOUND));
         feed.DownCommentCount();
         feedRepository.save(feed);
         replyRepository.deleteById(ReplyId);
@@ -75,7 +93,7 @@ public class ReplyServiceImpl implements ReplyService{
 
         Optional<Reply> replyOptional = replyRepository.findById(replyDTO.getReplyId());
 
-        Reply reply = replyOptional.orElseThrow();
+        Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
         reply.changeText(replyDTO.getContents());
 
@@ -83,8 +101,16 @@ public class ReplyServiceImpl implements ReplyService{
     }
 
     @Override // 게시글에 해당하는 댓글 읽어오기.
-    public List<Reply> getListOfFeed(Long NpostId) {
-        List<Reply> result = replyRepository.listOfFeed(NpostId);
+    public List<ReplyReadDTO> getListOfFeed(Long NpostId) {
+        List<Reply> replies = replyRepository.listOfFeed(NpostId);
+        Member member = accountUtil.getLoginMember();
+        List<ReplyReadDTO> result = replies.stream().map(reply -> new ReplyReadDTO(reply)).collect(Collectors.toList());
+
+       for(ReplyReadDTO replyReadDTO: result) {
+            if(replyLikeRepository.findByMidAndReplyId(member.getMid(), replyReadDTO.getReplyId()).isPresent()) {
+                replyReadDTO.setLike_chk(true);
+            }
+       }
         return result;
     }
 
@@ -92,7 +118,7 @@ public class ReplyServiceImpl implements ReplyService{
     public void likeReply(Long ReplyId) { // 댓글 좋아요
         Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
 
-        Reply reply = replyOptional.orElseThrow();
+        Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
         reply.Up_LikeCount();
 
@@ -105,10 +131,10 @@ public class ReplyServiceImpl implements ReplyService{
     }
 
     @Override
-    public void unlikeReply(Long ReplyId) {
+    public void unlikeReply(Long ReplyId) { // 좋아요 취소
         Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
 
-        Reply reply = replyOptional.orElseThrow();
+        Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
         reply.Down_LikeCount();
 
@@ -116,7 +142,8 @@ public class ReplyServiceImpl implements ReplyService{
 
         Optional<ReplyLike> ReplyLikeOptional = replyLikeRepository.findByMemberAndReply(member,reply);
 
-        ReplyLike replyLike = ReplyLikeOptional.orElseThrow();
+        ReplyLike replyLike = ReplyLikeOptional.orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.COMMENT_LIKE_NOT_FOUND));
 
         replyLikeRepository.delete(replyLike);
     }

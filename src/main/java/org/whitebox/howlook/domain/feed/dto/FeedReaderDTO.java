@@ -47,6 +47,8 @@ public class FeedReaderDTO {
 
     private HashtagDTO hashtagDTO;
 
+    private Boolean like_chk;
+
     @QueryProjection
     public FeedReaderDTO(Feed feed){
         this.NPostId = feed.getNPostId();
@@ -60,5 +62,6 @@ public class FeedReaderDTO {
         this.regDate = feed.getRegDate();
         this.modDate = feed.getModDate();
         this.hashtagDTO = new HashtagDTO(feed.getHashtag());
+        this.like_chk = false;
     }
 }
