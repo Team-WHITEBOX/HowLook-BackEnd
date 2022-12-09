@@ -23,6 +23,7 @@ public class TournamentTask {
     private final TournamentRepository tournamentRepository;
     private final HistoryRepository historyRepository;
 
+    //@Scheduled(cron = "0 19 * * * *")
     public void feedToTPost() {
         List<Feed> feeds = feedRepository.findAll();  //모두 가져옴 -> 수정필요
         if(feeds.size() == 32){    //게시글 수가 32개보다 적으면 토너먼트 안함
@@ -34,6 +35,7 @@ public class TournamentTask {
         }
     }
 
+    //@Scheduled(cron = "0 19 * * * *")
     public void resultTournament(){
         List<TournamentPost> posts = tournamentRepository.findTop4ByDateOrderByScoreDesc(LocalDate.now().minusDays(1)); //전날 게시글
         TournamentHistory history = new TournamentHistory(posts);
