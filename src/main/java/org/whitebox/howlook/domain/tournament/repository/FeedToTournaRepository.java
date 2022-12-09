@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface FeedToTournaRepository extends JpaRepository<Feed,Long>{
-    public List<String> findTop32FeedByDateForTourna();
-
     @Query("select max(f.LikeCount),f.member.mid from Feed f where f.regDate = :m_date GROUP BY f.regDate,f.member.mid ORDER BY max(f.LikeCount) DESC")
     List<Map<Long,Long>> FindByDate(LocalDate m_date);
 }

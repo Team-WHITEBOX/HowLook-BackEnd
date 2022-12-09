@@ -1,9 +1,17 @@
 package org.whitebox.howlook.domain.tournament.service;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
+import org.whitebox.howlook.domain.feed.entity.Feed;
+import org.whitebox.howlook.domain.feed.repository.FeedRepository;
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
@@ -13,7 +21,9 @@ import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.whitebox.howlook.global.error.ErrorCode.*;
@@ -24,6 +34,7 @@ import static org.whitebox.howlook.global.error.ErrorCode.*;
 public class TournamentServiceImpl implements TournamentService {
     private final TournamentRepository tournamentRepository;
     private final FeedToTournaRepository feedToTournaRepository;
+    private final FeedRepository feedRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -34,13 +45,6 @@ public class TournamentServiceImpl implements TournamentService {
         //
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         List<TournamentPostDTO> result = posts.stream().map(post -> modelMapper.map(post,TournamentPostDTO.class)).collect(Collectors.toList());
-        return result;
-    }
-
-    @Override
-    public List<String> getTopPosts()
-    {
-        List<String> result = feedToTournaRepository.findTop32FeedByDateForTourna();
         return result;
     }
 
@@ -73,5 +77,34 @@ public class TournamentServiceImpl implements TournamentService {
                 .orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         TournamentPostDTO dto = modelMapper.map(post,TournamentPostDTO.class);
         return dto;
+    }
+
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Override
+    public List<FeedReaderDTO> findTop32FeedByDateForTourna()
+    {
+        List<Map<String, Object>> cnt = new ArrayList<>();
+        List<Feed> feeds = new ArrayList<>();
+
+        String sql = "SELECT npost_id from feed, " +
+                "(SELECT max(npost_id) AS k from feed, " +
+                "(SELECT max(like_count) AS m, mid AS n FROM feed GROUP BY regdate, mid ORDER BY max(like_count) DESC) AS result " +
+                "WHERE DATE_FORMAT(NOW() - INTERVAL +1 DAY,'%Y-%m-%d') = DATE_FORMAT(regdate,'%Y-%m-%d') and like_count = result.m and mid = result.n GROUP BY mid) AS result2 " +
+                "WHERE npost_id = result2.k LIMIT 32";
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
+        cnt.addAll(rows);
+
+        log.info(rows);
+        for(Map<String, Object> map: cnt) {
+            Feed f = feedRepository.findByPid((Long)map.get("npost_id"));
+            feeds.add(f);
+        }
+
+        List<FeedReaderDTO> result = feeds.stream().map(feed ->  new FeedReaderDTO(feed)).collect(Collectors.toList());
+
+        return result;
     }
 }
