@@ -57,6 +57,11 @@ public class MemberServiceImpl implements MemberService{
 
         memberRepository.save(member);
     }
+    @Transactional(readOnly = true)
+    @Override
+    public boolean checkMemberId(String memberId) {
+        return !memberRepository.existsById(memberId);
+    }
 
     @Transactional
     @Override

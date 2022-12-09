@@ -3,16 +3,18 @@ package org.whitebox.howlook.domain.member.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.whitebox.howlook.domain.member.dto.MemberJoinDTO;
 import org.whitebox.howlook.domain.member.dto.loginDTO;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 
-import static org.whitebox.howlook.global.result.ResultCode.REGISTER_SUCCESS;
+import javax.validation.constraints.Pattern;
+
+import static org.whitebox.howlook.global.result.ResultCode.*;
 
 @RestController
 //@Controller
@@ -58,6 +60,21 @@ public class MemberAccountController {
         return ResponseEntity.ok(ResultResponse.of(REGISTER_SUCCESS, true));
         //redirectAttributes.addFlashAttribute("result","success");
         //return "redirect:/member/login";
+    }
+
+    @ApiOperation(value = "MemberId 중복 조회")
+    @GetMapping(value = "/idcheck")
+    public ResponseEntity<ResultResponse> checkMemberId(
+            @RequestParam
+            @Length(min = 4, max = 12, message = "사용자 이름은 4문자 이상 12문자 이하여야 합니다")
+            @Pattern(regexp = "^[0-9a-zA-Z]+$", message = "MemberId엔 대소문자, 숫자만 사용할 수 있습니다.")
+            String memberId) {
+        final boolean check = memberService.checkMemberId(memberId);
+        if (check) {
+            return ResponseEntity.ok(ResultResponse.of(CHECK_MEMBERID_GOOD, true));
+        } else {
+            return ResponseEntity.ok(ResultResponse.of(CHECK_MEMBERID_BAD, false));
+        }
     }
 
 }

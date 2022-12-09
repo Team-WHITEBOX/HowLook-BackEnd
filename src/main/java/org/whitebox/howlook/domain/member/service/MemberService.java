@@ -9,6 +9,7 @@ public interface MemberService {
     static class MidExistException extends Exception{
     }
     void join(MemberJoinDTO memberJoinDTO)throws MidExistException;
+    boolean checkMemberId(String memberId);
     void updatePassword(UpdatePasswordRequest updatePasswordRequest);
     EditProfileResponse getEditProfile();
     void editProfile(EditProfileRequest editProfileRequest);
