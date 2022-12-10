@@ -49,6 +49,10 @@ public class FeedServiceImpl implements  FeedService{
     private final MemberRepository memberRepository;
     private final ReplyRepository replyRepository;
 
+    private final ReplyLikeRepository replyLikeRepository;
+
+    private final ReplyServiceImpl replyService;
+
     private final ModelMapper modelMapper;
     private final FeedRepository feedRepository;
     private final HashtagRepository hashtagRepository;
@@ -229,8 +233,8 @@ public class FeedServiceImpl implements  FeedService{
         for(Upload u : uploads) //연결된 사진 연결 끊기
             u.setFeed(null);
 
-        for (Long replyid : replyids) //연결된 댓글들 모두 삭제
-            replyRepository.deleteById(replyid);
+        for (Long replyid : replyids)
+            replyService.remove(replyid);
 
         hashtagRepository.delete(hashtag);
         feedRepository.delete(feed);
