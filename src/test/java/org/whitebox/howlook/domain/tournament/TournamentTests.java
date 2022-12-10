@@ -17,6 +17,6 @@ public class TournamentTests {
     }
     @Test
     public void taskTest2(){
-        tournamentTask.resultTournament();
+        tournamentTask.resultTournamentNormal();
     }
 }

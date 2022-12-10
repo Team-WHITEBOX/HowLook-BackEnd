@@ -5,16 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.whitebox.howlook.domain.member.dto.UpdatePasswordRequest;
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
-import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.service.TournamentService;
 import org.whitebox.howlook.domain.tournament.task.TournamentTask;
 import org.whitebox.howlook.global.result.ResultResponse;
-
-import javax.validation.Valid;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -74,7 +70,7 @@ public class TournamentController {
     @ApiOperation(value = "result Task 수동으로 수행")
     @GetMapping("/resulttournament")
     public ResponseEntity<ResultResponse> resultTournament() {
-        tournamentTask.resultTournament();
+        tournamentTask.resultTournamentNormal();
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS));
     }
 }
