@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.whitebox.howlook.domain.feed.entity.Reply;
+import org.whitebox.howlook.domain.member.entity.Member;
 
 import java.util.ArrayList;
 import java.util.List;

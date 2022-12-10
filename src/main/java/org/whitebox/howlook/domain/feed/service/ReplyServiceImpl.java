@@ -76,12 +76,19 @@ public class ReplyServiceImpl implements ReplyService{
         dto.setNickName(reply.getMember().getNickName());
         dto.setProfilePhoto(reply.getMember().getProfilePhoto());
         dto.setLikeCount(reply.getLikeCount());
+
         return dto;
     }
 
     @Override
     public void remove(Long ReplyId) {
         Reply reply = replyRepository.findById(ReplyId).orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+        Member member = accountUtil.getLoginMember();
+
+        if(reply.getMember().getMid() != member.getMid()) {
+            throw new EntityNotFoundException(ErrorCode.COMMENT_CANT_DELETE);
+        }
+
         Feed feed = feedRepository.findById(reply.getFeed().getNPostId()).orElseThrow(() -> new EntityNotFoundException(ErrorCode.POST_NOT_FOUND));
         feed.DownCommentCount();
         feedRepository.save(feed);
