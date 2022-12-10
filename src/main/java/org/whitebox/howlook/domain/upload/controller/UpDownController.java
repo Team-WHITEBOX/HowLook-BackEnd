@@ -11,11 +11,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.service.UploadService;
+import org.whitebox.howlook.global.result.ResultResponse;
+import org.whitebox.howlook.global.util.LocalUploader;
+import org.whitebox.howlook.global.util.S3Uploader;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static org.whitebox.howlook.global.result.ResultCode.FIND_POST_SUCCESS;
 
 @RestController
 @RequestMapping("/photo")
@@ -95,17 +104,29 @@ public class UpDownController {
     // postID로 가져오는 거 구현해야함
     @ApiOperation(value = "view 파일", notes = "GET방식으로 첨부파일 조회")
     @GetMapping("/view/{fileName}")
-    public ResponseEntity<Resource> viewFileGET(@PathVariable String fileName){
+    public ResponseEntity<ResultResponse> viewFileGET(@PathVariable String fileName){
 
-        Resource resource = new FileSystemResource(uploadPath+ File.separator + fileName);
-        String resourceName = resource.getFilename();
-        HttpHeaders headers = new HttpHeaders();
+        String urls = "https://howlook-s3-bucket.s3.ap-northeast-2.amazonaws.com/" + fileName;
 
-        try{
-            headers.add("Content-Type", Files.probeContentType( resource.getFile().toPath() ));
-        } catch(Exception e){
-            return ResponseEntity.internalServerError().build();
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,urls));
+    }
+
+    private final LocalUploader localUploader;
+    private final S3Uploader s3Uploader;
+    @PostMapping(value = "/S3Upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public List<String> S3Upload(@Valid @ModelAttribute FeedRegisterDTO feedRegisterDTO){
+        List<MultipartFile> files = feedRegisterDTO.getUploadFileDTO().getFiles();
+        if(files == null || files.size() == 0){
+            return null;
         }
-        return ResponseEntity.ok().headers(headers).body(resource);
+        List<String> uploadedFilePaths = new ArrayList<>();
+        for(MultipartFile file:files){
+            uploadedFilePaths.addAll(localUploader.uploadLocal(file));
+        }
+        log.info("----------------------------");
+        log.info(uploadedFilePaths);
+        List<String> s3Paths =
+                uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
+        return s3Paths;
     }
 }
