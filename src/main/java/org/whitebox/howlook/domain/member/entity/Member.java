@@ -1,11 +1,9 @@
 package org.whitebox.howlook.domain.member.entity;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = "roleSet")
+@DynamicInsert
 public class Member {
     @Id
     private String mid;         //memberID
@@ -29,7 +28,9 @@ public class Member {
     private LocalDate birthDay;
     private char gender;
     private String profilePhoto;
+    @Column(columnDefinition = "bit(1) default false")
     private boolean del;
+    @Column(columnDefinition = "bit(1) default false")
     private boolean social;
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
