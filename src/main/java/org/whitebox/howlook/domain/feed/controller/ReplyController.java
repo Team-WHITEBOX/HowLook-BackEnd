@@ -49,9 +49,7 @@ public class ReplyController {
     @ApiOperation(value = "Read Reply", notes = "댓글 목록 불러오기") // 특정 댓글 불러오기
     @GetMapping(value = "/{ReplyId}")
     public ResponseEntity<ResultResponse> getReplyDTO( @PathVariable("ReplyId") long ReplyId) {
-
         ReplyReadDTO response = replyService.read(ReplyId);
-
         return ResponseEntity.ok(ResultResponse.of(ResultCode.GET_REPLY_SUCCESS,response));
     }
 
