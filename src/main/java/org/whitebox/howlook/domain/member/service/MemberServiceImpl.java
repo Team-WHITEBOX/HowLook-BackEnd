@@ -20,6 +20,7 @@ import org.whitebox.howlook.domain.member.exception.AccountMismatchException;
 import org.whitebox.howlook.domain.member.exception.PasswordEqualWithOldException;
 import org.whitebox.howlook.domain.member.exception.UsernameAlreadyExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
+import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
@@ -39,7 +40,7 @@ public class MemberServiceImpl implements MemberService{
     private final FeedRepository feedRepository;
     private final ScrapRepository scrapRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final UploadService uploadService; // 업로드 서비스
     @Override
     public void join(MemberJoinDTO memberJoinDTO) throws MidExistException {
         String mid = memberJoinDTO.getMid();
@@ -127,6 +128,7 @@ public class MemberServiceImpl implements MemberService{
         final List<Feed> feeds = feedRepository.findByMid(usermid);
         log.info(feeds);
         List<FeedReaderDTO> feedReaderDTOs = feeds.stream().map(feed -> new FeedReaderDTO(feed)).collect(Collectors.toList());
+        feedReaderDTOs.forEach( feedReaderDTO -> feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(feedReaderDTO.getNPostId())));
 
         result.setMemberFeeds(feedReaderDTOs);
         return result;
@@ -143,7 +145,7 @@ public class MemberServiceImpl implements MemberService{
     public List<FeedReaderDTO> getUserScrap(String usermid) {
         final List<Scrap> scraps = scrapRepository.findAllByMid(usermid);
         final List<FeedReaderDTO> feedReaderDTOs = scraps.stream().map(scrap -> new FeedReaderDTO(scrap.getFeed())).collect(Collectors.toList());
-
+        feedReaderDTOs.forEach( feedReaderDTO -> feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(feedReaderDTO.getNPostId())));
         return feedReaderDTOs;
     }
 }

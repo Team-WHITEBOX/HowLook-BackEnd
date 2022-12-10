@@ -115,6 +115,7 @@ public class FeedServiceImpl implements  FeedService{
 
                 UploadResultDTO temp = UploadResultDTO.builder().Path(m_path).feed(feed).build();
                 uploadService.register(temp);
+
             }
         }
     }
@@ -151,8 +152,7 @@ public class FeedServiceImpl implements  FeedService{
     public List<FeedReaderDTO> readerUID(String UserID) {
         List<Feed> feeds = feedRepository.findByMid(UserID);
         List<FeedReaderDTO> result = feeds.stream().map(feed ->  new FeedReaderDTO(feed)).collect(Collectors.toList());
-        
-        // 유저별 좋아요 체크
+        result.forEach( feedReaderDTO -> feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(feedReaderDTO.getNPostId())));
         return result;
     }
 
