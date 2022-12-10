@@ -39,13 +39,13 @@ public class ReplyServiceImpl implements ReplyService{
         Reply reply =  modelMapper.map(replyRegisterDTO, Reply.class);
         Member member = accountUtil.getLoginMember();
 
-//        log.info(replyRegisterDTO);
+        log.info(replyRegisterDTO);
 
         Feed feed = feedRepository.findById(replyRegisterDTO.getNPostId()).orElseThrow(()
                 -> new EntityNotFoundException(ErrorCode.POST_CANT_FOUND));
 
         feed.UpCommentCount();
-//        log.info(feed);
+        log.info(feed);
         reply.setMember(member);
         reply.setFeed(feed);
         reply.setParentsId(replyRegisterDTO.getParentId());

@@ -74,11 +74,6 @@ public class ReplyController {
     @GetMapping(value = "/list/{NpostId}")
     public ResponseEntity<ResultResponse> getList(@PathVariable("NpostId") Long NpostId) {
         List<ReplyReadDTO> response = replyService.getListOfFeed(NpostId);
-
-        if(response.size() == 0) {
-            throw new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND);
-        }
-
         return ResponseEntity.ok(ResultResponse.of(ResultCode.GET_REPLY_IN_FEED_SUCESS,response));
     }
 
