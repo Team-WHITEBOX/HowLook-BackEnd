@@ -91,8 +91,12 @@ public class ReplyServiceImpl implements ReplyService{
 
         Feed feed = feedRepository.findById(reply.getFeed().getNPostId()).orElseThrow(() -> new EntityNotFoundException(ErrorCode.POST_NOT_FOUND));
         feed.DownCommentCount();
+
+        ReplyLike replyLike = replyLikeRepository.findByMemberAndReply(member,reply).orElseThrow();
+
         feedRepository.save(feed);
-        replyRepository.deleteById(ReplyId);
+        replyLikeRepository.delete(replyLike);
+        replyRepository.delete(reply);
     }
 
     @Override
