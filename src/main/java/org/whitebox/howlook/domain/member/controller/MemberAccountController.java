@@ -17,31 +17,16 @@ import javax.validation.constraints.Pattern;
 import static org.whitebox.howlook.global.result.ResultCode.*;
 
 @RestController
-//@Controller
 @RequestMapping("/account")
 @Log4j2
 @RequiredArgsConstructor
 public class MemberAccountController {
     private final MemberService memberService;
 
-    @GetMapping("/login")
-    public void loginGET(String error,String logout){
-        log.info("login get............");
-        log.info("logout: "+logout);
-        if (logout != null) {
-            log.info("user logout......");
-        }
-    }
-
     @ApiOperation(value = "로그인")
     @PostMapping("/generateToken")
     public void loginPost(@RequestBody loginDTO loginDTO){
         log.info("로그인");
-    }
-
-    @GetMapping("/join")
-    public void joinGET(){
-        log.info("join get....");
     }
 
     @ApiOperation(value = "회원가입")

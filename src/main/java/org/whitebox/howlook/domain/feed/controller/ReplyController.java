@@ -2,30 +2,17 @@ package org.whitebox.howlook.domain.feed.controller;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.feed.dto.*;
-import org.whitebox.howlook.domain.feed.entity.Reply;
-import org.whitebox.howlook.domain.feed.service.FeedService;
 import org.whitebox.howlook.domain.feed.service.ReplyService;
-import org.whitebox.howlook.global.error.ErrorCode;
-import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
-import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.result.ResultCode;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
-import javax.xml.transform.Result;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/replies")
@@ -39,14 +26,11 @@ public class ReplyController {
     {
         log.info(replyRegisterDTO);
 
-//        if(bindingResult.hasErrors()) {
-//            throw new BindException(bindingResult);
-//        }
         replyService.register_reply(replyRegisterDTO);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.CREATE_COMMENT_SUCCESS));
     }
 
-    @ApiOperation(value = "Read Reply", notes = "댓글 목록 불러오기") // 특정 댓글 불러오기
+    @ApiOperation(value = "Read Reply", notes = "특정 댓글 조회") // 특정 댓글 불러오기
     @GetMapping(value = "/{ReplyId}")
     public ResponseEntity<ResultResponse> getReplyDTO( @PathVariable("ReplyId") long ReplyId) {
         ReplyReadDTO response = replyService.read(ReplyId);

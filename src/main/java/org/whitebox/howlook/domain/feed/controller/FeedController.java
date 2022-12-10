@@ -6,32 +6,16 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
-import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.service.FeedService;
-import org.whitebox.howlook.domain.member.service.MemberService;
-import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
-import org.whitebox.howlook.global.error.ErrorCode;
-import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.result.ResultResponse;
-import org.whitebox.howlook.global.util.LocalUploader;
-import org.whitebox.howlook.global.util.S3Uploader;
 
 import javax.validation.Valid;
-import javax.xml.transform.Result;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
-
-import static org.whitebox.howlook.global.result.ResultCode.CREATE_POST_FAIL;
-import static org.whitebox.howlook.global.result.ResultCode.REGISTER_SUCCESS;
 
 @RestController
 @RequestMapping("/feed")
@@ -39,8 +23,6 @@ import static org.whitebox.howlook.global.result.ResultCode.REGISTER_SUCCESS;
 @RequiredArgsConstructor
 public class FeedController {
     private final FeedService feedService;
-    private final LocalUploader localUploader;
-    private final S3Uploader s3Uploader;
 
 
     @ApiOperation(value = "피드 게시글 등록")
@@ -53,14 +35,7 @@ public class FeedController {
         return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS));
     }
 
-    @PostMapping(value = "/S3Upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<String> S3Upload(@Valid @ModelAttribute FeedRegisterDTO feedRegisterDTO){
-        List<MultipartFile> files = feedRegisterDTO.getUploadFileDTO().getFiles();
-        List<String> s3Paths = feedService.registerPOST(feedRegisterDTO);
-        return s3Paths;
-    }
-
-    //게시글 삭제하는 API
+    @ApiOperation(value = "게시글 해시태그와 댓글 함께 삭제된다. 사진은 삭제되지 않음")
     @DeleteMapping(value = "/delete")
     public ResponseEntity<ResultResponse> deletePost(@RequestParam Long npost_id) {
         feedService.deleteFeed(npost_id);
@@ -94,9 +69,10 @@ public class FeedController {
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
     }
 
+    @ApiOperation(value = "좌표 기준 근처 게시글 10개 조회")
     @GetMapping("/near")
     public ResponseEntity<ResultResponse> getNear10Posts(@RequestParam int page,float latitude, float longitude) {
-        final List<FeedReaderDTO> postList = feedService.getNearFeedPage(2, page,latitude,longitude).getContent();
+        final List<FeedReaderDTO> postList = feedService.getNearFeedPage(10, page,latitude,longitude).getContent();
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
     }

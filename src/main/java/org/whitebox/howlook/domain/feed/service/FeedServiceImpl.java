@@ -214,7 +214,6 @@ public class FeedServiceImpl implements  FeedService{
     }
 
     @Override
-    @ApiOperation(value = "게시글 해시태그와 댓글 함께 삭제된다. 사진은 삭제되지 않음")
     public void deleteFeed(Long npost_id) {
         //지우려는 유저(로그인유저)와 게시글의 유저가 같은지 확인
         String thismember = accountUtil.getLoginMemberId();
