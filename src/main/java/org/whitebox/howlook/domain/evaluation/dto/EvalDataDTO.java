@@ -11,33 +11,46 @@ import org.whitebox.howlook.domain.feed.entity.Feed;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class EvalDataDTO {
-    private float averageScore; // 평균점수
+    private float averageScore;
 
-    private float maleScore; // 남성 평균점수
+    private float maleScore;
 
-    private float femaleScore; // 여성 평균점수
+    private float femaleScore;
 
-    private float maxScore; // 최고 점수
+    private float maxScore;
 
-    private float minScore; // 최저 점수
+    private float minScore;
     
-    private Long replyCount; // 평가 개수
+    private Long replyCount;
 
-    private Long maleCount; // 남자 평가 개수
+    private Long maleCount;
 
-    private Long femaleCount; // 여자 평가 개수
+    private Long femaleCount;
 
-    @Builder.Default
-    private float[] maleScores = new float[5];
+    private float[] maleScores;
+    private float[] femaleScores;
 
-    @Builder.Default
-    private float[] femaleScores = new float[5];
+    private Long[] maleCounts;
+    private Long[] femaleCounts;
 
-    @Builder.Default
-    private Long[] maleCounts = new Long[5];
+    public EvalDataDTO()
+    {
+        averageScore = 0; // 평균점수
+        maleScore = 0; // 남성 평균점수
+        femaleScore = 0; // 여성 평균점수
 
-    @Builder.Default
-    private Long[] femaleCounts = new Long[5];
+        maxScore = 0; // 최고 점수
+        minScore = 0; // 최저 점수
+        replyCount = 0L; // 평가 개수
+
+        maleCount = 0L; // 남자 평가 개수
+        femaleCount = 0L; // 여자 평가 개수
+
+        maleScores = new float[5];
+        femaleScores = new float[5];
+
+        maleCounts = new Long[5];
+        femaleCounts = new Long[5];
+    }
 }

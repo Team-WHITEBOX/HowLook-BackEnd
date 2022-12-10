@@ -60,12 +60,6 @@ dependencies {
 
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	implementation 'net.coobird:thumbnailator:0.4.16'
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
 }
 
 tasks.named('test') {
