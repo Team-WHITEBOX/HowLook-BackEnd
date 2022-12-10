@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
-import org.whitebox.howlook.domain.tournament.entity.TournamentDateInfo;
 import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
 import org.whitebox.howlook.domain.tournament.repository.HistoryRepository;
@@ -25,14 +24,14 @@ public class TournamentTask {
     private final HistoryRepository historyRepository;
     private final TournamentDateRepository tournamentDateRepository;
 
+    //매일 일반/왕중왕전 비교해서 피드 불러오고 토너먼트 테이블에 저장.
     @Scheduled(cron = "0 30 0 * * *")
     public void feedToTPost() {
-        Long lastday = tournamentDateRepository.findTournamentDateInfoByConfigdateid(1L);
+        Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();   //그날의 날짜정보 가져오기
         String tourtype = "Normal";
-        if(lastday % 9 == 0) {
-            tourtype = "Kingjung";
-            tournamentDateRepository.deleteAll();   //왕중왕전 하는 날에 세던 날짜를 초기화
-            lastday = 0L;
+        if(lastDay % 10 == 0) {  //첫째날에 1부터 저장하므로 10일째에는 10을 읽는다.
+            tourtype = "Wangjung";
+            tournamentDateRepository.updateTournamentDateReset(); //10번째날 우선 세던날짜를초기화
         }
 
         List<Feed> feeds = feedRepository.findAll();  //모두 가져옴 -> 수정필요
@@ -46,13 +45,29 @@ public class TournamentTask {
             });
         }
 
-        TournamentDateInfo.builder().tournamentDate(++lastday).build();
+        tournamentRepository.save(TournamentPost.builder().tourna_type(tourtype).build());
+        //날짜가 초기화된 10일째에 1부터 기록
+        tournamentDateRepository.updateTournamentDateToNextDay();
     }
 
-    @Scheduled(cron = "0 19 * * * *")
-    public void resultTournament(){
+    //Normal tournament history 저장, 4개씩 저장
+    @Scheduled(cron = "0 29 0 * * *")
+    public void resultTournamentNormal(){
+        Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();
+        if(lastDay % 10 == 1) return;
         List<TournamentPost> posts = tournamentRepository.findTop4ByDateOrderByScoreDesc(LocalDate.now().minusDays(1)); //전날 게시글
         TournamentHistory history = new TournamentHistory(posts);
         historyRepository.save(history);
     }
+
+    //Event Tournament(왕중왕전) 저장, 10개씩 저장.
+    @Scheduled(cron = "0 29 0 * * *")
+    public void resultTournamentWang(){
+        Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();
+        if(lastDay % 10 != 1) return;
+        List<TournamentPost> posts = tournamentRepository.findTop10ByDateOrderByScoreDesc(LocalDate.now().minusDays(1)); //전날 게시글
+        TournamentHistory history = new TournamentHistory(posts);
+        historyRepository.save(history);
+    }
+
 }

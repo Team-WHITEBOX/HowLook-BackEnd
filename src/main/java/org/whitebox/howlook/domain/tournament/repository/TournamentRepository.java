@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface TournamentRepository extends JpaRepository<TournamentPost,Long>,TournamentRepositoryQuerydsl {
     Optional<List<TournamentPost>> findByDate(LocalDate date);
     List<TournamentPost> findTop4ByDateOrderByScoreDesc(LocalDate date);
+
+    List<TournamentPost> findTop10ByDateOrderByScoreDesc(LocalDate date);
 }
