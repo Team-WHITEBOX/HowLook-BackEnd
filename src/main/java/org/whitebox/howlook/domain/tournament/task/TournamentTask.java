@@ -43,7 +43,7 @@ public class TournamentTask {
             feeds.forEach(feed -> {
                 TournamentPost tournamentPost = TournamentPost.builder()
                         .date(LocalDate.now()).feed_id(feed.getFeed_id()).photo(feed.getPhoto())
-                        .member_id(feed.getMember_id()).tourna_type(finalTourtype).build();
+                        .member_id(feed.getMember_id()).score(0L).tourna_type(finalTourtype).build();
                 tournamentRepository.save((tournamentPost));
             });
         }
