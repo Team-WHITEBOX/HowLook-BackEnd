@@ -31,12 +31,6 @@ public class LocalUploader {
         try{
             multipartFile.transferTo(savePath);
             savePathList.add(savePath.toFile().getAbsolutePath());
-            if(Files.probeContentType(savePath).startsWith("image")){
-                File thumbFile = new File(uploadPath, "s_" + saveFileName);
-                savePathList.add(thumbFile.getAbsolutePath());
-                Thumbnailator.createThumbnail(savePath.toFile(), thumbFile,
-                        200,200);
-            }
         }catch (Exception e){
             log.error("ERROR: " + e.getMessage());
             e.printStackTrace();

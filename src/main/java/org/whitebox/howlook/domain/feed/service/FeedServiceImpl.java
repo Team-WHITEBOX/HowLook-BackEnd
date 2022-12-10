@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
@@ -29,6 +30,8 @@ import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
+import org.whitebox.howlook.global.util.LocalUploader;
+import org.whitebox.howlook.global.util.S3Uploader;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -56,11 +59,13 @@ public class FeedServiceImpl implements  FeedService{
     private final UploadService uploadService; // 업로드 서비스
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
+    private final LocalUploader localUploader;
+    private final S3Uploader s3Uploader;
 
     //전달받은 FeedRegisterDTO값을 데이터베이스에 저장
     //해당 Post 자체데이터 + 사진데이터 테이블 + 해시테그 테이블 함께저장
     @Override
-    public void registerPOST(FeedRegisterDTO feedRegisterDTO) {
+    public List<String> registerPOST(FeedRegisterDTO feedRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Feed feed = modelMapper.map(feedRegisterDTO, Feed.class);
         feed.setMember(accountUtil.getLoginMember());
@@ -74,33 +79,23 @@ public class FeedServiceImpl implements  FeedService{
 
         feed.setHashtag(hashtag);
         feedRepository.save(feed);
+        log.info(feed.getMainPhotoPath());
         UploadFileDTO uploadFileDTO = feedRegisterDTO.getUploadFileDTO();
-        // 사진 업로드 코드
-        log.info(uploadFileDTO);
 
+        List<String> uploadedFilePaths = new ArrayList<>();
+        for(MultipartFile file:uploadFileDTO.getFiles()){
+            uploadedFilePaths.addAll(localUploader.uploadLocal(file));
+        }
+
+        List<String> s3Paths =
+                uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
+
+        // 사진 업로드 코드
         if(uploadFileDTO.getFiles() != null)
         {
             for(int i = 0; i < uploadFileDTO.getFiles().size(); i++)
             {
-                var multipartFile = uploadFileDTO.getFiles().get(i);
-                String originalName = multipartFile.getOriginalFilename();
-                String uuid = UUID.randomUUID().toString();
-
-                Path savePath = Paths.get(uploadPath, uuid+"_"+originalName);
-
-                try{
-                    multipartFile.transferTo(savePath);
-                }catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-
-                // 여기까지는 사진을 Server에 저장하는 코드
-                // 여기서부터 사진 정보를 DB에 저장하는 코드
-                // UploadFileDTO를 통해 db에 사진 저장경로를 Insert
-                //String m_path = uploadPath+"\\"+uuid+"_"+originalName;
-                String m_path = uuid+"_"+originalName;
-
+                String m_path = s3Paths.get(i);
 
                 // Falcon : MainPhotoPath 및 PhotoCnt 저장하기
                 if(i == 0)
@@ -115,9 +110,11 @@ public class FeedServiceImpl implements  FeedService{
 
                 UploadResultDTO temp = UploadResultDTO.builder().Path(m_path).feed(feed).build();
                 uploadService.register(temp);
-
+                log.info(feed.getMainPhotoPath());
             }
         }
+
+        return s3Paths;
     }
 
     @Override

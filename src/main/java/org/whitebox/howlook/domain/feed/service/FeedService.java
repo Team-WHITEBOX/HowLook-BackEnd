@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FeedService {
-    void registerPOST(FeedRegisterDTO feedRegisterDTO);
+    List<String> registerPOST(FeedRegisterDTO feedRegisterDTO);
     FeedReaderDTO readerPID(Long NPostId);
 
     List<FeedReaderDTO> readerUID(String UserID);

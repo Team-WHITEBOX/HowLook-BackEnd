@@ -21,6 +21,8 @@ import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.global.util.AccountUtil;
+import org.whitebox.howlook.global.util.LocalUploader;
+import org.whitebox.howlook.global.util.S3Uploader;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -44,28 +47,26 @@ public class EvalServiceImpl implements EvalService{
     private String uploadPath; // 저장될 경로
 
     final AccountUtil accountUtil;
+    private final LocalUploader localUploader;
+    private final S3Uploader s3Uploader;
+
     @Override
     public void register(EvalRegisterDTO evalRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Evaluation evaluation = modelMapper.map(evalRegisterDTO, Evaluation.class);
 
         UploadFileDTO uploadFileDTO = evalRegisterDTO.getFiles();
-        List<MultipartFile> list = uploadFileDTO.getFiles();
-        var multipartFile = list.get(0);
 
-        String originalName = multipartFile.getOriginalFilename();
-        String uuid = UUID.randomUUID().toString();
-
-        Path savePath = Paths.get(uploadPath, uuid+"_"+originalName);
-
-        try{
-            multipartFile.transferTo(savePath);
-        }catch (IOException e)
-        {
-            e.printStackTrace();
+        List<String> uploadedFilePaths = new ArrayList<>();
+        for(MultipartFile file:uploadFileDTO.getFiles()){
+            uploadedFilePaths.addAll(localUploader.uploadLocal(file));
         }
 
-        String m_path = uploadPath+"\\"+uuid+"_"+originalName;
+        List<String> s3Paths =
+                uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
+
+
+        String m_path = s3Paths.get(0);
         evaluation.setMainPhotoPath(m_path);
         evaluation.setMember(accountUtil.getLoginMember());
 

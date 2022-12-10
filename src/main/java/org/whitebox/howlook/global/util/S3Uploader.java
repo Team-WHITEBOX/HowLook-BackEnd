@@ -26,8 +26,9 @@ public class S3Uploader {
         File targetFile = new File(filePath);
         String uploadImageUrl = putS3(targetFile, targetFile.getName()); // s3로업로드
         removeOriginalFile(targetFile);
-        return uploadImageUrl;
+        return targetFile.getName();
     }
+
     // S3로 업로드
     private String putS3(File uploadFile, String fileName)throws RuntimeException
     {
