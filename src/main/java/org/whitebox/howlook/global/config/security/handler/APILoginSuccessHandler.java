@@ -30,9 +30,9 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {  /
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         log.info(authentication);
-        log.info(authentication.getName()); //username
-
-        Map<String, Object> claim = Map.of("mid", authentication.getName());
+        String mid = authentication.getName();
+        log.info(mid); //username
+        Map<String, Object> claim = Map.of("mid", mid);
         //Access Token 유효기간 1일
         String accessToken = jwtUtil.generateToken(claim, 1);
         //Refresh Token 유효기간 30일
@@ -42,7 +42,8 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {  /
 
         Map<String,String> keyMap = Map.of(
                 "accessToken", accessToken,
-                "refreshToken", refreshToken);
+                "refreshToken", refreshToken,
+                "mid",mid);
 
         String jsonStr = gson.toJson(keyMap);
 
