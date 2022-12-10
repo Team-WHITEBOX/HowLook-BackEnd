@@ -53,13 +53,8 @@ public class MemberAccountController {
         try {
             memberService.join(memberJoinDTO);
         }catch (MemberService.MidExistException e){
-            //return ResponseEntity.ok(ResultResponse.of(USERNAME_ALREADY_EXIST, false));
-            //redirectAttributes.addFlashAttribute("error","mid");
-            //return "redirect:/member/join";
         }
         return ResponseEntity.ok(ResultResponse.of(REGISTER_SUCCESS, true));
-        //redirectAttributes.addFlashAttribute("result","success");
-        //return "redirect:/member/login";
     }
 
     @ApiOperation(value = "MemberId 중복 조회")
@@ -74,6 +69,17 @@ public class MemberAccountController {
             return ResponseEntity.ok(ResultResponse.of(CHECK_MEMBERID_GOOD, true));
         } else {
             return ResponseEntity.ok(ResultResponse.of(CHECK_MEMBERID_BAD, false));
+        }
+    }
+
+    @ApiOperation(value = "nickname 중복 조회")
+    @GetMapping(value = "/nickcheck")
+    public ResponseEntity<ResultResponse> checkMemberNick(@RequestParam String nickName) {
+        final boolean check = memberService.checkNickName(nickName);
+        if (check) {
+            return ResponseEntity.ok(ResultResponse.of(CHECK_NICKNAME_GOOD, true));
+        } else {
+            return ResponseEntity.ok(ResultResponse.of(CHECK_NICKNAME_BAD, false));
         }
     }
 

@@ -10,6 +10,7 @@ public interface MemberService {
     }
     void join(MemberJoinDTO memberJoinDTO)throws MidExistException;
     boolean checkMemberId(String memberId);
+    boolean checkNickName(String nickName);
     void updatePassword(UpdatePasswordRequest updatePasswordRequest);
     EditProfileResponse getEditProfile();
     void editProfile(EditProfileRequest editProfileRequest);

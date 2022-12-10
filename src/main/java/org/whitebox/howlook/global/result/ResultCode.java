@@ -21,6 +21,8 @@ public enum ResultCode {
     UPDATE_PASSWORD_SUCCESS(200, "M010", "회원 비밀번호를 변경하였습니다."),
     CHECK_MEMBERID_GOOD(200, "M011", "사용가능한 memberId 입니다."),
     CHECK_MEMBERID_BAD(200, "M012", "사용불가능한 memberId 입니다."),
+    CHECK_NICKNAME_GOOD(200, "M011", "사용가능한 닉네임 입니다."),
+    CHECK_NICKNAME_BAD(200, "M012", "사용불가능한 닉네임 입니다."),
     CONFIRM_EMAIL_FAIL(200, "M013", "이메일 인증을 완료할 수 없습니다."),
     SEND_CONFIRM_EMAIL_SUCCESS(200, "M014", "인증코드 이메일을 전송하였습니다."), // 결번 M015
     GET_MENU_MEMBER_SUCCESS(200, "M016", "상단 메뉴 프로필을 조회하였습니다."),

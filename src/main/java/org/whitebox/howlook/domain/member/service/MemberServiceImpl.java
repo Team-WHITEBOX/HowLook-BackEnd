@@ -63,6 +63,11 @@ public class MemberServiceImpl implements MemberService{
         return !memberRepository.existsById(memberId);
     }
 
+    @Override
+    public boolean checkNickName(String nickName) {
+        return !memberRepository.existsByNickName(nickName);
+    }
+
     @Transactional
     @Override
     public void updatePassword(UpdatePasswordRequest updatePasswordRequest) {
