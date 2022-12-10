@@ -49,6 +49,10 @@ public class FeedServiceImpl implements  FeedService{
     private final MemberRepository memberRepository;
     private final ReplyRepository replyRepository;
 
+    private final ReplyLikeRepository replyLikeRepository;
+
+    private final ReplyServiceImpl replyService;
+
     private final ModelMapper modelMapper;
     private final FeedRepository feedRepository;
     private final HashtagRepository hashtagRepository;
@@ -216,7 +220,7 @@ public class FeedServiceImpl implements  FeedService{
         String thismember = accountUtil.getLoginMemberId();
         String feedmember = feedRepository.findMidByNPostId(npost_id);
         log.info("thismember: " + thismember + "feedmember: " + feedmember);
-        if(thismember != feedmember) return;
+        if(!thismember.equals(feedmember)) return;
 
         final Feed feed = feedRepository.findById(npost_id).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         final List<Long> replyids = replyRepository.listOfReplyId(npost_id);
@@ -229,8 +233,8 @@ public class FeedServiceImpl implements  FeedService{
         for(Upload u : uploads) //연결된 사진 연결 끊기
             u.setFeed(null);
 
-        for (Long replyid : replyids) //연결된 댓글들 모두 삭제
-            replyRepository.deleteById(replyid);
+        for (Long replyid : replyids)
+            replyService.remove(replyid);
 
         hashtagRepository.delete(hashtag);
         feedRepository.delete(feed);
