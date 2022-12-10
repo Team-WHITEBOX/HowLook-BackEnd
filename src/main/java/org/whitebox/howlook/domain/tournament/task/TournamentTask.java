@@ -6,11 +6,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
+import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
 import org.whitebox.howlook.domain.tournament.repository.HistoryRepository;
 import org.whitebox.howlook.domain.tournament.repository.TournamentDateRepository;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
+import org.whitebox.howlook.domain.tournament.service.TournamentService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +25,7 @@ public class TournamentTask {
     private final TournamentRepository tournamentRepository;
     private final HistoryRepository historyRepository;
     private final TournamentDateRepository tournamentDateRepository;
+    private final TournamentService tournamentService;
 
     //매일 일반/왕중왕전 비교해서 피드 불러오고 토너먼트 테이블에 저장.
     @Scheduled(cron = "0 30 0 * * *")
@@ -34,13 +37,13 @@ public class TournamentTask {
             tournamentDateRepository.updateTournamentDateReset(); //10번째날 우선 세던날짜를초기화
         }
 
-        List<Feed> feeds = feedRepository.findAll();  //모두 가져옴 -> 수정필요
+        List<TournamentPostDTO> feeds = tournamentService.findTop32FeedByDateForTourna();
         if(feeds.size() == 32){    //게시글 수가 32개보다 적으면 토너먼트 안함
             String finalTourtype = tourtype;    //tourna_type을 넣기위해서 final형이 대입되어야 하므로.
             feeds.forEach(feed -> {
                 TournamentPost tournamentPost = TournamentPost.builder()
-                        .date(LocalDate.now()).feed_id(feed.getNPostId()).photo(feed.getMainPhotoPath())
-                        .member_id(feed.getMember().getMid()).tourna_type(finalTourtype).build();
+                        .date(LocalDate.now()).feed_id(feed.getFeed_id()).photo(feed.getPhoto())
+                        .member_id(feed.getMember_id()).tourna_type(finalTourtype).build();
                 tournamentRepository.save((tournamentPost));
             });
         }
