@@ -32,7 +32,8 @@ public class UserProfileResponse {
 //    private String memberTag;
     
     //랭킹
-
+    @ApiModelProperty(value = "게시글 개수")
+    private Long memberFeedCnt;
     @ApiModelProperty(value = "게시글 목록", example = "['사진1','사진2','사진3']")
     private List<FeedReaderDTO> memberFeeds;
 
@@ -51,6 +52,7 @@ public class UserProfileResponse {
     }
     public void setMemberFeeds(List<FeedReaderDTO> feeds){
         this.memberFeeds = feeds.stream().collect(Collectors.toList());
+        this.memberFeedCnt = feeds.stream().count();
     }
 
 }
