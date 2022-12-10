@@ -59,12 +59,7 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.10'
 
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
-
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	implementation 'net.coobird:thumbnailator:0.4.16'
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {

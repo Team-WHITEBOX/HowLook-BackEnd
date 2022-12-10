@@ -5,16 +5,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
+import org.whitebox.howlook.domain.feed.entity.Feed;
+import org.whitebox.howlook.domain.member.dto.UpdatePasswordRequest;
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
+import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.service.TournamentService;
 import org.whitebox.howlook.domain.tournament.task.TournamentTask;
 import org.whitebox.howlook.global.result.ResultResponse;
 
+import javax.validation.Valid;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
 
@@ -32,6 +39,16 @@ public class TournamentController {
         List<TournamentPostDTO> result = tournamentService.getPosts(LocalDate.parse(date));
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,result));
     }
+
+
+    @ApiOperation(value = "어제 날짜 탑 32 피드 게시글 가져오기")
+    @GetMapping("/top32")
+    public ResponseEntity<ResultResponse> yesterdayPosts(){
+        final List<TournamentPostDTO> result = tournamentService.findTop32FeedByDateForTourna();
+
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,result));
+    }
+
     @ApiOperation(value = "토너먼트 결과 반영")
     @PutMapping("/result")
     public ResponseEntity<ResultResponse> resultTournament(@RequestBody List<TournamentPostDTO> result){
