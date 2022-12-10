@@ -216,7 +216,7 @@ public class FeedServiceImpl implements  FeedService{
         String thismember = accountUtil.getLoginMemberId();
         String feedmember = feedRepository.findMidByNPostId(npost_id);
         log.info("thismember: " + thismember + "feedmember: " + feedmember);
-        if(thismember != feedmember) return;
+        if(!thismember.equals(feedmember)) return;
 
         final Feed feed = feedRepository.findById(npost_id).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         final List<Long> replyids = replyRepository.listOfReplyId(npost_id);
