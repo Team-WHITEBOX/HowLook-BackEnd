@@ -14,13 +14,11 @@ import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
 import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
-import org.whitebox.howlook.domain.feed.entity.Feed;
-import org.whitebox.howlook.domain.feed.entity.FeedLike;
-import org.whitebox.howlook.domain.feed.entity.Hashtag;
-import org.whitebox.howlook.domain.feed.entity.Scrap;
+import org.whitebox.howlook.domain.feed.entity.*;
 import org.whitebox.howlook.domain.feed.repository.*;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.member.entity.Member;
+import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.entity.Upload;
@@ -45,6 +43,8 @@ import static org.whitebox.howlook.global.error.ErrorCode.*;
 @Transactional
 @Data
 public class FeedServiceImpl implements  FeedService{
+    private final MemberRepository memberRepository;
+    private final ReplyRepository replyRepository;
 
     private final ModelMapper modelMapper;
     private final FeedRepository feedRepository;
@@ -213,19 +213,27 @@ public class FeedServiceImpl implements  FeedService{
     }
 
     @Override
-    @ApiOperation(value = "게시글 해시태그와 함께 삭제된다. 사진은 삭제되지 않음")
+    @ApiOperation(value = "게시글 해시태그와 댓글 함께 삭제된다. 사진은 삭제되지 않음")
     public void deleteFeed(Long npost_id) {
+        //지우려는 유저(로그인유저)와 게시글의 유저가 같은지 확인
+        String thismember = accountUtil.getLoginMemberId();
+        String feedmember = feedRepository.findMidByNPostId(npost_id);
+        log.info("thismember: " + thismember + "feedmember: " + feedmember);
+        if(thismember != feedmember) return;
+
         final Feed feed = feedRepository.findById(npost_id).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        final List<Long> replyids = replyRepository.listOfReplyId(npost_id);
         Long hashtagid = feed.getHashtag().getHashtagId();
 
         final Hashtag hashtag = hashtagRepository.findById(hashtagid).orElseThrow(() -> new EntityNotFoundException(HASHTAG_NOT_FOUND));
         log.info(hashtagid);
 
         final List<Upload> uploads = uploadRepository.findByPostId(npost_id);
-        for(Upload u : uploads)
-        {
+        for(Upload u : uploads) //연결된 사진 연결 끊기
             u.setFeed(null);
-        }
+
+        for (Long replyid : replyids) //연결된 댓글들 모두 삭제
+            replyRepository.deleteById(replyid);
 
         hashtagRepository.delete(hashtag);
         feedRepository.delete(feed);

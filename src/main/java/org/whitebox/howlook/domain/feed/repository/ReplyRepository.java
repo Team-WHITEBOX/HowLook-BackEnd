@@ -13,6 +13,9 @@ import java.util.Optional;
 public interface ReplyRepository extends JpaRepository<Reply, Long>{
     @Query("select r from Reply r where r.feed.NPostId = :NpostId")
     List<Reply> listOfFeed(Long NpostId);
+
+    @Query("select r.ReplyId from Reply r where r.feed.NPostId = :NpostId")
+    List<Long> listOfReplyId(Long NpostId);
 //  @Query(value = "select r from Reply r join fetch r.feed where r.CommentId = :CommentId")
 //  Optional<Reply> findWithPostAndMemberById(@Param("CommentId") Long CommentId);
 }
