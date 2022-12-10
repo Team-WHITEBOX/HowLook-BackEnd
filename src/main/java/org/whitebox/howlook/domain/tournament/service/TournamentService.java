@@ -18,5 +18,5 @@ public interface TournamentService {
     THistoryResponse getTHistory(LocalDate date);
     EHistoryResponse getEHistory(LocalDate date);
     TournamentPostDTO getPostById(Long postId);
-    List<FeedReaderDTO> findTop32FeedByDateForTourna();
+    List<TournamentPostDTO> findTop32FeedByDateForTourna();
 }

@@ -44,7 +44,8 @@ public class TournamentController {
     @ApiOperation(value = "어제 날짜 탑 32 피드 게시글 가져오기")
     @GetMapping("/top32")
     public ResponseEntity<ResultResponse> yesterdayPosts(){
-        List<FeedReaderDTO> result = tournamentService.findTop32FeedByDateForTourna();
+        final List<TournamentPostDTO> result = tournamentService.findTop32FeedByDateForTourna();
+
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,result));
     }
 
