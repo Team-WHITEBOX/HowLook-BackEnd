@@ -27,6 +27,7 @@ public class TournamentPostDTO {
         this.LikeCount = feed.getLikeCount();
     }
     public TournamentPostDTO(TournamentPost tournamentPost){
+        this.t_post_id = tournamentPost.getT_post_id();
         this.date = tournamentPost.getDate();
         this.feed_id = tournamentPost.getFeed_id();
         this.photo = tournamentPost.getPhoto();

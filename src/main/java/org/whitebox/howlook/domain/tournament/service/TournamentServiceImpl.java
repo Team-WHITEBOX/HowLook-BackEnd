@@ -79,7 +79,7 @@ public class TournamentServiceImpl implements TournamentService {
     public TournamentPostDTO getPostById(Long postId) {
         TournamentPost post = tournamentRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
-        TournamentPostDTO dto = modelMapper.map(post,TournamentPostDTO.class);
+        TournamentPostDTO dto = new TournamentPostDTO(post);
         return dto;
     }
 
