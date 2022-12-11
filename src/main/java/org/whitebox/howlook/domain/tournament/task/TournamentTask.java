@@ -44,7 +44,7 @@ public class TournamentTask {
 
         List<TournamentPostDTO> feeds = tournamentService.findTop32FeedByDateForTourna();
 
-        if(feeds.size() < 32){    //게시글 수가 32개보다 적으면 토너먼트 안함
+        if(feeds.size() == 32){    //게시글 수가 32개보다 적으면 토너먼트 안함
             String finalTourtype = tourtype;    //tourna_type을 넣기위해서 final형이 대입되어야 하므로.
 
             for(TournamentPostDTO feed : feeds)
@@ -52,21 +52,13 @@ public class TournamentTask {
                 TournamentPost tournamentPost = TournamentPost.builder()
                         .date(LocalDate.now()).feed_id(feed.getFeed_id()).photo(feed.getPhoto())
                         .member_id(feed.getMember_id()).score(0L).tourna_type(finalTourtype).build();
-                if(feed.getLikeCount() != last_count || !(feed.getMember_id().equals(last_mid)))
-                {
-                    tournamentRepository.save((tournamentPost));
-                    count += 1;
 
-                    if(count >= 32) break;
-                }
-                last_count = feed.getLikeCount();
-                last_mid = feed.getMember_id();
+                tournamentRepository.save((tournamentPost));
+
             }
+            //날짜가 초기화된 10일째에 1부터 기록
+            tournamentDateRepository.updateTournamentDateToNextDay();
         }
-
-        tournamentRepository.save(TournamentPost.builder().tourna_type(tourtype).build());
-        //날짜가 초기화된 10일째에 1부터 기록
-        tournamentDateRepository.updateTournamentDateToNextDay();
     }
 
     //Normal tournament history 저장, 4개씩 저장
