@@ -33,7 +33,6 @@ public class EvalReplyController {
     @PostMapping(value = "/register")
     public ResponseEntity<ResultResponse> registerEval(@Valid @ModelAttribute EvalReplyDTO evalReplyDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         evalReplyService.register(evalReplyDTO);
-
         return ResponseEntity.ok(ResultResponse.of(REGISTER_SUCCESS, evalReplyDTO));
     }
 }
