@@ -160,14 +160,14 @@ public class EvalServiceImpl implements EvalService{
     }
 
     @Override
-    public List<EvalReaderDTO> getEvalPage(int page,int size)
+    public EvalReaderDTO getEvalPage(int page,int size)
     {
         final Pageable pageable = PageRequest.of(page,size);
 
         Page<EvalReaderDTO> evalPage = evalRepository.findEvalReaderDTOPage(pageable);
         List<EvalReaderDTO> evalList = evalPage.getContent();
 
-        List<EvalReaderDTO> readerDTOList = new ArrayList<>();
+        EvalReaderDTO readerDTOList = new EvalReaderDTO();
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -182,9 +182,11 @@ public class EvalServiceImpl implements EvalService{
                     .findMyReplyByPostid(evalReaderDTO.getNPostId(),accountUtil.getLoginMember().getMid());
 
             if(temp == null) {
-                readerDTOList.add(evalReaderDTO);
+                readerDTOList = evalReaderDTO;
             }
-
+            else{
+                readerDTOList = getEvalPage(page+1,size);
+            }
         }
         return readerDTOList;
     }

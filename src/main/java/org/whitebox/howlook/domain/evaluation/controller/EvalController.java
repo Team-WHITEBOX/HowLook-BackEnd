@@ -64,15 +64,15 @@ public class EvalController {
     }
 
     @GetMapping("/readNextEval")
-    public ResponseEntity<ResultResponse> getNextEvaluation(@RequestParam int page)
+    public ResponseEntity<ResultResponse> getNextEvaluation()
     {
-        final List<EvalReaderDTO> evalList = evalService.getEvalPage(page,1);
+        final EvalReaderDTO evalList = evalService.getEvalPage(0,1);
 
-        if(evalList.size() == 0)
+        if(evalList == null)
         {
             return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL));
         }
-        
+
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS,evalList));
     }
 
