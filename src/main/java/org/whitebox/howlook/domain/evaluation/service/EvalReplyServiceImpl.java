@@ -16,6 +16,8 @@ import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
+import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.transaction.Transactional;
@@ -45,10 +47,10 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         evalReply.setMember(accountUtil.getLoginMember());
 
         // 현재 내가 쓰려고하는 포스트 아이디
-        Long pid = evalReplyDTO.getPid();
+        Long pid = evalRepository.findByPid(evalReplyDTO.getPid()).getNPostId();
 
         if(pid == null)
-            return;
+            throw new EntityNotFoundException(ErrorCode.POST_NOT_FOUND);
 
         // 이미 달은 평가라면 달리지않게 find 후 조건문 생성
         EvalReply temp = evalReplyRepository.findMyReplyByPostid(pid,accountUtil.getLoginMember().getMid());
