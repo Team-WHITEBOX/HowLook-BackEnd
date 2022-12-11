@@ -79,14 +79,15 @@ public class FeedRepositoryQuerydslImpl implements FeedRepositoryQuerydsl{
             booleanBuilder.and(feed.hashtag.street.eq(true));
         else booleanBuilder.and(feed.hashtag.street.eq(false));
 
-        final List<FeedReaderDTO> feedIDs = queryFactory
+        final List<FeedReaderDTO> feeds = queryFactory
                 .select(new QFeedReaderDTO(feed))
                 .from(feed)
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        return feedIDs;
+        return feeds;
+        //return new PageImpl<>(feedIDs);
     }
 
     @Override
