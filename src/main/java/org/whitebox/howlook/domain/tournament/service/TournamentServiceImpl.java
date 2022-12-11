@@ -99,7 +99,7 @@ public class TournamentServiceImpl implements TournamentService {
                 "WHERE ((mid, like_count) IN (SELECT mid, MAX(like_count) " +
                 "FROM feed GROUP BY mid HAVING MAX(like_count))) " +
                 "AND " +
-                "DATE_FORMAT(NOW() - INTERVAL 3 DAY,'%Y-%m-%d') = DATE_FORMAT(regdate,'%Y-%m-%d') " +
+                "DATE_FORMAT(NOW() - INTERVAL 1 DAY,'%Y-%m-%d') = DATE_FORMAT(regdate,'%Y-%m-%d') " +
                 "ORDER BY like_count DESC, npost_id DESC;";
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
         cnt.addAll(rows);

@@ -31,9 +31,6 @@ public class TournamentTask {
     //매일 일반/왕중왕전 비교해서 피드 불러오고 토너먼트 테이블에 저장.
     @Scheduled(cron = "0 30 0 * * *")
     public void feedToTPost() {
-        Long last_count = 0L;
-        String last_mid = "";
-        int count = 0;
 
         Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();   //그날의 날짜정보 가져오기
         String tourtype = "Normal";
