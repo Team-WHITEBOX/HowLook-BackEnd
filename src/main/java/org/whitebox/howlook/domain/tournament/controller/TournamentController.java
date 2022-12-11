@@ -34,44 +34,12 @@ public class TournamentController {
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,result));
     }
 
-
-
-
     @ApiOperation(value = "어제 날짜 탑 32 피드 게시글 가져오기")
     @GetMapping("/top32")
     public ResponseEntity<ResultResponse> yesterdayPosts(){
-
-        Long last_count = 0L;
-        String last_mid = "";
-        int count = 0;
-
         final List<TournamentPostDTO> feeds = tournamentService.findTop32FeedByDateForTourna();
-        final List<TournamentPost> posts = new ArrayList<>();
 
-        String tourtype = "Normal";
-        String finalTourtype = tourtype;
-
-        for(TournamentPostDTO feed : feeds)
-        {
-            TournamentPost tournamentPost = TournamentPost.builder()
-                    .date(LocalDate.now()).feed_id(feed.getFeed_id()).photo(feed.getPhoto())
-                    .member_id(feed.getMember_id()).score(0L).tourna_type(finalTourtype).build();
-            if(feed.getLikeCount() != last_count || !(feed.getMember_id().equals(last_mid)))
-            {
-                posts.add(tournamentPost);
-                count += 1;
-
-                if(count >= 32) {
-                    break;
-                }
-            }
-
-            last_count = feed.getLikeCount();
-            last_mid = feed.getMember_id();
-
-        }
-
-        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,posts));
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,feeds));
     }
 
     @ApiOperation(value = "토너먼트 결과 반영")

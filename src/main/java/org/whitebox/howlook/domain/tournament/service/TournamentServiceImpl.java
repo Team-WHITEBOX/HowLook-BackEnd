@@ -99,7 +99,7 @@ public class TournamentServiceImpl implements TournamentService {
                 "WHERE ((mid, like_count) IN (SELECT mid, MAX(like_count) " +
                 "FROM feed GROUP BY mid HAVING MAX(like_count))) " +
                 "AND " +
-                "DATE_FORMAT(NOW() - INTERVAL 1 DAY,'%Y-%m-%d') = DATE_FORMAT(regdate,'%Y-%m-%d') " +
+                "DATE_FORMAT(NOW() - INTERVAL 3 DAY,'%Y-%m-%d') = DATE_FORMAT(regdate,'%Y-%m-%d') " +
                 "ORDER BY like_count DESC, npost_id DESC;";
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
         cnt.addAll(rows);
@@ -112,7 +112,27 @@ public class TournamentServiceImpl implements TournamentService {
         }
 
         List<TournamentPostDTO> result = feeds.stream().map(feed ->  new TournamentPostDTO(feed)).collect(Collectors.toList());
+        final List<TournamentPostDTO> posts = new ArrayList<>();
 
-        return result;
+        Long last_count = 0L;
+        String last_mid = "";
+        int count = 0;
+
+        for(TournamentPostDTO feed : result)
+        {
+            if(feed.getLikeCount() != last_count || !(feed.getMember_id().equals(last_mid)))
+            {
+                posts.add(feed);
+                count += 1;
+
+                if(count >= 32) {
+                    break;
+                }
+            }
+
+            last_count = feed.getLikeCount();
+            last_mid = feed.getMember_id();
+        }
+        return posts;
     }
 }
