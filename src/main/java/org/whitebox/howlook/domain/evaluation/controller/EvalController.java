@@ -57,7 +57,7 @@ public class EvalController {
         log.info(evalReaderDTO.size());
         if(evalReaderDTO.size() == 0)
         {
-            return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL,evalReaderDTO));
+            return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL));
         }
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTO));
@@ -66,8 +66,13 @@ public class EvalController {
     @GetMapping("/readNextEval")
     public ResponseEntity<ResultResponse> getNextEvaluation(@RequestParam int page)
     {
-        final List<EvalReaderDTO> evalList = evalService.getEvalPage(page,1).getContent();
+        final List<EvalReaderDTO> evalList = evalService.getEvalPage(page,1);
 
+        if(evalList.size() == 0)
+        {
+            return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL));
+        }
+        
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS,evalList));
     }
 

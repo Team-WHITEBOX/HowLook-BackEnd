@@ -160,7 +160,7 @@ public class EvalServiceImpl implements EvalService{
     }
 
     @Override
-    public Page<EvalReaderDTO> getEvalPage(int page,int size)
+    public List<EvalReaderDTO> getEvalPage(int page,int size)
     {
         final Pageable pageable = PageRequest.of(page,size);
 
@@ -186,6 +186,6 @@ public class EvalServiceImpl implements EvalService{
             }
 
         }
-        return evalPage;
+        return readerDTOList;
     }
 }
