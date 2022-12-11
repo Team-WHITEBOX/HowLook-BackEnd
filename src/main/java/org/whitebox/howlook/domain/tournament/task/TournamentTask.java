@@ -15,6 +15,7 @@ import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
 import org.whitebox.howlook.domain.tournament.service.TournamentService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
@@ -30,6 +31,10 @@ public class TournamentTask {
     //매일 일반/왕중왕전 비교해서 피드 불러오고 토너먼트 테이블에 저장.
     @Scheduled(cron = "0 30 0 * * *")
     public void feedToTPost() {
+        Long last_count = 0L;
+        String last_mid = "";
+        int count = 0;
+
         Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();   //그날의 날짜정보 가져오기
         String tourtype = "Normal";
         if(lastDay % 10 == 0) {  //첫째날에 1부터 저장하므로 10일째에는 10을 읽는다.
@@ -38,14 +43,25 @@ public class TournamentTask {
         }
 
         List<TournamentPostDTO> feeds = tournamentService.findTop32FeedByDateForTourna();
-        if(feeds.size() == 32){    //게시글 수가 32개보다 적으면 토너먼트 안함
+
+        if(feeds.size() < 32){    //게시글 수가 32개보다 적으면 토너먼트 안함
             String finalTourtype = tourtype;    //tourna_type을 넣기위해서 final형이 대입되어야 하므로.
-            feeds.forEach(feed -> {
+
+            for(TournamentPostDTO feed : feeds)
+            {
                 TournamentPost tournamentPost = TournamentPost.builder()
                         .date(LocalDate.now()).feed_id(feed.getFeed_id()).photo(feed.getPhoto())
                         .member_id(feed.getMember_id()).score(0L).tourna_type(finalTourtype).build();
-                tournamentRepository.save((tournamentPost));
-            });
+                if(feed.getLikeCount() != last_count || !(feed.getMember_id().equals(last_mid)))
+                {
+                    tournamentRepository.save((tournamentPost));
+                    count += 1;
+
+                    if(count >= 32) break;
+                }
+                last_count = feed.getLikeCount();
+                last_mid = feed.getMember_id();
+            }
         }
 
         tournamentRepository.save(TournamentPost.builder().tourna_type(tourtype).build());
