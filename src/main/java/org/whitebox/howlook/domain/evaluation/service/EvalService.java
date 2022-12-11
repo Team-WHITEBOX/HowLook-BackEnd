@@ -11,5 +11,5 @@ public interface EvalService {
     EvalReaderDTO reader(Long NPostId);
     public List<EvalReaderDTO> readerUID(String UserID);
     public List<EvalReaderDTO> readAll();
-    public Page<EvalReaderDTO> getEvalPage(int page, int size);
+    public List<EvalReaderDTO> getEvalPage(int page, int size);
 }
