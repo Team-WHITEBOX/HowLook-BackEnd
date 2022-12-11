@@ -14,12 +14,19 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class MemberJoinDTO {
+    @ApiModelProperty(value = "아이디", example = "testuser1", required = true)
     private String mid;
+    @ApiModelProperty(value = "비밀번호", example = "123456", required = true)
     private String mpw;
+    @ApiModelProperty(value = "이름", example = "홍길동", required = true)
     private String name;
+    @ApiModelProperty(value = "닉네임", example = "길동이", required = true)
     private String nickName;
+    @ApiModelProperty(value = "전화번호", example = "01012345678", required = true)
     private String phone;
+    @ApiModelProperty(value = "키", example = "180", required = true)
     private int height;
+    @ApiModelProperty(value = "몸무게", example = "70", required = true)
     private int weight;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDay;

@@ -6,6 +6,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.whitebox.howlook.domain.member.repository.MemberRepository;
+import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.exception.BusinessException;
 import org.whitebox.howlook.global.util.JWTUtil;
 
 import javax.servlet.ServletException;
@@ -19,7 +22,7 @@ import java.util.Map;
 public class APILoginSuccessHandler implements AuthenticationSuccessHandler {  //로그인 성공 토큰반환
 
     private final JWTUtil jwtUtil;
-
+    private final MemberRepository memberRepository;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -31,6 +34,7 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {  /
 
         log.info(authentication);
         String mid = authentication.getName();
+        memberRepository.getWithRoles(mid).orElseThrow(()->new BusinessException(ErrorCode.LOGOUT_BY_ANOTHER));
         log.info(mid); //username
         Map<String, Object> claim = Map.of("mid", mid);
         //Access Token 유효기간 1일
@@ -42,8 +46,7 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {  /
 
         Map<String,String> keyMap = Map.of(
                 "accessToken", accessToken,
-                "refreshToken", refreshToken,
-                "mid",mid);
+                "refreshToken", refreshToken);
 
         String jsonStr = gson.toJson(keyMap);
 

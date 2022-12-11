@@ -45,6 +45,9 @@ public class Member {
     public void updateNickName(String nickName){
         this.nickName = nickName;
     }
+    public void updateName(String name){
+        this.name = name;
+    }
     public void updatePhone(String phone){
         this.phone = phone;
     }
@@ -53,6 +56,9 @@ public class Member {
     }
     public void updateWeight(Long weight){
         this.weight = weight;
+    }
+    public void updateBirthDay(LocalDate date){
+        this.birthDay = date;
     }
     public void updateDel(boolean del){
         this.del = del;

@@ -7,8 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.member.dto.*;
+import org.whitebox.howlook.domain.member.entity.Member;
+import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
+import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.validation.Valid;
 
@@ -22,6 +25,20 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final AccountUtil accountUtil;
+
+    @ApiOperation(value = "JWT토큰을 이용한 로그인 확인")
+    @GetMapping(value = "/check")
+    public ResponseEntity<ResultResponse> checkLogin() {
+        Member member = accountUtil.getLoginMember();
+        if(checkMember(member)) {
+            String mid = member.getMid();
+            return ResponseEntity.ok(ResultResponse.of(GET_USER_BY_TOKEN_SUCCESS, mid));
+        }
+        else {
+            throw new MemberDoesNotExistException();
+        }
+    }
 
     @ApiOperation(value = "비밀번호 변경")
     @PutMapping(value = "/password")
@@ -72,6 +89,12 @@ public class MemberController {
 
         return ResponseEntity.ok(ResultResponse.of(EDIT_PROFILE_SUCCESS));
     }
+    @ApiOperation(value = "소셜 로그인 회원가입 프로필 수정")
+    @PutMapping(value = "/socialedit")
+    public ResponseEntity<ResultResponse> socialEditProfile(@Valid @RequestBody SocialEditProfileRequest socialEditProfileRequest) {
+        memberService.socialEditProfile(socialEditProfileRequest);
+        return ResponseEntity.ok(ResultResponse.of(EDIT_PROFILE_SUCCESS));
+    }
 
     @ApiOperation(value = "회원 프로필 대표 사진 등록")
     @PutMapping(value = "/photo")
@@ -79,5 +102,19 @@ public class MemberController {
         memberService.editProfilePhoto(feedId);
 
         return ResponseEntity.ok(ResultResponse.of(GET_EDIT_PROFILE_SUCCESS));
+    }
+
+    boolean checkMember(Member member){
+        if(!member.isSocial()){
+            return true;
+        }
+        else{
+            if(member.getBirthDay()==null || member.getName() == null || member.getHeight()==null || member.getWeight()==null || member.getPhone() == null){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
     }
 }

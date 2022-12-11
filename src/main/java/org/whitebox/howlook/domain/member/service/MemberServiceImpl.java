@@ -96,17 +96,37 @@ public class MemberServiceImpl implements MemberService{
     public void editProfile(EditProfileRequest editProfileRequest) {
         final Member member = accountUtil.getLoginMember();
 
-        log.info("프로필 수정");
-        if (memberRepository.existsById(editProfileRequest.getMemberId())
-                && !member.getMid().equals(editProfileRequest.getMemberId())) {
-            log.info("예외");
-            throw new UsernameAlreadyExistException();
-        }
+//        log.info("프로필 수정");
+//        if (memberRepository.existsById(editProfileRequest.getMemberId())
+//                && !member.getMid().equals(editProfileRequest.getMemberId())) {
+//            log.info("예외");
+//            throw new UsernameAlreadyExistException();
+//        }
         log.info("수정");
         member.updateNickName(editProfileRequest.getMemberNickName());
         member.updateHeight(editProfileRequest.getMemberHeight());
         member.updateWeight(editProfileRequest.getMemberWeight());
         member.updatePhone(editProfileRequest.getMemberPhone());
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void socialEditProfile(SocialEditProfileRequest socialEditProfileRequest) {
+        final Member member = accountUtil.getLoginMember();
+
+//        log.info("프로필 수정");
+//        if (memberRepository.existsById(socialEditProfileRequest.getMemberId())
+//                && !member.getMid().equals(socialEditProfileRequest.getMemberId())) {
+//            log.info("예외");
+//            throw new UsernameAlreadyExistException();
+//        }
+        log.info("수정");
+        member.updateName(socialEditProfileRequest.getMemberName());
+        member.updateNickName(socialEditProfileRequest.getMemberNickName());
+        member.updateHeight(socialEditProfileRequest.getMemberHeight());
+        member.updateWeight(socialEditProfileRequest.getMemberWeight());
+        member.updatePhone(socialEditProfileRequest.getMemberPhone());
+        member.updateBirthDay(socialEditProfileRequest.getMemberBirthDay());
         memberRepository.save(member);
     }
 

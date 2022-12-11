@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername: "+username);
-        Optional<Member> result = memberRepository.getWithRoles(username);
+        Optional<Member> result = memberRepository.findByMid(username);
         if(result.isEmpty()){  //해당 아이디 유저가 없다면
             throw new UsernameNotFoundException("username not found .... ");
         }

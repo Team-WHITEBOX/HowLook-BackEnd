@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+
+
+    // function send(){
+    //
+    //     //JavaScriptChannel.postMessage(let);
+    // }
+    function getParams(){
+        var url = window.location.search.replace('?','');
+        var params = {};
+        var urlArray = url.split('&');
+
+        for(var i in urlArray)
+        {
+            var param = urlArray[i].split('=');
+            params[param[0]] = param[1];
+        }
+        return params;
+    }
+
+    const params = getParams();
+    if(params != null){
+        JavaScriptChannel.postMessage(params);
+    }
+
+</script>
+
+</html>
