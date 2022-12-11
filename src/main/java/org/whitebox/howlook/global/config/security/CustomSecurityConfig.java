@@ -79,7 +79,7 @@ public class CustomSecurityConfig {
         apiLoginFilter.setAuthenticationManager(authenticationManager);
 
         //APILoginSuccessHandler
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil,memberRepository);
         //핸들러 세팅
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
         apiLoginFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
