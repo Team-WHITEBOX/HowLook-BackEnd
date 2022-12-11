@@ -72,8 +72,6 @@ public class EvalController {
     }
 
 
-
-
     @GetMapping("/readbyuid")
     public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
         List<EvalReaderDTO> evals = evalService.readerUID(UserID);

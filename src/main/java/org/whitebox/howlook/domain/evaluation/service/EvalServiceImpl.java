@@ -20,6 +20,7 @@ import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
+import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.util.AccountUtil;
 import org.whitebox.howlook.global.util.LocalUploader;
 import org.whitebox.howlook.global.util.S3Uploader;
@@ -118,11 +119,12 @@ public class EvalServiceImpl implements EvalService{
         List<Evaluation> evals = evalRepository.findByMid(UserID);
         List<EvalReaderDTO> result = new ArrayList<>();
         for(Evaluation eval : evals){
-            EvalReaderDTO feedReaderDTO = new EvalReaderDTO().builder()
+            EvalReaderDTO evalReaderDTO = new EvalReaderDTO().builder()
                     .NPostId(eval.getNPostId()).userPostInfo(new UserPostInfoResponse(eval.getMember()))
-                    .modDate(eval.getModDate()).regDate(eval.getRegDate()).build();
-            result.add(feedReaderDTO);
+                    .modDate(eval.getModDate()).regDate(eval.getRegDate()).MainPhotoPath(eval.getMainPhotoPath()).build();
+            result.add(evalReaderDTO);
         }
+
         return result;
     }
 
