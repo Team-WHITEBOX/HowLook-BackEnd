@@ -32,7 +32,7 @@ public class EditProfileRequest {
     @NotNull(message = "몸무게를 입력해주세요")
     private Long memberWeight;
 
-    @ApiModelProperty(value = "전화번호", example = "010-0000-0000", required = false)
+    @ApiModelProperty(value = "전화번호", example = "01012345678", required = false)
     @Pattern(regexp = "^\\d{3}\\d{3,4}\\d{4}$", message = "휴대폰 번호 양식이 맞지 않습니다")
     private String memberPhone;
 

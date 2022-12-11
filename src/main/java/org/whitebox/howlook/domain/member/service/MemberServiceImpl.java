@@ -17,6 +17,7 @@ import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.entity.MemberRole;
 import org.whitebox.howlook.domain.member.exception.AccountMismatchException;
+import org.whitebox.howlook.domain.member.exception.MidExistException;
 import org.whitebox.howlook.domain.member.exception.PasswordEqualWithOldException;
 import org.whitebox.howlook.domain.member.exception.UsernameAlreadyExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
@@ -42,7 +43,7 @@ public class MemberServiceImpl implements MemberService{
     private final PasswordEncoder passwordEncoder;
     private final UploadService uploadService; // 업로드 서비스
     @Override
-    public void join(MemberJoinDTO memberJoinDTO) throws MidExistException {
+    public void join(MemberJoinDTO memberJoinDTO) {
         String mid = memberJoinDTO.getMid();
         boolean exist = memberRepository.existsById(mid);
         if(exist){

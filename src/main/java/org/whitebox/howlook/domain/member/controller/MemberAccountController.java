@@ -12,6 +12,7 @@ import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
@@ -31,14 +32,11 @@ public class MemberAccountController {
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/join")
-    public ResponseEntity<ResultResponse> joinPOST(@RequestBody MemberJoinDTO memberJoinDTO){
+    public ResponseEntity<ResultResponse> joinPOST(@Valid @RequestBody MemberJoinDTO memberJoinDTO){
         log.info("join post...");
         log.info(memberJoinDTO);
 
-        try {
-            memberService.join(memberJoinDTO);
-        }catch (MemberService.MidExistException e){
-        }
+        memberService.join(memberJoinDTO);
         return ResponseEntity.ok(ResultResponse.of(REGISTER_SUCCESS, true));
     }
 
