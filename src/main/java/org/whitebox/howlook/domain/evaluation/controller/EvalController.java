@@ -71,6 +71,7 @@ public class EvalController {
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS,evalList));
     }
 
+
     @GetMapping("/readbyuid")
     public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
         List<EvalReaderDTO> evals = evalService.readerUID(UserID);
