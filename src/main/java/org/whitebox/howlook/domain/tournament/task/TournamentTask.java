@@ -13,6 +13,8 @@ import org.whitebox.howlook.domain.tournament.repository.HistoryRepository;
 import org.whitebox.howlook.domain.tournament.repository.TournamentDateRepository;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
 import org.whitebox.howlook.domain.tournament.service.TournamentService;
+import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -64,6 +66,9 @@ public class TournamentTask {
         Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();
         if(lastDay % 10 == 1) return;
         List<TournamentPost> posts = tournamentRepository.findTop4ByDateOrderByScoreDesc(LocalDate.now().minusDays(1)); //전날 게시글
+        if (posts.size() ==0){
+            throw new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUNT);
+        }
         TournamentHistory history = new TournamentHistory(posts);
         historyRepository.save(history);
     }
@@ -74,6 +79,9 @@ public class TournamentTask {
         Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();
         if(lastDay % 10 != 1) return;
         List<TournamentPost> posts = tournamentRepository.findTop10ByDateOrderByScoreDesc(LocalDate.now().minusDays(1)); //전날 게시글
+        if (posts.size() ==0){
+            throw new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUNT);
+        }
         TournamentHistory history = new TournamentHistory(posts);
         historyRepository.save(history);
     }
