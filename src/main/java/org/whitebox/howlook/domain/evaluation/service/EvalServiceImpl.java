@@ -85,6 +85,24 @@ public class EvalServiceImpl implements EvalService{
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         EvalReaderDTO evalReaderDTO = modelMapper.map(eval, EvalReaderDTO.class);
         evalReaderDTO.setUserPostInfo(new UserPostInfoResponse(eval.getMember()));
+        evalReaderDTO.setNPostId(eval.getNPostId());
+        evalReaderDTO.setModDate(eval.getModDate());
+        evalReaderDTO.setRegDate(eval.getRegDate());
+        evalReaderDTO.setMainPhotoPath(eval.getMainPhotoPath());
+
+        List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getNPostId());
+        float averScore = 0;
+        Long rCount = 0L;
+        for(EvalReply r : evalReplies)
+        {
+            averScore += r.getScore();
+            rCount += 1;
+        }
+
+        if(averScore != 0 && rCount != 0)
+            averScore = averScore/rCount;
+
+        evalReaderDTO.setAverageScore(averScore);
 
         return evalReaderDTO;
     }
