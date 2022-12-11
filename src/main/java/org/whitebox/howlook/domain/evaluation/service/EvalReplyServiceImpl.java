@@ -17,6 +17,7 @@ import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.exception.BusinessException;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
@@ -46,6 +47,10 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         EvalReply evalReply = modelMapper.map(evalReplyDTO, EvalReply.class);
         evalReply.setMember(accountUtil.getLoginMember());
 
+        if(evalReplyDTO.getScore() > 10) {
+            throw new BusinessException(ErrorCode.INPUT_VALUE_INVALID);
+        }
+
         // 현재 내가 쓰려고하는 포스트 아이디
         Long pid = evalRepository.findByPid(evalReplyDTO.getPid()).getNPostId();
 
@@ -60,8 +65,6 @@ public class EvalReplyServiceImpl implements EvalReplyService{
 
             Evaluation evaluation = evalRepository.findByPid(pid);
             evalReply.setEvaluation(evaluation);
-
-
             evalReplyRepository.save(evalReply);
         }
     }
@@ -152,7 +155,6 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         evalDataDTO.setMaleCounts(mCounts);
         evalDataDTO.setFemaleScores(fScores);
         evalDataDTO.setFemaleCounts(fCounts);
-
 
         return evalDataDTO;
     }
