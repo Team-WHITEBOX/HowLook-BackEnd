@@ -206,9 +206,12 @@ public class FeedServiceImpl implements  FeedService{
     public List<FeedReaderDTO> searchFeedByHashtag(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender,
                                                    int page, int size) {
         final Pageable pageable = PageRequest.of(page, size);
+
         //해당 함수를 통해 hashtagDTO에서 true로 설정된 값만 있는 feed의 ID를 불러온다.
         List<FeedReaderDTO> feeds = feedRepository.findFeedByCategories(hashtagDTO, heightHigh, heightLow, weightHigh, weightLow, gender, pageable);
-
+        feeds.forEach(feedReaderDTO -> {
+            feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(feedReaderDTO.getNPostId()));
+        });
 
         return feeds;
     }
@@ -219,7 +222,9 @@ public class FeedServiceImpl implements  FeedService{
         String thismember = accountUtil.getLoginMemberId();
         String feedmember = feedRepository.findMidByNPostId(npost_id);
         log.info("thismember: " + thismember + "feedmember: " + feedmember);
-        if(!thismember.equals(feedmember)) return;
+        if(!thismember.equals(feedmember)) {
+            throw new EntityAlreadyExistException(POST_CANT_DELETE);
+        }
 
         final Feed feed = feedRepository.findById(npost_id).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         final List<Long> replyids = replyRepository.listOfReplyId(npost_id);

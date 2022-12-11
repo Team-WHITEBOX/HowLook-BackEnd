@@ -6,9 +6,7 @@ import org.whitebox.howlook.domain.member.dto.*;
 import java.util.List;
 
 public interface MemberService {
-    static class MidExistException extends Exception{
-    }
-    void join(MemberJoinDTO memberJoinDTO)throws MidExistException;
+    void join(MemberJoinDTO memberJoinDTO);
     boolean checkMemberId(String memberId);
     boolean checkNickName(String nickName);
     void updatePassword(UpdatePasswordRequest updatePasswordRequest);

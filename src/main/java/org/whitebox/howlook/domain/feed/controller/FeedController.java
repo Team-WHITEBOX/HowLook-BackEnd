@@ -3,6 +3,7 @@ package org.whitebox.howlook.domain.feed.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -95,7 +96,7 @@ public class FeedController {
     @ApiOperation(value = "카테고리로 피드검색", notes= "카테고리(해시태그 + 사용자정보(키, 몸무게, 성별)로 피드검색함\n해시태그는 반드시 true/false중 하나 선택해야함.(비워두면 안됨)\n" +
             "page에는 표시하고 싶은 page번호 입력(0부터시작), 현재 한 페이지당 post 5개씩 출력됨.")
     public ResponseEntity<ResultResponse> searchByCategories(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender, int page) {
-        List<FeedReaderDTO> feeds = feedService.searchFeedByHashtag(hashtagDTO, heightHigh, heightLow, weightHigh, weightLow, gender, page, 5);
+        final List<FeedReaderDTO> feeds = feedService.searchFeedByHashtag(hashtagDTO, heightHigh, heightLow, weightHigh, weightLow, gender, page, 5);
 
         return ResponseEntity.ok(ResultResponse.of(GET_HASHTAG_FEED_SUCCESS, feeds));
     }
