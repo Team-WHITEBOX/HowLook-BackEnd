@@ -14,6 +14,7 @@ public class TournamentPostDTO {
     String photo;
     String member_id;
     Long score;
+    Long LikeCount;     //좋아요개수
 
     public TournamentPostDTO(Feed feed)
     {
@@ -21,5 +22,6 @@ public class TournamentPostDTO {
         this.feed_id = feed.getNPostId();
         this.photo = feed.getMainPhotoPath();
         this.member_id = feed.getMember().getMid();
+        this.LikeCount = feed.getLikeCount();
     }
 }

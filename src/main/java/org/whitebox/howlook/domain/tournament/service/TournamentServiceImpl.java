@@ -94,11 +94,13 @@ public class TournamentServiceImpl implements TournamentService {
         List<Map<String, Object>> cnt = new ArrayList<>();
         List<Feed> feeds = new ArrayList<>();
 
-        String sql = "SELECT npost_id, mid from feed, " +
-                "(SELECT max(npost_id) AS k from feed, " +
-                "(SELECT max(like_count) AS m, mid AS n FROM feed GROUP BY regdate, mid ORDER BY max(like_count) DESC) AS result " +
-                "WHERE DATE_FORMAT(NOW() - INTERVAL + 1 DAY,'%Y-%m-%d') = DATE_FORMAT(regdate,'%Y-%m-%d') and like_count = result.m and mid = result.n GROUP BY mid) AS result2 " +
-                "WHERE npost_id = result2.k LIMIT 32";
+        String sql = "SELECT " +
+                "DISTINCT (mid),like_count, npost_id, DATE_FORMAT(regdate,'%Y-%m-%d') FROM feed " +
+                "WHERE ((mid, like_count) IN (SELECT mid, MAX(like_count) " +
+                "FROM feed GROUP BY mid HAVING MAX(like_count))) " +
+                "AND " +
+                "DATE_FORMAT(NOW() - INTERVAL 1 DAY,'%Y-%m-%d') = DATE_FORMAT(regdate,'%Y-%m-%d') " +
+                "ORDER BY like_count DESC, npost_id DESC;";
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
         cnt.addAll(rows);
 

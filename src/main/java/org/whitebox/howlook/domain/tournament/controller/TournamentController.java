@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
+import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
 import org.whitebox.howlook.domain.tournament.service.TournamentService;
 import org.whitebox.howlook.domain.tournament.task.TournamentTask;
 import org.whitebox.howlook.global.result.ResultResponse;
@@ -34,12 +35,41 @@ public class TournamentController {
     }
 
 
+    Long last_count = 0L;
+    String last_mid = "";
+    int count = 0;
+
     @ApiOperation(value = "어제 날짜 탑 32 피드 게시글 가져오기")
     @GetMapping("/top32")
     public ResponseEntity<ResultResponse> yesterdayPosts(){
-        final List<TournamentPostDTO> result = tournamentService.findTop32FeedByDateForTourna();
+        last_count = 0L;
+        last_mid = "";
+        count = 0;
 
-        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,result));
+        final List<TournamentPostDTO> feeds = tournamentService.findTop32FeedByDateForTourna();
+        final List<TournamentPost> posts = new ArrayList<>();
+
+        String tourtype = "Normal";
+        String finalTourtype = tourtype;
+
+        feeds.forEach(feed -> {
+            TournamentPost tournamentPost = TournamentPost.builder()
+                    .date(LocalDate.now()).feed_id(feed.getFeed_id()).photo(feed.getPhoto())
+                    .member_id(feed.getMember_id()).score(0L).tourna_type(finalTourtype).build();
+            if(feed.getLikeCount() != last_count && !(feed.getMember_id().equals(last_mid)))
+            {
+                count += 1;
+
+                if(count >= 32) {
+                    posts.add(tournamentPost);
+                }
+            }
+            last_count = feed.getLikeCount();
+            last_mid = feed.getMember_id();
+
+        });
+
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,posts));
     }
 
     @ApiOperation(value = "토너먼트 결과 반영")
