@@ -36,10 +36,7 @@ public class MemberAccountController {
         log.info("join post...");
         log.info(memberJoinDTO);
 
-        try {
-            memberService.join(memberJoinDTO);
-        }catch (MemberService.MidExistException e){
-        }
+        memberService.join(memberJoinDTO);
         return ResponseEntity.ok(ResultResponse.of(REGISTER_SUCCESS, true));
     }
 
