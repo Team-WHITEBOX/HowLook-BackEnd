@@ -6,11 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -36,6 +38,7 @@ public class EvalReaderDTO {
     @JsonProperty("modDate")
     private LocalDateTime modDate;
 
+    private float averageScore;
 
     @QueryProjection
     public EvalReaderDTO(Evaluation eval) {
@@ -47,5 +50,16 @@ public class EvalReaderDTO {
         this.MainPhotoPath = eval.getMainPhotoPath();
         this.regDate = eval.getRegDate();
         this.modDate = eval.getModDate();
+    }
+
+    public void SetAverage(List<EvalReply> reply)
+    {
+        this.averageScore = 0;
+        List<EvalReply> evalReplies = reply; //evalReplyRepository.findBypid(NPostId);
+
+        for(EvalReply r : evalReplies)
+        {
+
+        }
     }
 }

@@ -118,10 +118,25 @@ public class EvalServiceImpl implements EvalService{
         List<Evaluation> evals = evalRepository.findByMid(UserID);
         List<EvalReaderDTO> result = new ArrayList<>();
         for(Evaluation eval : evals){
-            EvalReaderDTO feedReaderDTO = new EvalReaderDTO().builder()
+            EvalReaderDTO evalReaderDTO = new EvalReaderDTO().builder()
                     .NPostId(eval.getNPostId()).userPostInfo(new UserPostInfoResponse(eval.getMember()))
                     .modDate(eval.getModDate()).regDate(eval.getRegDate()).build();
-            result.add(feedReaderDTO);
+            result.add(evalReaderDTO);
+
+
+            List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getNPostId());
+            float averScore = 0;
+            Long rCount = 0L;
+            for(EvalReply r : evalReplies)
+            {
+                averScore += r.getScore();
+                rCount += 1;
+            }
+
+            if(averScore != 0 && rCount != 0)
+                averScore = averScore/rCount;
+
+            evalReaderDTO.setAverageScore(averScore);
         }
         return result;
     }

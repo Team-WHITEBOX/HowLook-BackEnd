@@ -90,7 +90,7 @@ public class EvalReplyServiceImpl implements EvalReplyService{
 
         for(EvalReply reply : evalReplies)
         {
-            if(reply.getMember().getGender() == 'm') // 남자가 쓴 평가라면
+            if(reply.getMember().getGender() == 'M') // 남자가 쓴 평가라면
             {
                 mScore += reply.getScore();
                 mCount += 1;
@@ -99,7 +99,7 @@ public class EvalReplyServiceImpl implements EvalReplyService{
                 mScores[index] += reply.getScore();
                 mCounts[index] += 1;
             }
-            else if(reply.getMember().getGender() == 'f') // 여자가 쓴 평가라면
+            else if(reply.getMember().getGender() == 'F') // 여자가 쓴 평가라면
             {
                 fScore += reply.getScore();
                 fCount += 1;
@@ -150,7 +150,6 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         evalDataDTO.setMaleCounts(mCounts);
         evalDataDTO.setFemaleScores(fScores);
         evalDataDTO.setFemaleCounts(fCounts);
-
 
         return evalDataDTO;
     }
