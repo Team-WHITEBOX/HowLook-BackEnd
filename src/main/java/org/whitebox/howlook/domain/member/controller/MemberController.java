@@ -33,7 +33,7 @@ public class MemberController {
         Member member = accountUtil.getLoginMember();
         if(checkMember(member)) {
             String mid = member.getMid();
-            return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS, mid));
+            return ResponseEntity.ok(ResultResponse.of(GET_USER_BY_TOKEN_SUCCESS, mid));
         }
         else {
             throw new MemberDoesNotExistException();
@@ -87,6 +87,12 @@ public class MemberController {
     public ResponseEntity<ResultResponse> editProfile(@Valid @RequestBody EditProfileRequest editProfileRequest) {
         memberService.editProfile(editProfileRequest);
 
+        return ResponseEntity.ok(ResultResponse.of(EDIT_PROFILE_SUCCESS));
+    }
+    @ApiOperation(value = "소셜 로그인 회원가입 프로필 수정")
+    @PutMapping(value = "/socialedit")
+    public ResponseEntity<ResultResponse> socialEditProfile(@Valid @RequestBody SocialEditProfileRequest socialEditProfileRequest) {
+        memberService.socialEditProfile(socialEditProfileRequest);
         return ResponseEntity.ok(ResultResponse.of(EDIT_PROFILE_SUCCESS));
     }
 

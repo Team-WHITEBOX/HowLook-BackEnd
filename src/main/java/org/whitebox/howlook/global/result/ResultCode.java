@@ -13,6 +13,7 @@ public enum ResultCode {
     LOGIN_SUCCESS(200, "M002", "로그인에 성공하였습니다."),
     REISSUE_SUCCESS(200, "M003", "재발급에 성공하였습니다."),
     GET_USERPROFILE_SUCCESS(200, "M004", "회원 프로필을 조회하였습니다."),
+    GET_USER_BY_TOKEN_SUCCESS(200, "M004", "토큰으로 회원정보를 조회하였습니다."),
     GET_MINIPROFILE_SUCCESS(200, "M005", "미니 프로필을 조회하였습니다."),
     UPLOAD_MEMBER_IMAGE_SUCCESS(200, "M006", "회원 이미지를 등록하였습니다."),
     DELETE_MEMBER_IMAGE_SUCCESS(200, "M007", "회원 이미지를 삭제하였습니다."),

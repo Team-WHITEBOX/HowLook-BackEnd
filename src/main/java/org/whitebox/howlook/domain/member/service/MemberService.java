@@ -12,6 +12,7 @@ public interface MemberService {
     void updatePassword(UpdatePasswordRequest updatePasswordRequest);
     EditProfileResponse getEditProfile();
     void editProfile(EditProfileRequest editProfileRequest);
+    void socialEditProfile(SocialEditProfileRequest socialEditProfileRequest);
 
     void editProfilePhoto(Long feedId);
     UserProfileResponse getUserProfile(String usermid);
