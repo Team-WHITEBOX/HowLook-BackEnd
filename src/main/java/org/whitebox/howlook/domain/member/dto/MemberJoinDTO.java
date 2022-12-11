@@ -24,9 +24,8 @@ public class MemberJoinDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDay;
     @ApiModelProperty(value = "성별", example = "M", required = true)
-    @NotBlank(message = "새비밀번호를 입력해주세요")
-    @Pattern(regexp = "^[MF]{1,1}", message = "성별은 M 또는 F로 입력해주세요")
-    private char gender;
+    @Pattern(regexp = "^[MF]{1,1}$", message = "성별은 M 또는 F로 입력해주세요")
+    private String gender;
     private String profilePhoto;
     private boolean del;
     private boolean social;

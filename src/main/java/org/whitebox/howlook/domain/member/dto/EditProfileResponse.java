@@ -19,7 +19,7 @@ public class EditProfileResponse {
     @ApiModelProperty(value = "별명", example = "홍길동")
     private String memberNickName;
 
-    @ApiModelProperty(value = "전화번호", example = "01000000000")
+    @ApiModelProperty(value = "전화번호", example = "01012345678")
     private String memberPhone;
 
     @ApiModelProperty(value = "키", example = "183")
