@@ -111,7 +111,7 @@ public class CustomSecurityConfig {
                 .and()
                 .addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new RefreshTokenFilter("/refreshToken",jwtUtil), TokenCheckFilter.class);
+                .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class);
 
         http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());

@@ -30,6 +30,12 @@ public class MemberAccountController {
         log.info("로그인");
     }
 
+    @ApiOperation(value = "refresh토큰")
+    @PostMapping("/refreshToken")
+    public void refreshToken(@RequestBody loginDTO loginDTO){
+        log.info("토큰 재발급");
+    }
+
     @ApiOperation(value = "회원가입")
     @PostMapping("/join")
     public ResponseEntity<ResultResponse> joinPOST(@Valid @RequestBody MemberJoinDTO memberJoinDTO){
