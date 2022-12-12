@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EvalReplyDTO {
     private Long ReplyId;       // 평가 id
-    private Long score;       // 평가 점수
+    private Double score;       // 평가 점수
     private Long pid;           // 평가받을 글 id
 }
