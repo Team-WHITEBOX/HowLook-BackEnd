@@ -6,9 +6,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
+import org.whitebox.howlook.domain.tournament.dto.THistoryList;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
-import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
 import org.whitebox.howlook.domain.tournament.service.TournamentService;
 import org.whitebox.howlook.domain.tournament.task.TournamentTask;
 import org.whitebox.howlook.global.result.ResultResponse;
@@ -51,8 +51,13 @@ public class TournamentController {
     @ApiOperation(value = "날짜로 토너먼트 기록 조회")
     @GetMapping("/history/{date}")
     public ResponseEntity<ResultResponse> getTHistory(@PathVariable("date") String date) {
-        final THistoryResponse tHistoryResponse = tournamentService.getTHistory(LocalDate.parse(date));
+        final THistoryList tHistoryList = tournamentService.getTHistoryList(LocalDate.parse(date));
         List<TournamentPostDTO> postDTOs = new ArrayList<>();
+        tHistoryList.getLank().forEach(lank -> {
+            postDTOs.add(tournamentService.getPostById(lank));
+        });
+        THistoryResponse tHistoryResponse = new THistoryResponse(tHistoryList);
+        tHistoryResponse.setPostDTOS(postDTOs);
 
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_HISTORY_SUCCESS,tHistoryResponse));
     }

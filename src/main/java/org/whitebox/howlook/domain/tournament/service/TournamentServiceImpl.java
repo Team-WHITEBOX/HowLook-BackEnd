@@ -1,7 +1,4 @@
 package org.whitebox.howlook.domain.tournament.service;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -9,11 +6,11 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
 import org.whitebox.howlook.domain.feed.entity.Feed;
 import org.whitebox.howlook.domain.feed.repository.FeedRepository;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
+import org.whitebox.howlook.domain.tournament.dto.THistoryList;
 import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
@@ -61,9 +58,15 @@ public class TournamentServiceImpl implements TournamentService {
         });
     }
 
+//    @Override
+//    public THistoryResponse getTHistory(LocalDate date) {
+//        THistoryResponse result = tournamentRepository.findTHistoryResponseByDate(date)
+//                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUNT));
+//        return result;
+//    }
     @Override
-    public THistoryResponse getTHistory(LocalDate date) {
-        THistoryResponse result = tournamentRepository.findTHistoryResponseByDate(date)
+    public THistoryList getTHistoryList(LocalDate date) {
+        THistoryList result = tournamentRepository.findTHistoryListByDate(date)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUNT));
         return result;
     }
