@@ -122,8 +122,10 @@ public enum ResultCode {
     GET_TOURNAMENT_HISTORY_SUCCESS(200, "T003", "토너먼트 기록 조회에 성공하였습니다."),
     GET_TOURNAMENT_EVENT_HISTORY_SUCCESS(200, "T004", "이벤트 토너먼트 기록 조회에 성공하였습니다."),
     FEED_TO_POST_SUCCESS(200, "T005", "토너먼트 게시글 변환에 성공하였습니다."),
-    RESULT_TOURNAMENT_SUCCESS(200, "T006", "토너먼트 랭킹 기록에 성공하였습니다.");
+    RESULT_TOURNAMENT_SUCCESS(200, "T006", "토너먼트 랭킹 기록에 성공하였습니다."),
 
+    // Eval
+    EVAL_REGISTER_SUCCESS(200, "E001", "평가 게시글 등록에 성공하였습니다.");
     private final int status;
     private final String code;
     private final String message;
