@@ -25,7 +25,7 @@ public class SocialEditProfileRequest {
     @Length(min = 2, max = 12, message = "이름은 2문자 이상 12문자 이하여야 합니다")
     private String memberName;
 
-    @ApiModelProperty(value = "생일", example = "1998-01-01", required = true)
+    @ApiModelProperty(value = "생일", example = "yyyy-MM-dd", required = true)
     @NotBlank(message = "생일을 입력해주세요")
     private LocalDate memberBirthDay;
 
