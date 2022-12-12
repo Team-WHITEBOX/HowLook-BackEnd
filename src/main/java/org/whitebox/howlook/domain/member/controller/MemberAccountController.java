@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.member.dto.MemberJoinDTO;
+import org.whitebox.howlook.domain.member.dto.TokenDTO;
 import org.whitebox.howlook.domain.member.dto.loginDTO;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
@@ -32,7 +33,7 @@ public class MemberAccountController {
 
     @ApiOperation(value = "refresh토큰")
     @PostMapping("/refreshToken")
-    public void refreshToken(@RequestBody loginDTO loginDTO){
+    public void refreshToken(@RequestBody TokenDTO tokenDTO){
         log.info("토큰 재발급");
     }
 
