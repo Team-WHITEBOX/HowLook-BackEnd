@@ -17,4 +17,6 @@ public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
 
     @Query("select fl from FeedLike fl join fetch fl.member where fl.feed.NPostId = :NPostId")
     List<FeedLike> findAllWithMemberByNPostId(@Param("NPostId") Long NPostId);
+
+
 }

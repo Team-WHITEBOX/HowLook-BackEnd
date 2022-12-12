@@ -248,6 +248,14 @@ public class FeedServiceImpl implements  FeedService{
                 scrapRepository.delete(scrap);
             }
         }
+
+        //좋아요 삭제
+        List<FeedLike> feedlikes = feedLikeRepository.findAllWithMemberByNPostId(npost_id);
+        if(feedlikes.size() != 0) {
+            for(FeedLike feedlike : feedlikes) {
+                feedLikeRepository.delete(feedlike);
+            }
+        }
         
         hashtagRepository.delete(hashtag);
         feedRepository.delete(feed);
