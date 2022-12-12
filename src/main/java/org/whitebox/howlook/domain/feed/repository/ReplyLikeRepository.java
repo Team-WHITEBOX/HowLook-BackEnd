@@ -18,6 +18,8 @@ import static org.whitebox.howlook.domain.feed.entity.QFeed.feed;
 public interface ReplyLikeRepository extends JpaRepository<ReplyLike, Long> {
     List<ReplyLike> findAllByReplyIn(List<Reply> replies);
     Optional<ReplyLike> findByMemberAndReply(Member member, Reply reply);
-    @Query("select e from ReplyLike e where e.reply.ReplyId = :replyId AND e.member.mid =:mid")
+    @Query("select e from ReplyLike e where e.reply.ReplyId =:replyId AND e.member.mid =:mid")
     Optional<ReplyLike> findByMidAndReplyId(String mid, Long replyId);
+    @Query("select e from ReplyLike e where e.reply.ReplyId =:replyId")
+    List<ReplyLike> findByReplyId(Long replyId);
 }
