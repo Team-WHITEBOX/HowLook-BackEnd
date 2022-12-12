@@ -227,7 +227,6 @@ public class FeedServiceImpl implements  FeedService{
         }
 
         final Feed feed = feedRepository.findById(npost_id).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
-        final List<Long> replyids = replyRepository.listOfReplyId(npost_id);
         Long hashtagid = feed.getHashtag().getHashtagId();
 
         final Hashtag hashtag = hashtagRepository.findById(hashtagid).orElseThrow(() -> new EntityNotFoundException(HASHTAG_NOT_FOUND));
@@ -237,9 +236,19 @@ public class FeedServiceImpl implements  FeedService{
         for(Upload u : uploads) //연결된 사진 연결 끊기
             u.setFeed(null);
 
-        for (Long replyid : replyids)
-            replyService.remove(replyid);
+        // 댓글 삭제
+        List<Reply> replies = replyRepository.listOfFeed(npost_id);
+        for (Reply reply : replies)
+            replyRepository.delete(reply);
 
+        // 스크랩 삭제
+        List<Scrap> scraps = scrapRepository.findAllByNpostId(npost_id);
+        if(scraps.size() != 0) { // 게시글 삭제할때 게시글 스크랩 다 제거
+            for (Scrap scrap : scraps) {
+                scrapRepository.delete(scrap);
+            }
+        }
+        
         hashtagRepository.delete(hashtag);
         feedRepository.delete(feed);
     }

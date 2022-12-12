@@ -36,10 +36,10 @@ public class EvalController {
 
         evalService.register(evalRegisterDTO);
 
-        return ResponseEntity.ok(ResultResponse.of(REGISTER_SUCCESS, true));
+        return ResponseEntity.ok(ResultResponse.of(EVAL_REGISTER_SUCCESS, true));
     }
 
-    // 게시글 아이디로 게시글 정보 가져오기
+    // 평가 게시글 아이디로 게시글 정보 가져오기
     @GetMapping("/readbypid")
     public EvalReaderDTO readEval(Long NPostId) {
         EvalReaderDTO evalReaderDTO = evalService.reader(NPostId);
@@ -49,7 +49,7 @@ public class EvalController {
         return evalReaderDTO;
     }
 
-    // 게시글 아이디로 게시글 정보 가져오기
+    // 평가 게시글 아이디로 게시글 정보 가져오기
     @GetMapping("/readAnyEval")
     public ResponseEntity<ResultResponse> readAnyEval() {
         List<EvalReaderDTO> evalReaderDTO = evalService.readAll();

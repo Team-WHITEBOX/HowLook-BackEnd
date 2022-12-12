@@ -13,4 +13,6 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
     Optional<Scrap> findByMemberAndFeed(Member member, Feed feed);
     @Query("select s from Scrap s where s.member.mid = :mid")
     List<Scrap> findAllByMid(String mid);
+    @Query("select s from Scrap s where s.feed.NPostId =:NpostId")
+    List<Scrap> findAllByNpostId(Long NpostId);
 }

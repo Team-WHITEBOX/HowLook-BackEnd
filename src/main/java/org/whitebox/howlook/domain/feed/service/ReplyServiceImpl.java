@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.feed.dto.ReplyDTO;
 import org.whitebox.howlook.domain.feed.dto.ReplyReadDTO;
 import org.whitebox.howlook.domain.feed.dto.ReplyRegisterDTO;
@@ -85,6 +86,7 @@ public class ReplyServiceImpl implements ReplyService{
     }
 
     @Override
+    @Transactional
     public void remove(Long ReplyId) {
         Reply reply = replyRepository.findById(ReplyId).orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
         Member member = accountUtil.getLoginMember();
@@ -96,14 +98,18 @@ public class ReplyServiceImpl implements ReplyService{
         Feed feed = feedRepository.findById(reply.getFeed().getNPostId()).orElseThrow(() -> new EntityNotFoundException(ErrorCode.POST_NOT_FOUND));
         feed.DownCommentCount();
 
-        if(reply.getLikeCount() != 0) {
-            ReplyLike replyLike = replyLikeRepository.findByMemberAndReply(member,reply).orElseThrow();
-            replyLikeRepository.delete(replyLike);
+
+        if(reply.getLikeCount() != 0) { // 댓글에 있는 모든 좋아요 삭제
+            List<ReplyLike> replyLikes = replyLikeRepository.findByReplyId(ReplyId);
+            log.info(replyLikes);
+            for(ReplyLike replyLike : replyLikes) {
+                log.info(replyLike);
+                replyLikeRepository.delete(replyLike);
+            }
         }
 
         feedRepository.save(feed);
         replyRepository.delete(reply);
-
     }
 
     @Override
