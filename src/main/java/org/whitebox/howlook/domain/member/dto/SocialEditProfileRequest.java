@@ -26,7 +26,6 @@ public class SocialEditProfileRequest {
     private String memberName;
 
     @ApiModelProperty(value = "생일", example = "yyyy-MM-dd", required = true)
-    @NotBlank(message = "생일을 입력해주세요")
     private LocalDate memberBirthDay;
 
     @ApiModelProperty(value = "별명", example = "길동이", required = true)
