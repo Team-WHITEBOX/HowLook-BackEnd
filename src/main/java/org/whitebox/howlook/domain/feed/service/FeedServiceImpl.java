@@ -236,10 +236,15 @@ public class FeedServiceImpl implements  FeedService{
         for(Upload u : uploads) //연결된 사진 연결 끊기
             u.setFeed(null);
 
-        // 댓글 삭제
+        // 댓글 및 댓글 좋아요 삭제
         List<Reply> replies = replyRepository.listOfFeed(npost_id);
-        for (Reply reply : replies)
+        for (Reply reply : replies) {
+            List<ReplyLike> replyLikes = replyLikeRepository.findByReplyId(reply.getReplyId());
+            for(ReplyLike replyLike : replyLikes) {
+                replyLikeRepository.delete(replyLike);
+            }
             replyRepository.delete(reply);
+        }
 
         // 스크랩 삭제
         List<Scrap> scraps = scrapRepository.findAllByNpostId(npost_id);
