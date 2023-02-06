@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.whitebox.howlook.domain.feed.entity.Feed;
+import org.whitebox.howlook.domain.post.entity.Post;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UploadResultDTO {
-    private Feed feed;
-    private String Path; // 사진이 저장될 경로
+    private Post post;
+    private String path; // 사진이 저장될 경로
 }

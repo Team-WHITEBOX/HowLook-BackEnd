@@ -33,10 +33,10 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {  /
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         log.info(authentication);
-        String mid = authentication.getName();
-        memberRepository.getWithRoles(mid).orElseThrow(()->new BusinessException(ErrorCode.LOGOUT_BY_ANOTHER));
-        log.info(mid); //username
-        Map<String, Object> claim = Map.of("mid", mid);
+        String memberId = authentication.getName();
+        memberRepository.getWithRoles(memberId).orElseThrow(()->new BusinessException(ErrorCode.LOGOUT_BY_ANOTHER));
+        log.info(memberId); //username
+        Map<String, Object> claim = Map.of("memberId", memberId);
         //Access Token 유효기간 1일
         String accessToken = jwtUtil.generateToken(claim, 1);
         //Refresh Token 유효기간 30일

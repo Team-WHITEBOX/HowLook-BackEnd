@@ -13,7 +13,7 @@ public class TournamentTests {
     private TournamentTask tournamentTask;
     @Test
     public void taskTest(){
-        tournamentTask.feedToTPost();
+        tournamentTask.postToTPost();
     }
     @Test
     public void taskTest2(){

@@ -37,9 +37,9 @@ public class TournamentController {
     @ApiOperation(value = "어제 날짜 탑 32 피드 게시글 가져오기")
     @GetMapping("/top32")
     public ResponseEntity<ResultResponse> yesterdayPosts(){
-        final List<TournamentPostDTO> feeds = tournamentService.findTop32FeedByDateForTourna();
+        final List<TournamentPostDTO> posts = tournamentService.findTop32postByDateForTourna();
 
-        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,feeds));
+        return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,posts));
     }
 
     @ApiOperation(value = "토너먼트 결과 반영")
@@ -77,9 +77,9 @@ public class TournamentController {
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS,tournamentPostDTO));
     }
     @ApiOperation(value = "post Task 수동으로 수행")
-    @GetMapping("/feedtopost")
-    public ResponseEntity<ResultResponse> feedToPost() {
-        tournamentTask.feedToTPost();
+    @GetMapping("/posttopost")
+    public ResponseEntity<ResultResponse> postToPost() {
+        tournamentTask.postToTPost();
         return ResponseEntity.ok(ResultResponse.of(GET_TOURNAMENT_POST_SUCCESS));
     }
     @ApiOperation(value = "result Task 수동으로 수행")

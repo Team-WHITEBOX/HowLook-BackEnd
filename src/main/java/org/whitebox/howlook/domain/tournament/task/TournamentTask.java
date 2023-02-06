@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.whitebox.howlook.domain.feed.entity.Feed;
-import org.whitebox.howlook.domain.feed.repository.FeedRepository;
+import org.whitebox.howlook.domain.post.repository.PostRepository;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
@@ -17,14 +16,13 @@ import org.whitebox.howlook.global.error.ErrorCode;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
 @RequiredArgsConstructor
 @Component
 public class TournamentTask {
-    private final FeedRepository feedRepository;
+    private final PostRepository postRepository;
     private final TournamentRepository tournamentRepository;
     private final HistoryRepository historyRepository;
     private final TournamentDateRepository tournamentDateRepository;
@@ -32,7 +30,7 @@ public class TournamentTask {
 
     //매일 일반/왕중왕전 비교해서 피드 불러오고 토너먼트 테이블에 저장.
     @Scheduled(cron = "0 30 0 * * *")
-    public void feedToTPost() {
+    public void postToTPost() {
 
         Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();   //그날의 날짜정보 가져오기
         String tourtype = "Normal";
@@ -41,16 +39,16 @@ public class TournamentTask {
             tournamentDateRepository.updateTournamentDateReset(); //10번째날 우선 세던날짜를초기화
         }
 
-        List<TournamentPostDTO> feeds = tournamentService.findTop32FeedByDateForTourna();
+        List<TournamentPostDTO> posts = tournamentService.findTop32postByDateForTourna();
 
-        if(feeds.size() == 32){    //게시글 수가 32개보다 적으면 토너먼트 안함
+        if(posts.size() == 32){    //게시글 수가 32개보다 적으면 토너먼트 안함
             String finalTourtype = tourtype;    //tourna_type을 넣기위해서 final형이 대입되어야 하므로.
 
-            for(TournamentPostDTO feed : feeds)
+            for(TournamentPostDTO post : posts)
             {
                 TournamentPost tournamentPost = TournamentPost.builder()
-                        .date(LocalDate.now()).feed_id(feed.getFeed_id()).photo(feed.getPhoto())
-                        .member_id(feed.getMember_id()).score(0L).tourna_type(finalTourtype).build();
+                        .date(LocalDate.now()).tournamentPostId(post.getPostId()).photo(post.getPhoto())
+                        .memberId(post.getMemberId()).score(0L).tournamentType(finalTourtype).build();
 
                 tournamentRepository.save((tournamentPost));
 

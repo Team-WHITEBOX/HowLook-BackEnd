@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class loginDTO {
-    String mid;
-    String mpw;
+    String memberId;
+    String memberPassword;
 }

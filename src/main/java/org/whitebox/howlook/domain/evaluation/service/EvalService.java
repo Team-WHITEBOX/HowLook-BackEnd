@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EvalService {
     void register(EvalRegisterDTO evalRegisterDTO);
-    EvalReaderDTO reader(Long NPostId);
+    EvalReaderDTO reader(Long postId);
     public List<EvalReaderDTO> readerUID(String UserID);
     public List<EvalReaderDTO> readAll();
     public EvalReaderDTO getEvalPage(int page, int size);

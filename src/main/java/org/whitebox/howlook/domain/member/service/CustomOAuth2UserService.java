@@ -62,13 +62,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private MemberSecurityDTO generateDTO(Map<String,String> account, Map<String, Object> params){
 
-        Optional<Member> result = memberRepository.findByMid(account.get("email"));
+        Optional<Member> result = memberRepository.findByMemberId(account.get("email"));
         //데이터베이스에 해당 이메일을 사용자가 없다면
         if(result.isEmpty()){
-            //회원 추가 -- mid는 이메일 주소/ 패스워드는 1111
+            //회원 추가 -- memberId는 이메일 주소/ 패스워드는 1111
             Member member = Member.builder()
-                    .mid(account.get("email"))
-                    .mpw(passwordEncoder.encode("1111"))
+                    .memberId(account.get("email"))
+                    .memberPassword(passwordEncoder.encode("1111"))
                     .nickName(account.get("nickName"))
                     .gender(account.get("gender").toUpperCase().charAt(0))
                     .social(true)
@@ -89,8 +89,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member member = result.get();
             MemberSecurityDTO memberSecurityDTO =
                     new MemberSecurityDTO(
-                            member.getMid(),
-                            member.getMpw(),
+                            member.getMemberId(),
+                            member.getMemberPassword(),
                             member.getName(),
                             member.getNickName(),
                             member.getPhone(),

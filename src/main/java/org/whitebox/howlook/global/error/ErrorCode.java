@@ -47,7 +47,7 @@ public enum ErrorCode {
     JWT_EXPIRED(401, "J002", "만료된 토큰입니다."),
     EXPIRED_REFRESH_TOKEN(401, "J003", "만료된 REFRESH 토큰입니다. 재로그인 해주십시오."),
 
-    // Feed
+    // post
     POST_NOT_FOUND(400, "F001", "존재하지 않는 게시물입니다."),
     POST_CANT_DELETE(400, "F002", "게시물 게시자만 삭제할 수 있습니다."),
     POST_LIKE_NOT_FOUND(400, "F003", "해당 게시물에 좋아요를 누르지 않은 회원입니다."),

@@ -20,19 +20,14 @@ import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
-import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.util.AccountUtil;
 import org.whitebox.howlook.global.util.LocalUploader;
 import org.whitebox.howlook.global.util.S3Uploader;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,9 +70,9 @@ public class EvalServiceImpl implements EvalService{
     }
 
     @Override
-    public EvalReaderDTO reader(Long NPostId)
+    public EvalReaderDTO reader(Long postId)
     {
-        Optional<Evaluation> result = evalRepository.findById(NPostId);
+        Optional<Evaluation> result = evalRepository.findById(postId);
 
         Evaluation eval = result.orElseThrow();
         log.info(eval);
@@ -85,12 +80,12 @@ public class EvalServiceImpl implements EvalService{
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         EvalReaderDTO evalReaderDTO = modelMapper.map(eval, EvalReaderDTO.class);
         evalReaderDTO.setUserPostInfo(new UserPostInfoResponse(eval.getMember()));
-        evalReaderDTO.setNPostId(eval.getNPostId());
+        evalReaderDTO.setPostId(eval.getPostId());
         evalReaderDTO.setModDate(eval.getModDate());
         evalReaderDTO.setRegDate(eval.getRegDate());
         evalReaderDTO.setMainPhotoPath(eval.getMainPhotoPath());
 
-        List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getNPostId());
+        List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getPostId());
         float averScore = 0;
         Long rCount = 0L;
         for(EvalReply r : evalReplies)
@@ -123,7 +118,7 @@ public class EvalServiceImpl implements EvalService{
 
             // 이미 달은 평가라면 반환하지 않게
             EvalReply temp = evalReplyRepository
-                    .findMyReplyByPostid(evalReaderDTO.getNPostId(),accountUtil.getLoginMember().getMid());
+                    .findMyReplyByPostid(evalReaderDTO.getPostId(),accountUtil.getLoginMember().getMemberId());
 
             if(temp == null) {
                 readerDTOList.add(evalReaderDTO);
@@ -134,15 +129,15 @@ public class EvalServiceImpl implements EvalService{
     }
     @Override
     public List<EvalReaderDTO> readerUID(String UserID) {
-        List<Evaluation> evals = evalRepository.findByMid(UserID);
+        List<Evaluation> evals = evalRepository.findBymemberId(UserID);
         List<EvalReaderDTO> result = new ArrayList<>();
         for(Evaluation eval : evals){
             EvalReaderDTO evalReaderDTO = new EvalReaderDTO().builder()
-                    .NPostId(eval.getNPostId()).userPostInfo(new UserPostInfoResponse(eval.getMember()))
-                    .modDate(eval.getModDate()).regDate(eval.getRegDate()).MainPhotoPath(eval.getMainPhotoPath()).build();
+                    .postId(eval.getPostId()).userPostInfo(new UserPostInfoResponse(eval.getMember()))
+                    .modDate(eval.getModDate()).regDate(eval.getRegDate()).mainPhotoPath(eval.getMainPhotoPath()).build();
             result.add(evalReaderDTO);
 
-            List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getNPostId());
+            List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getPostId());
             float averScore = 0;
             Long rCount = 0L;
             for(EvalReply r : evalReplies)
@@ -179,7 +174,7 @@ public class EvalServiceImpl implements EvalService{
 
             // 이미 달은 평가라면 반환하지 않게
             EvalReply temp = evalReplyRepository
-                    .findMyReplyByPostid(evalReaderDTO.getNPostId(),accountUtil.getLoginMember().getMid());
+                    .findMyReplyByPostid(evalReaderDTO.getPostId(),accountUtil.getLoginMember().getMemberId());
 
             if(temp == null) {
                 readerDTOList = evalReaderDTO;

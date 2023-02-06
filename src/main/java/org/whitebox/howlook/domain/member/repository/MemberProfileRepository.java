@@ -6,6 +6,6 @@ import org.whitebox.howlook.domain.member.dto.UserProfileResponse;
 import java.util.Optional;
 
 public interface MemberProfileRepository {
-    Optional<UserProfileResponse> findUserProfileByMidAndTargetUsermid(String loginMemberId, String usermid);
-    Optional<UserPostInfoResponse> findUserPostInfoByMid(String usermid);
+    Optional<UserProfileResponse> findUserProfileByMemberIdAndTargetMemberId(String loginMemberId, String memberId);
+    Optional<UserPostInfoResponse> findUserPostInfoByMemberId(String memberId);
 }

@@ -41,8 +41,8 @@ public class EvalController {
 
     // 평가 게시글 아이디로 게시글 정보 가져오기
     @GetMapping("/readbypid")
-    public EvalReaderDTO readEval(Long NPostId) {
-        EvalReaderDTO evalReaderDTO = evalService.reader(NPostId);
+    public EvalReaderDTO readEval(Long postId) {
+        EvalReaderDTO evalReaderDTO = evalService.reader(postId);
 
         log.info(evalReaderDTO);
 
@@ -52,38 +52,37 @@ public class EvalController {
     // 평가 게시글 아이디로 게시글 정보 가져오기
     @GetMapping("/readAnyEval")
     public ResponseEntity<ResultResponse> readAnyEval() {
-        List<EvalReaderDTO> evalReaderDTO = evalService.readAll();
+        List<EvalReaderDTO> evalReaderDTOS = evalService.readAll();
 
-        log.info(evalReaderDTO.size());
-        if(evalReaderDTO.size() == 0)
+        log.info(evalReaderDTOS.size());
+        if(evalReaderDTOS.size() == 0)
         {
             return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL));
         }
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTO));
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTOS));
     }
 
     @GetMapping("/readNextEval")
     public ResponseEntity<ResultResponse> getNextEvaluation()
     {
-        final EvalReaderDTO evalList = evalService.getEvalPage(0,1);
+        final EvalReaderDTO evalPage = evalService.getEvalPage(0,1);
 
-        if(evalList == null)
+        if(evalPage == null)
         {
             return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL));
         }
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS,evalList));
+        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS,evalPage));
     }
 
-
     @GetMapping("/readbyuid")
-    public ResponseEntity<ResultResponse> readFeedbyUID(String UserID) {
-        List<EvalReaderDTO> evals = evalService.readerUID(UserID);
+    public ResponseEntity<ResultResponse> readpostbyUID(String userID) {
+        List<EvalReaderDTO> evalReaderDTOS = evalService.readerUID(userID);
 
-        log.info(evals);
+        log.info(evalReaderDTOS);
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evals));
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTOS));
     }
     
 }

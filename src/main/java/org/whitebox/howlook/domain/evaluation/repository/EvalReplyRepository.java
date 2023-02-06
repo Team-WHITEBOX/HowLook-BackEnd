@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface EvalReplyRepository  extends JpaRepository<EvalReply, Long> {
 
-    @Query("select e from EvalReply e where e.member.mid = :mid")
-    EvalReply findByMid(String mid);
-    @Query("select e from EvalReply e where e.evaluation.NPostId = :pid AND e.member.mid = :mid")
-    EvalReply findMyReplyByPostid(Long pid,String mid);
-    @Query("select e from EvalReply e where e.evaluation.NPostId = :pid")
+    @Query("select e from EvalReply e where e.member.memberId = :memberId")
+    EvalReply findBymemberId(String memberId);
+    @Query("select e from EvalReply e where e.evaluation.postId = :pid AND e.member.memberId = :memberId")
+    EvalReply findMyReplyByPostid(Long pid,String memberId);
+    @Query("select e from EvalReply e where e.evaluation.postId = :pid")
     List<EvalReply> findBypid(Long pid);
-    @Query("select e from EvalReply e where e.evaluation.NPostId = :pid and e.member.mid = :mid")
-    EvalReply findBypidAndmid(Long pid,String mid);
+    @Query("select e from EvalReply e where e.evaluation.postId = :pid and e.member.memberId = :memberId")
+    EvalReply findBypidAndmemberId(Long pid,String memberId);
 
 }

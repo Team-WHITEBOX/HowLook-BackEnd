@@ -74,10 +74,10 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             log.info("expTime: " + expTime);
             log.info("gap: " + gapTime );
 
-            String mid = (String)refreshClaims.get("mid");
+            String memberId = (String)refreshClaims.get("memberId");
 
             //이상태까지 오면 무조건 AccessToken은 새로 생성
-            String accessTokenValue = jwtUtil.generateToken(Map.of("mid", mid), 1);
+            String accessTokenValue = jwtUtil.generateToken(Map.of("memberId", memberId), 1);
 
             String refreshTokenValue = tokens.get("refreshToken");
 
@@ -85,7 +85,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             //if(gapTime < (1000 * 60  * 3  ) ){
             if(gapTime < (1000 * 60 * 60 * 24 * 3  ) ){
                 log.info("new Refresh Token required...  ");
-                refreshTokenValue = jwtUtil.generateToken(Map.of("mid", mid), 30);
+                refreshTokenValue = jwtUtil.generateToken(Map.of("memberId", memberId), 30);
             }
 
             log.info("Refresh Token result....................");
@@ -102,7 +102,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
     private Map<String,String> parseRequestJSON(HttpServletRequest request) {
 
-        //JSON 데이터를 분석해서 mid, mpw 전달 값을 Map으로 처리
+        //JSON 데이터를 분석해서 memberId, memberPassword 전달 값을 Map으로 처리
         try(Reader reader = new InputStreamReader(request.getInputStream())){
 
             Gson gson = new Gson();

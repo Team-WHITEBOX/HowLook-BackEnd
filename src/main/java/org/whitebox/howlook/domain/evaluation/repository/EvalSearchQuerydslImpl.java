@@ -31,7 +31,7 @@ public class EvalSearchQuerydslImpl implements EvalSearchQuerydsl{
                 .from(evaluation)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(evaluation.NPostId.desc())
+                .orderBy(evaluation.postId.desc())
                 .distinct()
                 .fetch();
 

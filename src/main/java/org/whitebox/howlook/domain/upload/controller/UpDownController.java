@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.whitebox.howlook.domain.feed.dto.FeedRegisterDTO;
+import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
@@ -42,7 +42,7 @@ public class UpDownController {
         // 사진 업로드 코드
         log.info(uploadFileDTO);
         final List<UploadResultDTO> list = new ArrayList<>();
-        // feed에 사진을 업로드하기 위한 기반 코드
+        // post에 사진을 업로드하기 위한 기반 코드
 //        if(uploadFileDTO.getFiles() != null)
 //        {
 //            // forEach 문으로 선택한 사진 수 만큼 실행 됨
@@ -62,8 +62,8 @@ public class UpDownController {
 //                // 여기까지는 사진을 Server에 저장하는 코드
 //                // 여기서부터 사진 정보를 DB에 저장하는 코드
 //                // UploadFileDTO를 통해 db에 사진 저장경로를 Insert
-//                Long pId = uploadFileDTO.getNPostId();
-////                UploadResultDTO temp = UploadResultDTO.builder().Path(uploadPath+"\\"+uuid+"_"+originalName).NPostId(pId).build();
+//                Long pId = uploadFileDTO.getpostId();
+////                UploadResultDTO temp = UploadResultDTO.builder().Path(uploadPath+"\\"+uuid+"_"+originalName).postId(pId).build();
 //                list.add(temp);
 //
 //                uploadService.register(temp);
@@ -76,9 +76,9 @@ public class UpDownController {
     // 게시글 아이디에 붙어있는 사진 경로를 반환
     @ApiOperation(value = "Get photo by postid", notes = "Get 방식으로 게시글에 붙은 사진 경로 조회")
     @GetMapping("/read")
-    public List<PhotoDTO> readPhoto(Long NPostId) {
+    public List<PhotoDTO> readPhoto(Long postId) {
         List<PhotoDTO> list = new ArrayList<>();
-        list = uploadService.getPhtoData(NPostId);
+        list = uploadService.getPhotoData(postId);
 
         return list;
     }
@@ -104,8 +104,8 @@ public class UpDownController {
     private final LocalUploader localUploader;
     private final S3Uploader s3Uploader;
     @PostMapping(value = "/S3Upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<String> S3Upload(@Valid @ModelAttribute FeedRegisterDTO feedRegisterDTO){
-        List<MultipartFile> files = feedRegisterDTO.getUploadFileDTO().getFiles();
+    public List<String> S3Upload(@Valid @ModelAttribute PostRegisterDTO postRegisterDTO){
+        List<MultipartFile> files = postRegisterDTO.getUploadFileDTO().getFiles();
         if(files == null || files.size() == 0){
             return null;
         }

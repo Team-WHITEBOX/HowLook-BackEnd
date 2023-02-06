@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
-import org.whitebox.howlook.domain.feed.dto.HashtagDTO;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 
 import java.time.LocalDateTime;
@@ -20,17 +19,17 @@ import java.util.List;
 @NoArgsConstructor
 public class EvalReaderDTO {
 
-    private Long NPostId;       //게시글 id
+    private Long postId;       //게시글 id
 
     UserPostInfoResponse userPostInfo;
 
-    private Long LikeCount;     //좋아요개수
+    private Long likeCount;     //좋아요개수
 
-    private Long CommentCount;  //댓글개수
+    private Long commentCount;  //댓글개수
 
-    private String Content;     //내용
+    private String content;     //내용
 
-    private String MainPhotoPath; //사진 경로
+    private String mainPhotoPath; //사진 경로
 
     @JsonProperty("regDate")
     private LocalDateTime regDate;
@@ -42,24 +41,13 @@ public class EvalReaderDTO {
 
     @QueryProjection
     public EvalReaderDTO(Evaluation eval) {
-        this.NPostId = eval.getNPostId();
+        this.postId = eval.getPostId();
         this.userPostInfo = new UserPostInfoResponse(eval.getMember());
-        this.LikeCount = eval.getLikeCount();
-        this.CommentCount = eval.getCommentCount();
-        this.Content = eval.getContent();
-        this.MainPhotoPath = eval.getMainPhotoPath();
+        this.likeCount = eval.getLikeCount();
+        this.commentCount = eval.getCommentCount();
+        this.content = eval.getContent();
+        this.mainPhotoPath = eval.getMainPhotoPath();
         this.regDate = eval.getRegDate();
         this.modDate = eval.getModDate();
-    }
-
-    public void SetAverage(List<EvalReply> reply)
-    {
-        this.averageScore = 0;
-        List<EvalReply> evalReplies = reply; //evalReplyRepository.findBypid(NPostId);
-
-        for(EvalReply r : evalReplies)
-        {
-
-        }
     }
 }

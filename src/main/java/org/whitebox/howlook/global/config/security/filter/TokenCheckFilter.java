@@ -52,10 +52,10 @@ public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 �
         log.info("JWTUtil: "+jwtUtil);
         try{
             Map<String,Object> payload = validateAccessToken(request);
-            //mid
-            String mid = (String)payload.get("mid");
-            log.info("mid: "+mid);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(mid);
+            //memberId
+            String memberId = (String)payload.get("memberId");
+            log.info("memberId: "+memberId);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(memberId);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails,null,userDetails.getAuthorities()
             );

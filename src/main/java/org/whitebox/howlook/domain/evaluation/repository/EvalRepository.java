@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface EvalRepository extends JpaRepository<Evaluation, Long>, EvalSearch,EvalSearchQuerydsl {
 
-    @Query("select e from Evaluation e where e.member.mid = :mid")
-    List<Evaluation> findByMid(String mid);
+    @Query("select e from Evaluation e where e.member.memberId = :memberId")
+    List<Evaluation> findBymemberId(String memberId);
 
-    @Query("select e from Evaluation e where e.NPostId = :pid")
+    @Query("select e from Evaluation e where e.postId = :pid")
     Evaluation findByPid(Long pid);
 }

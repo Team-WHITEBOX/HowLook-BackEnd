@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 public class EHistoryResponse {
-    Long e_history_id;
+    Long eventHistoryId;
     LocalDate date;
     String eventType;
     Long lank_1;
@@ -22,9 +22,9 @@ public class EHistoryResponse {
     Long lank_10;
 
     @QueryProjection
-    public EHistoryResponse(Long e_history_id,LocalDate date,String eventType, Long lank_1,Long lank_2,Long lank_3
-            ,Long lank_4,Long lank_5,Long lank_6,Long lank_7,Long lank_8,Long lank_9,Long lank_10){
-        this.e_history_id = e_history_id;
+    public EHistoryResponse(Long eventHistoryId, LocalDate date, String eventType, Long lank_1, Long lank_2, Long lank_3
+            , Long lank_4, Long lank_5, Long lank_6, Long lank_7, Long lank_8, Long lank_9, Long lank_10){
+        this.eventHistoryId = eventHistoryId;
         this.date = date;
         this.eventType = eventType;
         this.lank_1 = lank_1;

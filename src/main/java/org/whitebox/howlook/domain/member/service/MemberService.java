@@ -1,6 +1,6 @@
 package org.whitebox.howlook.domain.member.service;
 
-import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
+import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.member.dto.*;
 
 import java.util.List;
@@ -14,9 +14,9 @@ public interface MemberService {
     void editProfile(EditProfileRequest editProfileRequest);
     void socialEditProfile(SocialEditProfileRequest socialEditProfileRequest);
 
-    void editProfilePhoto(Long feedId);
-    UserProfileResponse getUserProfile(String usermid);
-    UserPostInfoResponse getUserPostInfo(String usermid);
+    void editProfilePhoto(Long postId);
+    UserProfileResponse getUserProfile(String memberId);
+    UserPostInfoResponse getUserPostInfo(String memberId);
 
-    List<FeedReaderDTO> getUserScrap(String usermid);
+    List<PostReaderDTO> getUserScrap(String memberId);
 }

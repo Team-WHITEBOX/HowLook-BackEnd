@@ -17,8 +17,9 @@ import java.util.Set;
 @DynamicInsert
 public class Member {
     @Id
-    private String mid;         //memberID
-    private String mpw;         //memberPW
+    private String memberId;
+
+    private String memberPassword;
 
     private String name;
     private String nickName;
@@ -37,11 +38,11 @@ public class Member {
     private Set<MemberRole> roleSet = new HashSet<>();
 
 //    @Builder
-//    public Member(String mid,String mpw, String){
+//    public Member(String memberId,String memberPassword, String){
 //
 //    }
 
-    public void updatePassword(String mpw){ this.mpw = mpw; }
+    public void updatePassword(String memberPassword){ this.memberPassword = memberPassword; }
     public void updateNickName(String nickName){
         this.nickName = nickName;
     }

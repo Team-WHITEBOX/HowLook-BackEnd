@@ -17,10 +17,10 @@ import javax.persistence.*;
 public class EvalReply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ReplyId;       // 평가 id
+    private Long replyId;       // 평가 id
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mid")
+    @JoinColumn(name = "memberId")
     private Member member; // 작성자 정보
 
     @ManyToOne(fetch = FetchType.LAZY)

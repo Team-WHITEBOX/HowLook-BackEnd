@@ -9,20 +9,20 @@ import java.util.List;
 
 @Getter
 public class THistoryList {
-    Long t_history_id;
+    Long tournamentHistoryId;
     LocalDate date;
     List<Long> lank = new ArrayList<>();
-    Long vote_count;
+    Long voteCount;
 
     @QueryProjection
-    public THistoryList(Long t_history_id, LocalDate date, Long lank_1, Long lank_2, Long lank_3, Long lank_4, Long vote_count){
-        this.t_history_id = t_history_id;
+    public THistoryList(Long tournamentHistoryId, LocalDate date, Long lank_1, Long lank_2, Long lank_3, Long lank_4, Long voteCount){
+        this.tournamentHistoryId = tournamentHistoryId;
         this.date = date;
         this.lank.add(lank_1);
         this.lank.add(lank_2);
         this.lank.add(lank_3);
         this.lank.add(lank_4);
-        this.vote_count = vote_count;
+        this.voteCount = voteCount;
     }
 
 }

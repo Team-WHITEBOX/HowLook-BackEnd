@@ -2,10 +2,7 @@ package org.whitebox.howlook.domain.tournament.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,20 +15,20 @@ import java.util.List;
 public class TournamentHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long t_history_id;
+    Long tournamentHistoryId;
     LocalDate date;
-    Long lank_1;
-    Long lank_2;
-    Long lank_3;
-    Long lank_4;
-    Long vote_count;
+    Long rank_1;
+    Long rank_2;
+    Long rank_3;
+    Long rank_4;
+    Long voteCount;
 
     public TournamentHistory(List<TournamentPost> posts){
         this.date = posts.get(0).getDate();
-        this.lank_1 = posts.get(0).getT_post_id();
-        this.lank_2 = posts.get(1).getT_post_id();
-        this.lank_3 = posts.get(2).getT_post_id();
-        this.lank_4 = posts.get(3).getT_post_id();
-        this.vote_count = posts.stream().mapToLong(i -> i.score).sum();
+        this.rank_1 = posts.get(0).getTournamentPostId();
+        this.rank_2 = posts.get(1).getTournamentPostId();
+        this.rank_3 = posts.get(2).getTournamentPostId();
+        this.rank_4 = posts.get(3).getTournamentPostId();
+        this.voteCount = posts.stream().mapToLong(i -> i.score).sum();
     }
 }

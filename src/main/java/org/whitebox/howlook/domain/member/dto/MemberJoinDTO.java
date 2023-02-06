@@ -15,9 +15,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MemberJoinDTO {
     @ApiModelProperty(value = "아이디", example = "testuser1", required = true)
-    private String mid;
+    private String memberId;
     @ApiModelProperty(value = "비밀번호", example = "123456", required = true)
-    private String mpw;
+    private String memberPassword;
     @ApiModelProperty(value = "이름", example = "홍길동", required = true)
     private String name;
     @ApiModelProperty(value = "닉네임", example = "길동이", required = true)

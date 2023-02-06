@@ -2,8 +2,7 @@ package org.whitebox.howlook.domain.upload.entity;
 
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
-import org.whitebox.howlook.domain.feed.entity.Feed;
-import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
+import org.whitebox.howlook.domain.post.entity.Post;
 
 import javax.persistence.*;
 
@@ -13,24 +12,23 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "feed")
+@ToString(exclude = "post")
 @DynamicInsert
 public class Upload {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long PhotoId;       //사진 id
+    private Long uploadId;       //사진 id
 
-    private String Path;        //사진 경로
+    private String path;        //사진 경로
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="NPostId")
-    private Feed feed;
+    @JoinColumn(name="postId")
+    private Post post;
 
     @Builder
-    public Upload(Feed feed, String path) {
-        this.feed = feed;
-        this.Path = path;
-        //this.NPostId = feed.getNPostId();
+    public Upload(Post post, String path) {
+        this.post = post;
+        this.path = path;
     }
 
 }

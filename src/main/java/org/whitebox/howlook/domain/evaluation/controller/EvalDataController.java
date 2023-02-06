@@ -23,8 +23,8 @@ public class EvalDataController {
 
     // 게시글 아이디로 게시글 정보 가져오기
     @GetMapping("/getReplyData")
-    public EvalDataDTO getReplyData(Long NPostId) {
-        EvalDataDTO evalDataDTO = evalReplyService.ReadDateByPostId(NPostId);
+    public EvalDataDTO getReplyData(Long postId) {
+        EvalDataDTO evalDataDTO = evalReplyService.ReadDateByPostId(postId);
         log.info(evalDataDTO);
         return evalDataDTO;
     }

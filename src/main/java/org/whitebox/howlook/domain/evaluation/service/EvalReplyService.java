@@ -8,5 +8,5 @@ import java.util.List;
 public interface EvalReplyService {
     public void register(EvalReplyDTO evalReplyDTO);
 
-    public EvalDataDTO ReadDateByPostId(Long NPostId);
+    public EvalDataDTO ReadDateByPostId(Long postId);
 }

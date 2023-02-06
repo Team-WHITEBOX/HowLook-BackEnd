@@ -60,7 +60,7 @@ public enum ResultCode {
     GET_RECENT15_MEMBER_TAGGED_POSTS_SUCCESS(200, "MP005", "회원의 최근 태그된 게시물 15개 조회에 성공하였습니다."),
     GET_MEMBER_TAGGED_POSTS_SUCCESS(200, "MP006", "회원의 태그된 게시물 조회에 성공하였습니다."),
 
-    // Feed
+    // post
     CREATE_POST_SUCCESS(200, "F001", "게시물 업로드에 성공하였습니다."),
     DELETE_POST_SUCCESS(200, "F002", "게시물 삭제에 성공하였습니다."),
     FIND_POST_PAGE_SUCCESS(200, "F003", "게시물 목록 페이지 조회에 성공하였습니다."),
@@ -85,7 +85,7 @@ public enum ResultCode {
     FIND_POST_FAIL(200, "F021", "게시물 조회에 실패하였습니다."),
     GET_POST_LIKES_SUCCESS(200, "F022", "게시물에 좋아요한 회원 목록 페이지 조회에 성공하였습니다."),
     MODIFY_REPLY_SUCCESS(200,"F023","댓글 수정에 성공하였습니다."),
-    GET_REPLY_IN_FEED_SUCESS(200,"F024","게시글 댓글 조회에 성공하였습니다."),
+    GET_REPLY_IN_post_SUCESS(200,"F024","게시글 댓글 조회에 성공하였습니다."),
 
     // Chat
     CREATE_CHAT_ROOM_SUCCESS(200, "C001", "채팅방 생성에 성공하였습니다."),
@@ -100,7 +100,7 @@ public enum ResultCode {
     FOLLOW_HASHTAG_SUCCESS(200, "H002", "해시태그 팔로우에 성공하였습니다."),
     UNFOLLOW_HASHTAG_SUCCESS(200, "H003", "해시태그 언팔로우에 성공하였습니다."),
     GET_HASHTAG_PROFILE_SUCCESS(200, "H004", "해시태그 프로필 조회에 성공하였습니다."),
-    GET_HASHTAG_FEED_SUCCESS(200, "H005", "해시태그로 게시글 조회에 성공하였습니다."),
+    GET_HASHTAG_post_SUCCESS(200, "H005", "해시태그로 게시글 조회에 성공하였습니다."),
 
     // Story
     CREATE_STORY_SUCCESS(200, "S001", "스토리 업로드 성공"),
@@ -121,7 +121,7 @@ public enum ResultCode {
     UPDATE_TOURNAMENT_SCORE_SUCCESS(200, "T002", "토너먼트 결과 업데이트에 성공하였습니다."),
     GET_TOURNAMENT_HISTORY_SUCCESS(200, "T003", "토너먼트 기록 조회에 성공하였습니다."),
     GET_TOURNAMENT_EVENT_HISTORY_SUCCESS(200, "T004", "이벤트 토너먼트 기록 조회에 성공하였습니다."),
-    FEED_TO_POST_SUCCESS(200, "T005", "토너먼트 게시글 변환에 성공하였습니다."),
+    post_TO_POST_SUCCESS(200, "T005", "토너먼트 게시글 변환에 성공하였습니다."),
     RESULT_TOURNAMENT_SUCCESS(200, "T006", "토너먼트 랭킹 기록에 성공하였습니다."),
 
     // Eval

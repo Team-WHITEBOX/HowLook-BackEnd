@@ -35,7 +35,7 @@ public class EditProfileResponse {
 //    private Long profilePhotoId;
 
     public EditProfileResponse(Member member) {
-        this.memberId = member.getMid();
+        this.memberId = member.getMemberId();
         this.memberNickName = member.getNickName();
         this.memberHeight = member.getHeight();
         this.memberWeight = member.getWeight();

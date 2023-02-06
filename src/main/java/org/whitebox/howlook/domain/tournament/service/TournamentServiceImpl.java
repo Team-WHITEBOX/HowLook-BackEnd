@@ -6,15 +6,14 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.whitebox.howlook.domain.feed.entity.Feed;
-import org.whitebox.howlook.domain.feed.repository.FeedRepository;
+import org.whitebox.howlook.domain.post.entity.Post;
+import org.whitebox.howlook.domain.post.repository.PostRepository;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryList;
-import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
-import org.whitebox.howlook.domain.tournament.repository.FeedToTournaRepository;
+import org.whitebox.howlook.domain.tournament.repository.postToTournaRepository;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
@@ -32,8 +31,8 @@ import static org.whitebox.howlook.global.error.ErrorCode.*;
 @RequiredArgsConstructor
 public class TournamentServiceImpl implements TournamentService {
     private final TournamentRepository tournamentRepository;
-    private final FeedToTournaRepository feedToTournaRepository;
-    private final FeedRepository feedRepository;
+    private final postToTournaRepository postToTournaRepository;
+    private final PostRepository postRepository;
     private final ModelMapper modelMapper;
     private final AccountUtil accountUtil;
     private final MemberRepository memberRepository;
@@ -91,41 +90,41 @@ public class TournamentServiceImpl implements TournamentService {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<TournamentPostDTO> findTop32FeedByDateForTourna()
+    public List<TournamentPostDTO> findTop32postByDateForTourna()
     {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         List<Map<String, Object>> cnt = new ArrayList<>();
-        List<Feed> feeds = new ArrayList<>();
+        List<Post> posts = new ArrayList<>();
 
         String sql = "SELECT " +
-                "DISTINCT (mid),like_count, npost_id, DATE_FORMAT(regdate,'%Y-%m-%d') FROM feed " +
-                "WHERE ((mid, like_count) IN (SELECT mid, MAX(like_count) " +
-                "FROM feed GROUP BY mid HAVING MAX(like_count))) " +
+                "DISTINCT (memberId),likeCount, postId, DATE_FORMAT(regdate,'%Y-%m-%d') FROM post " +
+                "WHERE ((memberId, likeCount) IN (SELECT memberId, MAX(likeCount) " +
+                "FROM post GROUP BY memberId HAVING MAX(likeCount))) " +
                 "AND " +
                 "DATE_FORMAT(NOW() - INTERVAL 1 DAY,'%Y-%m-%d') = DATE_FORMAT(regdate,'%Y-%m-%d') " +
-                "ORDER BY like_count DESC, npost_id DESC;";
+                "ORDER BY likeCount DESC, postId DESC;";
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
         cnt.addAll(rows);
 
         log.info(rows);
         for(Map<String, Object> map: cnt) {
-            Feed f = feedRepository.findByPid((Long)map.get("npost_id"));
-            f.setMember(memberRepository.findById((String)map.get("mid")).orElseThrow());
-            feeds.add(f);
+            Post f = postRepository.findByPostId((Long)map.get("postId"));
+            f.setMember(memberRepository.findById((String)map.get("memberId")).orElseThrow());
+            posts.add(f);
         }
 
-        List<TournamentPostDTO> result = feeds.stream().map(feed ->  new TournamentPostDTO(feed)).collect(Collectors.toList());
-        final List<TournamentPostDTO> posts = new ArrayList<>();
+        List<TournamentPostDTO> result = posts.stream().map(post ->  new TournamentPostDTO(post)).collect(Collectors.toList());
+        final List<TournamentPostDTO> tournamentPosts = new ArrayList<>();
 
         Long last_count = 0L;
-        String last_mid = "";
+        String last_memberId = "";
         int count = 0;
 
-        for(TournamentPostDTO feed : result)
+        for(TournamentPostDTO post : result)
         {
-            if(feed.getLikeCount() != last_count || !(feed.getMember_id().equals(last_mid)))
+            if(post.getLikeCount() != last_count || !(post.getMemberId().equals(last_memberId)))
             {
-                posts.add(feed);
+                tournamentPosts.add(post);
                 count += 1;
 
                 if(count >= 32) {
@@ -133,9 +132,9 @@ public class TournamentServiceImpl implements TournamentService {
                 }
             }
 
-            last_count = feed.getLikeCount();
-            last_mid = feed.getMember_id();
+            last_count = post.getLikeCount();
+            last_memberId = post.getMemberId();
         }
-        return posts;
+        return tournamentPosts;
     }
 }

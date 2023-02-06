@@ -1,12 +1,8 @@
 package org.whitebox.howlook.domain.evaluation.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
-import org.whitebox.howlook.domain.feed.entity.Feed;
 
 @Data
 @Builder

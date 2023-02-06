@@ -35,14 +35,14 @@ public class APILoginFilter extends AbstractAuthenticationProcessingFilter {   /
             return null;
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                jsonData.get("mid"),
-                jsonData.get("mpw")
+                jsonData.get("memberId"),
+                jsonData.get("memberPassword")
         );
         return getAuthenticationManager().authenticate(authenticationToken);  //실제 검증 , loadUserByUsername 실행됨
     }
 
     private Map<String,String> parseRequestJSON(HttpServletRequest request){
-        //JSON데이터 분석해서 mid,mpw값을 map으로 처리
+        //JSON데이터 분석해서 memberId,memberPassword값을 map으로 처리
         try(Reader reader = new InputStreamReader(request.getInputStream())){
             Gson gson = new Gson();
             return gson.fromJson(reader,Map.class);

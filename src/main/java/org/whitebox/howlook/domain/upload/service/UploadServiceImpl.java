@@ -41,16 +41,16 @@ public class UploadServiceImpl implements UploadService{
         uploadRepository.save(upload);
     }
 
-    public List<PhotoDTO> getPhtoData(Long NPostId)
+    public List<PhotoDTO> getPhotoData(Long postId)
     {
-        List<Upload> uploads = uploadRepository.findByPostId(NPostId);
+        List<Upload> uploads = uploadRepository.findByPostId(postId);
         List<PhotoDTO> photoDTOS = new ArrayList<>();
 
         for(Upload u : uploads)
         {
             PhotoDTO temp = new PhotoDTO();
             temp.setPath(u.getPath());
-            temp.setPhotoId(u.getPhotoId());
+            temp.setPhotoId(u.getUploadId());
 
             photoDTOS.add(temp);
         }
@@ -58,11 +58,11 @@ public class UploadServiceImpl implements UploadService{
         return photoDTOS;
     }
     @Override // DB로 부터 입력받은 ID에 붙은 사진 경로를 가져오는 함수
-    public List<String> getPath(Long NPostId) {
+    public List<String> getPath(Long postId) {
         List<Map<String, Object>> cnt = new ArrayList<>();
         List<String> str = new ArrayList<>();
-        String sql = "SELECT path FROM "+database+".upload WHERE npost_id = ?";
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, NPostId);
+        String sql = "SELECT path FROM "+database+".upload WHERE postId = ?";
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, postId);
         cnt.addAll(rows);
 
         for(Map<String, Object> map: cnt) {

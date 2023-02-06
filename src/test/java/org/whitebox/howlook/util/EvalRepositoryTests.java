@@ -17,7 +17,7 @@ public class EvalRepositoryTests {
     @Test
     public void testSearch1()
     {
-        Pageable pageable = PageRequest.of(1,10, Sort.by("NPostId").descending());
+        Pageable pageable = PageRequest.of(1,10, Sort.by("postId").descending());
 
         evalRepository.search1(pageable);
 

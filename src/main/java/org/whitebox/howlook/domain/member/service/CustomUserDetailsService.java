@@ -23,13 +23,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername: "+username);
-        Optional<Member> result = memberRepository.findByMid(username);
+        Optional<Member> result = memberRepository.findByMemberId(username);
         if(result.isEmpty()){  //해당 아이디 유저가 없다면
             throw new UsernameNotFoundException("username not found .... ");
         }
         Member member = result.get();
         MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(
-                member.getMid(), member.getMpw(), member.getName(),member.getNickName(),member.getPhone(), member.getHeight(),
+                member.getMemberId(), member.getMemberPassword(), member.getName(),member.getNickName(),member.getPhone(), member.getHeight(),
                 member.getWeight(),member.getBirthDay(),member.getGender(),member.getProfilePhoto(), member.isDel(), false,
                 member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority("ROLE_"+memberRole.name())).collect(Collectors.toList())
         );

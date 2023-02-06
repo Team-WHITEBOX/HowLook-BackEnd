@@ -37,7 +37,7 @@ public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHan
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        Map<String, Object> claim = Map.of("mid", memberSecurityDTO.getMid());
+        Map<String, Object> claim = Map.of("memberId", memberSecurityDTO.getMemberId());
         //Access Token 유효기간 1일
         String accessToken = jwtUtil.generateToken(claim, 1);
         //Refresh Token 유효기간 30일
@@ -61,8 +61,8 @@ public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHan
 
 //        //소셜로그인이고 회원의 패스워드가 1111이라면
 //        if (memberSecurityDTO.isSocial()
-//                && (memberSecurityDTO.getMpw().equals("1111")
-//                ||  passwordEncoder.matches("1111", memberSecurityDTO.getMpw())
+//                && (memberSecurityDTO.getMemberPassword().equals("1111")
+//                ||  passwordEncoder.matches("1111", memberSecurityDTO.getMemberPassword())
 //        )) {
 //            log.info("Should Change Password");
 //

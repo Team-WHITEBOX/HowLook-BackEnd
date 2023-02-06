@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -19,17 +16,17 @@ import java.time.LocalDate;
 public class EventHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long e_history_id;
+    Long eventHistoryId;
     LocalDate date;
     String eventType;
-    Long lank_1;
-    Long lank_2;
-    Long lank_3;
-    Long lank_4;
-    Long lank_5;
-    Long lank_6;
-    Long lank_7;
-    Long lank_8;
-    Long lank_9;
-    Long lank_10;
+    Long rank_1;
+    Long rank_2;
+    Long rank_3;
+    Long rank_4;
+    Long rank_5;
+    Long rank_6;
+    Long rank_7;
+    Long rank_8;
+    Long rank_9;
+    Long rank_10;
 }

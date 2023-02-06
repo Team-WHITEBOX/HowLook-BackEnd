@@ -17,7 +17,7 @@ import java.util.List;
 public class EvalRegisterDTO {
 
     //@NotNull
-    private Long NPostId;           //게시글 id
+    private Long postId;           //게시글 id
 
     private UploadFileDTO files;
 }

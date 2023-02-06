@@ -3,29 +3,25 @@ package org.whitebox.howlook.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
-import org.whitebox.howlook.domain.feed.entity.Feed;
-import org.whitebox.howlook.domain.feed.entity.Scrap;
-import org.whitebox.howlook.domain.feed.repository.FeedRepository;
-import org.whitebox.howlook.domain.feed.repository.ScrapRepository;
+import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
+import org.whitebox.howlook.domain.post.entity.Post;
+import org.whitebox.howlook.domain.post.entity.Scrap;
+import org.whitebox.howlook.domain.post.repository.PostRepository;
+import org.whitebox.howlook.domain.post.repository.ScrapRepository;
 import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.entity.MemberRole;
 import org.whitebox.howlook.domain.member.exception.AccountMismatchException;
-import org.whitebox.howlook.domain.member.exception.MidExistException;
+import org.whitebox.howlook.domain.member.exception.memberIdExistException;
 import org.whitebox.howlook.domain.member.exception.PasswordEqualWithOldException;
-import org.whitebox.howlook.domain.member.exception.UsernameAlreadyExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,19 +34,19 @@ public class MemberServiceImpl implements MemberService{
     private final AccountUtil accountUtil;
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
-    private final FeedRepository feedRepository;
+    private final PostRepository postRepository;
     private final ScrapRepository scrapRepository;
     private final PasswordEncoder passwordEncoder;
     private final UploadService uploadService; // 업로드 서비스
     @Override
     public void join(MemberJoinDTO memberJoinDTO) {
-        String mid = memberJoinDTO.getMid();
-        boolean exist = memberRepository.existsById(mid);
+        String memberId = memberJoinDTO.getMemberId();
+        boolean exist = memberRepository.existsById(memberId);
         if(exist){
-            throw new MidExistException();
+            throw new memberIdExistException();
         }
         Member member = modelMapper.map(memberJoinDTO,Member.class);
-        member.updatePassword(passwordEncoder.encode(memberJoinDTO.getMpw()));
+        member.updatePassword(passwordEncoder.encode(memberJoinDTO.getMemberPassword()));
         member.addRole(MemberRole.USER);
 
         log.info("========================");
@@ -75,7 +71,7 @@ public class MemberServiceImpl implements MemberService{
     public void updatePassword(UpdatePasswordRequest updatePasswordRequest) {
         log.info("member service");
         final Member member = accountUtil.getLoginMember();
-        if (!passwordEncoder.matches(updatePasswordRequest.getOldPassword(), member.getMpw())) {
+        if (!passwordEncoder.matches(updatePasswordRequest.getOldPassword(), member.getMemberPassword())) {
             throw new AccountMismatchException();
         }
         if (updatePasswordRequest.getOldPassword().equals(updatePasswordRequest.getNewPassword())) {
@@ -98,7 +94,7 @@ public class MemberServiceImpl implements MemberService{
 
 //        log.info("프로필 수정");
 //        if (memberRepository.existsById(editProfileRequest.getMemberId())
-//                && !member.getMid().equals(editProfileRequest.getMemberId())) {
+//                && !member.getMemberId().equals(editProfileRequest.getMemberId())) {
 //            log.info("예외");
 //            throw new UsernameAlreadyExistException();
 //        }
@@ -116,7 +112,7 @@ public class MemberServiceImpl implements MemberService{
 
 //        log.info("프로필 수정");
 //        if (memberRepository.existsById(socialEditProfileRequest.getMemberId())
-//                && !member.getMid().equals(socialEditProfileRequest.getMemberId())) {
+//                && !member.getMemberId().equals(socialEditProfileRequest.getMemberId())) {
 //            log.info("예외");
 //            throw new UsernameAlreadyExistException();
 //        }
@@ -131,42 +127,42 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public void editProfilePhoto(Long feedId) {
+    public void editProfilePhoto(Long postId) {
         final Member member = accountUtil.getLoginMember();
 
-        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
-        member.updateProfilePhotoId(feed.getMainPhotoPath());
+        Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        member.updateProfilePhotoId(post.getMainPhotoPath());
         memberRepository.save(member);
     }
 
     @Override
-    public UserProfileResponse getUserProfile(String usermid) {
+    public UserProfileResponse getUserProfile(String memberId) {
         final String loginMemberId = accountUtil.getLoginMemberId();
 
-        final UserProfileResponse result = memberRepository.findUserProfileByMidAndTargetUsermid(loginMemberId,usermid)
+        final UserProfileResponse result = memberRepository.findUserProfileByMemberIdAndTargetMemberId(loginMemberId,memberId)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
 
-        final List<Feed> feeds = feedRepository.findByMid(usermid);
-        log.info(feeds);
-        List<FeedReaderDTO> feedReaderDTOs = feeds.stream().map(feed -> new FeedReaderDTO(feed)).collect(Collectors.toList());
-        feedReaderDTOs.forEach( feedReaderDTO -> feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(feedReaderDTO.getNPostId())));
+        final List<Post> posts = postRepository.findByMemberId(memberId);
+        log.info(posts);
+        List<PostReaderDTO> postReaderDTOS = posts.stream().map(post -> new PostReaderDTO(post)).collect(Collectors.toList());
+        postReaderDTOS.forEach(postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));
 
-        result.setMemberFeeds(feedReaderDTOs);
+        result.setMemberPosts(postReaderDTOS);
         return result;
     }
 
     @Override
-    public UserPostInfoResponse getUserPostInfo(String usermid) {
-        final UserPostInfoResponse result = memberRepository.findUserPostInfoByMid(usermid)
+    public UserPostInfoResponse getUserPostInfo(String memberId) {
+        final UserPostInfoResponse result = memberRepository.findUserPostInfoByMemberId(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
         return result;
     }
 
     @Override
-    public List<FeedReaderDTO> getUserScrap(String usermid) {
-        final List<Scrap> scraps = scrapRepository.findAllByMid(usermid);
-        final List<FeedReaderDTO> feedReaderDTOs = scraps.stream().map(scrap -> new FeedReaderDTO(scrap.getFeed())).collect(Collectors.toList());
-        feedReaderDTOs.forEach( feedReaderDTO -> feedReaderDTO.setPhotoDTOs(uploadService.getPhtoData(feedReaderDTO.getNPostId())));
-        return feedReaderDTOs;
+    public List<PostReaderDTO> getUserScrap(String memberId) {
+        final List<Scrap> scraps = scrapRepository.findAllByMemberId(memberId);
+        final List<PostReaderDTO> postReaderDTOS = scraps.stream().map(scrap -> new PostReaderDTO(scrap.getPost())).collect(Collectors.toList());
+        postReaderDTOS.forEach(postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));
+        return postReaderDTOS;
     }
 }

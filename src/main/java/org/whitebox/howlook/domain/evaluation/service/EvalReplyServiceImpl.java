@@ -5,30 +5,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.evaluation.dto.EvalDataDTO;
-import org.whitebox.howlook.domain.evaluation.dto.EvalRegisterDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReplyDTO;
 import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
-import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.global.error.ErrorCode;
 import org.whitebox.howlook.global.error.exception.BusinessException;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Log4j2
@@ -52,13 +43,13 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         }
 
         // 현재 내가 쓰려고하는 포스트 아이디
-        Long pid = evalRepository.findByPid(evalReplyDTO.getPid()).getNPostId();
+        Long pid = evalRepository.findByPid(evalReplyDTO.getPostId()).getPostId();
 
         if(pid == null)
             throw new EntityNotFoundException(ErrorCode.POST_NOT_FOUND);
 
         // 이미 달은 평가라면 달리지않게 find 후 조건문 생성
-        EvalReply temp = evalReplyRepository.findMyReplyByPostid(pid,accountUtil.getLoginMember().getMid());
+        EvalReply temp = evalReplyRepository.findMyReplyByPostid(pid,accountUtil.getLoginMember().getMemberId());
         //evalReaderDTO.setUserPostInfo(new UserPostInfoResponse(evalList.get(i).getMember()));
 
         if(temp == null) {
@@ -70,91 +61,92 @@ public class EvalReplyServiceImpl implements EvalReplyService{
     }
 
     @Override
-    public EvalDataDTO ReadDateByPostId(Long NPostId)
+    public EvalDataDTO ReadDateByPostId(Long postId)
     {
-        float MAX = 0;
-        float MIN = 10;
-        float averScore = 0;
-        float mScore = 0;
-        float fScore = 0;
-        Long mCount = 0L;
-        Long fCount = 0L;
-        Long rCount = 0L;
+        float maxScore = 0;
+        float minScore = 10;
+        float averageScore = 0;
+        float maleScore = 0;
+        float femaleScore = 0;
+        Long maleCount = 0L;
+        Long femaleCount = 0L;
+        Long replyCount = 0L;
 
-        float[] mScores = new float[5];
-        float[] fScores = new float[5];
-        Long[] mCounts = new Long[5];
-        Long[] fCounts = new Long[5];
+        float[] maleScores = new float[5];
+        float[] femaleScores = new float[5];
+        Long[] maleCounts = new Long[5];
+        Long[] femaleCounts = new Long[5];
 
-        Arrays.fill(mScores,0);
-        Arrays.fill(fScores,0);
-        Arrays.fill(mCounts,0L);
-        Arrays.fill(fCounts,0L);
+        Arrays.fill(maleScores,0);
+        Arrays.fill(femaleScores,0);
+        Arrays.fill(maleCounts,0L);
+        Arrays.fill(femaleCounts,0L);
 
-        List<EvalReply> evalReplies = evalReplyRepository.findBypid(NPostId);
+        List<EvalReply> evalReplies = evalReplyRepository.findBypid(postId);
 
         for(EvalReply reply : evalReplies)
         {
             if(reply.getMember().getGender() == 'M') // 남자가 쓴 평가라면
             {
-                mScore += reply.getScore();
-                mCount += 1;
+                maleScore += reply.getScore();
+                maleCount += 1;
 
                 int index = (int)((reply.getScore() - 1) / 2);
-                mScores[index] += reply.getScore();
-                mCounts[index] += 1;
+                maleScores[index] += reply.getScore();
+                maleCounts[index] += 1;
             }
             else if(reply.getMember().getGender() == 'F') // 여자가 쓴 평가라면
             {
-                fScore += reply.getScore();
-                fCount += 1;
+                femaleScore += reply.getScore();
+                femaleCount += 1;
 
                 int index = (int)((reply.getScore() - 1) / 2);
-                fScores[index] += reply.getScore();
-                fCounts[index] += 1;
+                femaleScores[index] += reply.getScore();
+                femaleCounts[index] += 1;
             }
 
-            averScore += reply.getScore();
-            rCount += 1;
+            averageScore += reply.getScore();
+            replyCount += 1;
 
-            if(reply.getScore() > MAX)
-                MAX = reply.getScore();
+            if(reply.getScore() > maxScore)
+                maxScore = reply.getScore();
 
-            if(reply.getScore() < MIN)
-                MIN = reply.getScore();
+            if(reply.getScore() < minScore)
+                minScore = reply.getScore();
         }
 
-        if(averScore != 0 && rCount != 0)
-            averScore = averScore/rCount;
+        if(averageScore != 0 && replyCount != 0)
+            averageScore = averageScore/replyCount;
 
-        if(mScore != 0 && mCount != 0)
-            mScore = mScore/mCount;
+        if(maleScore != 0 && maleCount != 0)
+            maleScore = maleScore/maleCount;
 
-        if(fScore != 0 && fCount != 0)
-            fScore = fScore/fCount;
+        if(femaleScore != 0 && femaleCount != 0)
+            femaleScore = femaleScore/femaleCount;
 
         for(int i = 0; i < 5; i++)
         {
-            if(mScores[i] != 0 && mCounts[i] != 0)
-                mScores[i] = mScores[i]/mCounts[i];
+            if(maleScores[i] != 0 && maleCounts[i] != 0)
+                maleScores[i] = maleScores[i]/maleCounts[i];
 
-            if(fScores[i] != 0 && fCounts[i] != 0)
-                fScores[i] = fScores[i]/fCounts[i];
+            if(femaleScores[i] != 0 && femaleCounts[i] != 0)
+                femaleScores[i] = femaleScores[i]/femaleCounts[i];
         }
 
         EvalDataDTO evalDataDTO = new EvalDataDTO();
-        evalDataDTO.setAverageScore(averScore);
-        evalDataDTO.setMaleScore(mScore);
-        evalDataDTO.setFemaleScore(fScore);
-        evalDataDTO.setReplyCount(rCount);
-        evalDataDTO.setMaleCount(mCount);
-        evalDataDTO.setFemaleCount(fCount);
-        evalDataDTO.setMaxScore(MAX);
-        evalDataDTO.setMinScore(MIN);
-        evalDataDTO.setMaleScores(mScores);
-        evalDataDTO.setMaleCounts(mCounts);
-        evalDataDTO.setFemaleScores(fScores);
-        evalDataDTO.setFemaleCounts(fCounts);
+
+        evalDataDTO.setAverageScore(averageScore);
+        evalDataDTO.setMaleScore(maleScore);
+        evalDataDTO.setFemaleScore(femaleScore);
+        evalDataDTO.setReplyCount(replyCount);
+        evalDataDTO.setMaleCount(maleCount);
+        evalDataDTO.setFemaleCount(femaleCount);
+        evalDataDTO.setMaxScore(maxScore);
+        evalDataDTO.setMinScore(minScore);
+        evalDataDTO.setMaleScores(maleScores);
+        evalDataDTO.setMaleCounts(maleCounts);
+        evalDataDTO.setFemaleScores(femaleScores);
+        evalDataDTO.setFemaleCounts(femaleCounts);
 
         return evalDataDTO;
     }

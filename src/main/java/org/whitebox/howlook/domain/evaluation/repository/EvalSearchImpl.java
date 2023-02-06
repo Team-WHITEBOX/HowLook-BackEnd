@@ -25,11 +25,11 @@ public class EvalSearchImpl extends QuerydslRepositorySupport implements EvalSea
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-        booleanBuilder.or(evaluation.Content.contains("3"));
-        booleanBuilder.or(evaluation.member.mid.contains("uuuu"));
+        booleanBuilder.or(evaluation.content.contains("3"));
+        booleanBuilder.or(evaluation.member.memberId.contains("uuuu"));
 
         query.where(booleanBuilder);
-        query.where(evaluation.MainPhotoPath.contains("C:"));
+        query.where(evaluation.mainPhotoPath.contains("C:"));
 
         this.getQuerydsl().applyPagination(pageable, query);
 

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.whitebox.howlook.domain.feed.dto.FeedReaderDTO;
+import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
@@ -32,8 +32,8 @@ public class MemberController {
     public ResponseEntity<ResultResponse> checkLogin() {
         Member member = accountUtil.getLoginMember();
         if(checkMember(member)) {
-            String mid = member.getMid();
-            return ResponseEntity.ok(ResultResponse.of(GET_USER_BY_TOKEN_SUCCESS, mid));
+            String memberId = member.getMemberId();
+            return ResponseEntity.ok(ResultResponse.of(GET_USER_BY_TOKEN_SUCCESS, memberId));
         }
         else {
             throw new MemberDoesNotExistException();
@@ -51,25 +51,25 @@ public class MemberController {
     }
 
     @ApiOperation(value = "유저 프로필 조회")
-    @GetMapping(value = "/{usermid}")
-    public ResponseEntity<ResultResponse> getUserProfile(@PathVariable("usermid") String usermid) {
-        final UserProfileResponse userProfileResponse = memberService.getUserProfile(usermid);
+    @GetMapping(value = "/{memberId}")
+    public ResponseEntity<ResultResponse> getUserProfile(@PathVariable("memberId") String memberId) {
+        final UserProfileResponse userProfileResponse = memberService.getUserProfile(memberId);
 
         return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS, userProfileResponse));
     }
 
     @ApiOperation(value = "유저 스크랩 게시물 조회")
-    @GetMapping("/{usermid}/scrap")
-    public ResponseEntity<ResultResponse> getUserScrap(@PathVariable("usermid") String usermid) {
-        final List<FeedReaderDTO> userScraps = memberService.getUserScrap(usermid);
+    @GetMapping("/{memberId}/scrap")
+    public ResponseEntity<ResultResponse> getUserScrap(@PathVariable("memberId") String memberId) {
+        final List<PostReaderDTO> userScraps = memberService.getUserScrap(memberId);
 
         return ResponseEntity.ok(ResultResponse.of(GET_MEMBER_SAVED_POSTS_SUCCESS,userScraps));
     }
 
     @ApiOperation(value = "게시글 작성자 정보 조회")
-    @GetMapping(value = "/{usermid}/postinfo")
-    public ResponseEntity<ResultResponse> getUserPostInfo(@PathVariable("usermid") String usermid) {
-        final UserPostInfoResponse userPostInfoResponse = memberService.getUserPostInfo(usermid);
+    @GetMapping(value = "/{memberId}/postinfo")
+    public ResponseEntity<ResultResponse> getUserPostInfo(@PathVariable("memberId") String memberId) {
+        final UserPostInfoResponse userPostInfoResponse = memberService.getUserPostInfo(memberId);
 
         return ResponseEntity.ok(ResultResponse.of(GET_USERPROFILE_SUCCESS,userPostInfoResponse));
     }
@@ -98,8 +98,8 @@ public class MemberController {
 
     @ApiOperation(value = "회원 프로필 대표 사진 등록")
     @PutMapping(value = "/photo")
-    public ResponseEntity<ResultResponse> editProfilePhoto(Long feedId) {
-        memberService.editProfilePhoto(feedId);
+    public ResponseEntity<ResultResponse> editProfilePhoto(Long postId) {
+        memberService.editProfilePhoto(postId);
 
         return ResponseEntity.ok(ResultResponse.of(GET_EDIT_PROFILE_SUCCESS));
     }

@@ -17,34 +17,17 @@ public class TournamentRepositoryQuerydslImpl implements TournamentRepositoryQue
     private final JPAQueryFactory queryFactory;
 
 
-//    @Override
-//    public Optional<THistoryResponse> findTHistoryResponseByDate(LocalDate date) {
-//        return Optional.ofNullable(queryFactory
-//                .select(new QTHistoryResponse(
-//                        tournamentHistory.t_history_id,
-//                        tournamentHistory.date,
-//                        tournamentHistory.lank_1,
-//                        tournamentHistory.lank_2,
-//                        tournamentHistory.lank_3,
-//                        tournamentHistory.lank_4,
-//                        tournamentHistory.vote_count
-//                ))
-//                .from(tournamentHistory)
-//                .where(tournamentHistory.date.eq(date))
-//                .fetchOne());
-//      // return Optional.empty();
-//    }
     @Override
     public Optional<THistoryList> findTHistoryListByDate(LocalDate date) {
         return Optional.ofNullable(queryFactory
                 .select(new QTHistoryList(
-                        tournamentHistory.t_history_id,
+                        tournamentHistory.tournamentHistoryId,
                         tournamentHistory.date,
-                        tournamentHistory.lank_1,
-                        tournamentHistory.lank_2,
-                        tournamentHistory.lank_3,
-                        tournamentHistory.lank_4,
-                        tournamentHistory.vote_count
+                        tournamentHistory.rank_1,
+                        tournamentHistory.rank_2,
+                        tournamentHistory.rank_3,
+                        tournamentHistory.rank_4,
+                        tournamentHistory.voteCount
                 ))
                 .from(tournamentHistory)
                 .where(tournamentHistory.date.eq(date))
@@ -56,19 +39,19 @@ public class TournamentRepositoryQuerydslImpl implements TournamentRepositoryQue
     public Optional<EHistoryResponse> findEHistoryResponseByDate(LocalDate date) {
         return Optional.ofNullable(queryFactory
                 .select(new QEHistoryResponse(
-                        eventHistory.e_history_id,
+                        eventHistory.eventHistoryId,
                         eventHistory.date,
                         eventHistory.eventType,
-                        eventHistory.lank_1,
-                        eventHistory.lank_2,
-                        eventHistory.lank_3,
-                        eventHistory.lank_4,
-                        eventHistory.lank_5,
-                        eventHistory.lank_6,
-                        eventHistory.lank_7,
-                        eventHistory.lank_8,
-                        eventHistory.lank_9,
-                        eventHistory.lank_10
+                        eventHistory.rank_1,
+                        eventHistory.rank_2,
+                        eventHistory.rank_3,
+                        eventHistory.rank_4,
+                        eventHistory.rank_5,
+                        eventHistory.rank_6,
+                        eventHistory.rank_7,
+                        eventHistory.rank_8,
+                        eventHistory.rank_9,
+                        eventHistory.rank_10
                 ))
                 .from(eventHistory)
                 .where(eventHistory.date.eq(date))
