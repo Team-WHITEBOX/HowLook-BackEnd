@@ -2,6 +2,7 @@ package org.whitebox.howlook.domain.member.service;
 
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.member.dto.*;
+import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 
 import java.util.List;
 
@@ -18,5 +19,5 @@ public interface MemberService {
     UserProfileResponse getUserProfile(String memberId);
     UserPostInfoResponse getUserPostInfo(String memberId);
 
-    List<PostReaderDTO> getUserScrap(String memberId);
+    List<SimplePostDTO> getUserScrap(String memberId);
 }

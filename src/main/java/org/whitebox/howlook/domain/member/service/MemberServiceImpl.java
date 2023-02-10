@@ -145,9 +145,9 @@ public class MemberServiceImpl implements MemberService{
 
         final List<Post> posts = postRepository.findByMemberId(memberId);
         log.info(posts);
-        List<SimplePostDTO> SimplePostDTOs = posts.stream().map(post -> new SimplePostDTO(post.getPostId(),post.getMainPhotoPath())).collect(Collectors.toList());
+        List<SimplePostDTO> simplePostDTOs = posts.stream().map(post -> new SimplePostDTO(post.getPostId(),post.getMainPhotoPath())).collect(Collectors.toList());
 
-        result.setMemberPosts(SimplePostDTOs);
+        result.setMemberPosts(simplePostDTOs);
         return result;
     }
 
@@ -159,10 +159,9 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public List<PostReaderDTO> getUserScrap(String memberId) {
+    public List<SimplePostDTO> getUserScrap(String memberId) {
         final List<Scrap> scraps = scrapRepository.findAllByMemberId(memberId);
-        final List<PostReaderDTO> postReaderDTOS = scraps.stream().map(scrap -> new PostReaderDTO(scrap.getPost())).collect(Collectors.toList());
-        postReaderDTOS.forEach(postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));
-        return postReaderDTOS;
+        final List<SimplePostDTO> SimplePostDTOs = scraps.stream().map(scrap -> new SimplePostDTO(scrap.getPost().getPostId(),scrap.getPost().getMainPhotoPath())).collect(Collectors.toList());
+        return SimplePostDTOs;
     }
 }
