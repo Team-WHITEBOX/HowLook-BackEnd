@@ -18,7 +18,6 @@ import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
-import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.global.util.AccountUtil;
 import org.whitebox.howlook.global.util.LocalUploader;
@@ -79,10 +78,7 @@ public class EvalServiceImpl implements EvalService{
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         EvalReaderDTO evalReaderDTO = modelMapper.map(eval, EvalReaderDTO.class);
-        evalReaderDTO.setUserPostInfo(new UserPostInfoResponse(eval.getMember()));
         evalReaderDTO.setPostId(eval.getPostId());
-        evalReaderDTO.setModDate(eval.getModDate());
-        evalReaderDTO.setRegDate(eval.getRegDate());
         evalReaderDTO.setMainPhotoPath(eval.getMainPhotoPath());
 
         List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getPostId());
@@ -113,7 +109,6 @@ public class EvalServiceImpl implements EvalService{
         for(int i = 0; i < evalList.size(); i++) {
 
             EvalReaderDTO evalReaderDTO = modelMapper.map(evalList.get(i), EvalReaderDTO.class);
-            evalReaderDTO.setUserPostInfo(new UserPostInfoResponse(evalList.get(i).getMember()));
 
 
             // 이미 달은 평가라면 반환하지 않게
@@ -133,8 +128,8 @@ public class EvalServiceImpl implements EvalService{
         List<EvalReaderDTO> result = new ArrayList<>();
         for(Evaluation eval : evals){
             EvalReaderDTO evalReaderDTO = new EvalReaderDTO().builder()
-                    .postId(eval.getPostId()).userPostInfo(new UserPostInfoResponse(eval.getMember()))
-                    .modDate(eval.getModDate()).regDate(eval.getRegDate()).mainPhotoPath(eval.getMainPhotoPath()).build();
+                    .postId(eval.getPostId())
+                    .mainPhotoPath(eval.getMainPhotoPath()).build();
             result.add(evalReaderDTO);
 
             List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getPostId());
@@ -169,8 +164,6 @@ public class EvalServiceImpl implements EvalService{
         for(int i = 0; i < evalList.size(); i++) {
 
             EvalReaderDTO evalReaderDTO = modelMapper.map(evalList.get(i), EvalReaderDTO.class);
-            evalReaderDTO.setUserPostInfo(evalList.get(i).getUserPostInfo());
-
 
             // 이미 달은 평가라면 반환하지 않게
             EvalReply temp = evalReplyRepository

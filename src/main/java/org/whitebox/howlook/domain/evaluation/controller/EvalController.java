@@ -25,8 +25,8 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 public class EvalController {
     private final EvalService evalService;
 
-    @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResultResponse> registerEval(@Valid @ModelAttribute EvalRegisterDTO evalRegisterDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    @PostMapping(value = "/registerPost",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResultResponse> registerPosts(@Valid @ModelAttribute EvalRegisterDTO evalRegisterDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if(bindingResult.hasErrors()) {
             log.info("has errors..");
@@ -40,11 +40,9 @@ public class EvalController {
     }
 
     // 평가 게시글 아이디로 게시글 정보 가져오기
-    @GetMapping("/readbypid")
+    @GetMapping("/readByPostId")
     public EvalReaderDTO readEval(Long postId) {
         EvalReaderDTO evalReaderDTO = evalService.reader(postId);
-
-        log.info(evalReaderDTO);
 
         return evalReaderDTO;
     }
@@ -54,7 +52,6 @@ public class EvalController {
     public ResponseEntity<ResultResponse> readAnyEval() {
         List<EvalReaderDTO> evalReaderDTOS = evalService.readAll();
 
-        log.info(evalReaderDTOS.size());
         if(evalReaderDTOS.size() == 0)
         {
             return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL));
@@ -64,7 +61,7 @@ public class EvalController {
     }
 
     @GetMapping("/readNextEval")
-    public ResponseEntity<ResultResponse> getNextEvaluation()
+    public ResponseEntity<ResultResponse> readNextEval()
     {
         final EvalReaderDTO evalPage = evalService.getEvalPage(0,1);
 
@@ -76,11 +73,9 @@ public class EvalController {
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS,evalPage));
     }
 
-    @GetMapping("/readbyuid")
-    public ResponseEntity<ResultResponse> readpostbyUID(String userID) {
+    @GetMapping("/readByUserId")
+    public ResponseEntity<ResultResponse> readByUserId(String userID) {
         List<EvalReaderDTO> evalReaderDTOS = evalService.readerUID(userID);
-
-        log.info(evalReaderDTOS);
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTOS));
     }

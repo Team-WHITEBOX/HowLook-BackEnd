@@ -15,9 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EvalRegisterDTO {
-
-    //@NotNull
-    private Long postId;           //게시글 id
+    //private Long postId; 안써서 삭제
 
     private UploadFileDTO files;
 }

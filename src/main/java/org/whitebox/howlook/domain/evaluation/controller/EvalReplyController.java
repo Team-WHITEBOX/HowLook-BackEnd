@@ -10,12 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.whitebox.howlook.domain.evaluation.dto.EvalRegisterDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReplyDTO;
-import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.service.EvalReplyService;
-import org.whitebox.howlook.domain.evaluation.service.EvalReplyServiceImpl;
-import org.whitebox.howlook.domain.evaluation.service.EvalService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
