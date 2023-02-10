@@ -34,6 +34,6 @@ public class MemberJoinDTO {
     @Pattern(regexp = "^[MF]{1,1}$", message = "성별은 M 또는 F로 입력해주세요")
     private String gender;
     private String profilePhoto;
-    private boolean del;
-    private boolean social;
+//    private boolean del;
+//    private boolean social;
 }
