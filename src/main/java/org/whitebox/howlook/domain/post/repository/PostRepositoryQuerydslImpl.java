@@ -22,7 +22,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
     private final JPAQueryFactory queryFactory;
     @Override
     public Page<PostReaderDTO> findPostReaderDTOPage(Pageable pageable) {
-        final List<PostReaderDTO> postDtos = queryFactory
+        final List<PostReaderDTO> postDTOs = queryFactory
                 .select(new QPostReaderDTO(
                         post
                 ))
@@ -34,7 +34,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 .fetch();
         final long total = queryFactory
                 .selectFrom(post).fetch().size();
-        return new PageImpl<>(postDtos, pageable, total);
+        return new PageImpl<>(postDTOs, pageable, total);
     }
 
     //hashtagDTO받아서 true 값인 hashtag가 포함된 post들의 ID를 List로 반환
