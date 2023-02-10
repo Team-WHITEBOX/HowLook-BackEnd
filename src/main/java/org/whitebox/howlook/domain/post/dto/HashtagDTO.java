@@ -9,7 +9,6 @@ import org.whitebox.howlook.domain.post.entity.Hashtag;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HashtagDTO {
-    //private Long HashtagId;
     private Boolean minimal;
     private Boolean casual;
     private Boolean street;

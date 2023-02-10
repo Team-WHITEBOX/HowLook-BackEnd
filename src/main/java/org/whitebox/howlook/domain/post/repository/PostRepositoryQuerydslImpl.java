@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.dto.HashtagDTO;
 import org.whitebox.howlook.domain.post.dto.QPostReaderDTO;
+import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
 import org.whitebox.howlook.domain.post.entity.QPost;
 
 import java.util.List;
@@ -39,38 +40,38 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
     //hashtagDTO받아서 true 값인 hashtag가 포함된 post들의 ID를 List로 반환
     @Override
-    public List<PostReaderDTO> findpostByCategories(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender, Pageable pageable) {
+    public List<PostReaderDTO> findPostByCategories(SearchCategoryDTO searchCategoryDTO, Pageable pageable) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-        booleanBuilder.and(post.member.height.goe(heightLow));
-        booleanBuilder.and(post.member.height.loe(heightHigh));
+        booleanBuilder.and(post.member.height.goe(searchCategoryDTO.getHeightLow()));
+        booleanBuilder.and(post.member.height.loe(searchCategoryDTO.getHeightHigh()));
 
-        booleanBuilder.and(post.member.weight.goe(weightLow));
-        booleanBuilder.and(post.member.weight.loe(weightHigh));
+        booleanBuilder.and(post.member.weight.goe(searchCategoryDTO.getWeightLow()));
+        booleanBuilder.and(post.member.weight.loe(searchCategoryDTO.getWeightHigh()));
 
-        booleanBuilder.and(post.member.gender.eq(gender));
+        booleanBuilder.and(post.member.gender.eq(searchCategoryDTO.getGender()));
 
-        if(hashtagDTO.getAmekaji())
+        if(searchCategoryDTO.getHashtagDTO().getAmekaji())
             booleanBuilder.and(post.hashtag.amekaji.eq(true));
         else booleanBuilder.and(post.hashtag.amekaji.eq(false));
 
-        if(hashtagDTO.getCasual())
+        if(searchCategoryDTO.getHashtagDTO().getCasual())
             booleanBuilder.and(post.hashtag.casual.eq(true));
         else booleanBuilder.and(post.hashtag.casual.eq(false));
 
-        if(hashtagDTO.getGuitar())
+        if(searchCategoryDTO.getHashtagDTO().getGuitar())
             booleanBuilder.and(post.hashtag.guitar.eq(true));
         else booleanBuilder.and(post.hashtag.guitar.eq(false));
 
-        if(hashtagDTO.getMinimal())
+        if(searchCategoryDTO.getHashtagDTO().getMinimal())
             booleanBuilder.and(post.hashtag.minimal.eq(true));
         else booleanBuilder.and(post.hashtag.minimal.eq(false));
 
-        if(hashtagDTO.getSporty())
+        if(searchCategoryDTO.getHashtagDTO().getSporty())
             booleanBuilder.and(post.hashtag.sporty.eq(true));
         else booleanBuilder.and(post.hashtag.sporty.eq(false));
 
-        if(hashtagDTO.getStreet())
+        if(searchCategoryDTO.getHashtagDTO().getStreet())
             booleanBuilder.and(post.hashtag.street.eq(true));
         else booleanBuilder.and(post.hashtag.street.eq(false));
 
