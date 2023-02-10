@@ -28,20 +28,12 @@ public class EditProfileResponse {
     @ApiModelProperty(value = "몸무게", example = "70")
     private Long memberWeight;
 
-//    @ApiModelProperty(value = "성별", example = "M")
-//    private char memberGender;
-
-//    @ApiModelProperty(value = "프로필사진 URL")
-//    private Long profilePhotoId;
-
     public EditProfileResponse(Member member) {
         this.memberId = member.getMemberId();
         this.memberNickName = member.getNickName();
         this.memberHeight = member.getHeight();
         this.memberWeight = member.getWeight();
-//        this.profilePhotoId = member.getProfilePhotoId();
         this.memberPhone = member.getPhone();
-//        this.memberGender = member.getGender();
     }
 
 }

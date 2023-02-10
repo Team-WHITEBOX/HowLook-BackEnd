@@ -57,12 +57,6 @@ public class TournamentServiceImpl implements TournamentService {
         });
     }
 
-//    @Override
-//    public THistoryResponse getTHistory(LocalDate date) {
-//        THistoryResponse result = tournamentRepository.findTHistoryResponseByDate(date)
-//                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUNT));
-//        return result;
-//    }
     @Override
     public THistoryList getTHistoryList(LocalDate date) {
         THistoryList result = tournamentRepository.findTHistoryListByDate(date)

@@ -12,7 +12,7 @@ import java.util.List;
 public interface TournamentService {
     List<TournamentPostDTO> getPosts(LocalDate date);
     void UpdatePosts(List<TournamentPostDTO> postDTOs);
-//    THistoryResponse getTHistory(LocalDate date);
+
     THistoryList getTHistoryList(LocalDate date);
     EHistoryResponse getEHistory(LocalDate date);
     TournamentPostDTO getPostById(Long postId);

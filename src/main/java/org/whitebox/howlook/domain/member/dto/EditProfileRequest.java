@@ -14,10 +14,6 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 public class EditProfileRequest {
 
-//    @ApiModelProperty(value = "아이디", example = "user1", required = true)
-//    @NotBlank(message = "아이디을 입력해주세요")
-//    @Length(min = 4, max = 12, message = "ID는 4문자 이상 12문자 이하여야 합니다")
-//    private String memberId;
 
     @ApiModelProperty(value = "별명", example = "홍길동", required = true)
     @NotBlank(message = "별명을 입력해주세요")
