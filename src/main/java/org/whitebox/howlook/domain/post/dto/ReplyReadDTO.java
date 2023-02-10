@@ -18,7 +18,6 @@ public class ReplyReadDTO {
     private String content;
     private long parentId;
     private long likeCount;
-    private Boolean hasParent;
     // 유저 정보
     private String nickName; // 유저의 별명
     private String profilePhoto; // 프로필

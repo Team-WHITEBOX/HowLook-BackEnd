@@ -13,19 +13,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostRegisterDTO {
-    //@NotNull
-    //private Long postId;           //게시글 id
-    //@NotNull
-    //private Long photoCount;          //업로드한 사진 개수
 
     private String content;         //내용
 
     private float latitude;         //위도
     private float longitude;        //경도
-
-    private LocalDateTime registrationDate;
-
-    private LocalDateTime modificationDate;
 
     private UploadFileDTO uploadFileDTO;    //upload 도메인에서 불러온 DTO
 
