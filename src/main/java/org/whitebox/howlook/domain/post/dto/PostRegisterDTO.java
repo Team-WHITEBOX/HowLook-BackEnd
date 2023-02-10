@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostRegisterDTO {
     //@NotNull
-    private Long postId;           //게시글 id
+    //private Long postId;           //게시글 id
     //@NotNull
-    private Long photoCount;          //업로드한 사진 개수
+    //private Long photoCount;          //업로드한 사진 개수
 
     private String content;         //내용
 
