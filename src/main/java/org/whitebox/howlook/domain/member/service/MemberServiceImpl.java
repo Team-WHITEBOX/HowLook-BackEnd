@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
+import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.post.entity.Scrap;
 import org.whitebox.howlook.domain.post.repository.PostRepository;
@@ -144,10 +145,9 @@ public class MemberServiceImpl implements MemberService{
 
         final List<Post> posts = postRepository.findByMemberId(memberId);
         log.info(posts);
-        List<PostReaderDTO> postReaderDTOS = posts.stream().map(post -> new PostReaderDTO(post)).collect(Collectors.toList());
-        postReaderDTOS.forEach(postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));
+        List<SimplePostDTO> SimplePostDTOs = posts.stream().map(post -> new SimplePostDTO(post.getPostId(),post.getMainPhotoPath())).collect(Collectors.toList());
 
-        result.setMemberPosts(postReaderDTOS);
+        result.setMemberPosts(SimplePostDTOs);
         return result;
     }
 
