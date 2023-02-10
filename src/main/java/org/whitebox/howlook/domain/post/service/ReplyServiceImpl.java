@@ -70,12 +70,12 @@ public class ReplyServiceImpl implements ReplyService{
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         ReplyReadDTO dto = modelMapper.map(reply, ReplyReadDTO.class);
 
-        if(replyLikeRepository.findByMemberAndReply(member, reply).isPresent()) {
-            dto.setLikeChk(true);
+        if(replyLikeRepository.findByMemberAndReply(member,reply).isPresent()) {
+            dto.setLikeCheck(true);
         }
 
         else {
-            dto.setLikeChk(false);
+            dto.setLikeCheck(false);
         }
 
         dto.setPostId(reply.getPost().getPostId());
@@ -133,7 +133,7 @@ public class ReplyServiceImpl implements ReplyService{
 
        for(ReplyReadDTO replyReadDTO: result) {
             if(replyLikeRepository.findByMemberIdAndReplyId(member.getMemberId(), replyReadDTO.getReplyId()).isPresent()) {
-                replyReadDTO.setLikeChk(true);
+                replyReadDTO.setLikeCheck(true);
             }
        }
         return result;

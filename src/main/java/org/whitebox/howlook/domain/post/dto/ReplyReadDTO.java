@@ -18,11 +18,11 @@ public class ReplyReadDTO {
     private String content;
     private long parentId;
     private long likeCount;
-
+    private Boolean hasParent;
     // 유저 정보
     private String nickName; // 유저의 별명
     private String profilePhoto; // 프로필
-    private Boolean likeChk; // 댓글에 대한 좋아요 체크여부
+    private Boolean likeCheck; // 댓글에 대한 좋아요 체크여부
 
     @QueryProjection
     public ReplyReadDTO(Reply reply) {
@@ -33,6 +33,6 @@ public class ReplyReadDTO {
         this.likeCount = reply.getLikeCount();
         this.nickName = reply.getMember().getNickName();
         this.profilePhoto = reply.getMember().getProfilePhoto();
-        this.likeChk = false;
+        this.likeCheck = false;
     }
 }
