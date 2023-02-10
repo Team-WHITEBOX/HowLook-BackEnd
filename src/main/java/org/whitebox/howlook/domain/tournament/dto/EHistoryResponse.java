@@ -10,33 +10,33 @@ public class EHistoryResponse {
     Long eventHistoryId;
     LocalDate date;
     String eventType;
-    Long lank_1;
-    Long lank_2;
-    Long lank_3;
-    Long lank_4;
-    Long lank_5;
-    Long lank_6;
-    Long lank_7;
-    Long lank_8;
-    Long lank_9;
-    Long lank_10;
+    Long rank_1;
+    Long rank_2;
+    Long rank_3;
+    Long rank_4;
+    Long rank_5;
+    Long rank_6;
+    Long rank_7;
+    Long rank_8;
+    Long rank_9;
+    Long rank_10;
 
     @QueryProjection
-    public EHistoryResponse(Long eventHistoryId, LocalDate date, String eventType, Long lank_1, Long lank_2, Long lank_3
-            , Long lank_4, Long lank_5, Long lank_6, Long lank_7, Long lank_8, Long lank_9, Long lank_10){
+    public EHistoryResponse(Long eventHistoryId, LocalDate date, String eventType, Long rank_1, Long rank_2, Long rank_3
+            , Long rank_4, Long rank_5, Long rank_6, Long rank_7, Long rank_8, Long rank_9, Long rank_10){
         this.eventHistoryId = eventHistoryId;
         this.date = date;
         this.eventType = eventType;
-        this.lank_1 = lank_1;
-        this.lank_2 = lank_2;
-        this.lank_3 = lank_3;
-        this.lank_4 = lank_4;
-        this.lank_5 = lank_5;
-        this.lank_6 = lank_6;
-        this.lank_7 = lank_7;
-        this.lank_8 = lank_8;
-        this.lank_9 = lank_9;
-        this.lank_10 = lank_10;
+        this.rank_1 = rank_1;
+        this.rank_2 = rank_2;
+        this.rank_3 = rank_3;
+        this.rank_4 = rank_4;
+        this.rank_5 = rank_5;
+        this.rank_6 = rank_6;
+        this.rank_7 = rank_7;
+        this.rank_8 = rank_8;
+        this.rank_9 = rank_9;
+        this.rank_10 = rank_10;
   }
 
 }

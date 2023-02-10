@@ -53,8 +53,8 @@ public class TournamentController {
     public ResponseEntity<ResultResponse> getTHistory(@PathVariable("date") String date) {
         final THistoryList tHistoryList = tournamentService.getTHistoryList(LocalDate.parse(date));
         List<TournamentPostDTO> postDTOs = new ArrayList<>();
-        tHistoryList.getLank().forEach(lank -> {
-            postDTOs.add(tournamentService.getPostById(lank));
+        tHistoryList.getRank().forEach(rank -> {
+            postDTOs.add(tournamentService.getPostById(rank));
         });
         THistoryResponse tHistoryResponse = new THistoryResponse(tHistoryList);
         tHistoryResponse.setPostDTOS(postDTOs);
