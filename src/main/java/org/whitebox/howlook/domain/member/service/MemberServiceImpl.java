@@ -111,6 +111,9 @@ public class MemberServiceImpl implements MemberService{
     public void socialEditProfile(SocialEditProfileRequest socialEditProfileRequest) {
         final Member member = accountUtil.getLoginMember();
 
+        if (!member.isSocial()){
+            return;
+        }
 //        log.info("프로필 수정");
 //        if (memberRepository.existsById(socialEditProfileRequest.getMemberId())
 //                && !member.getMemberId().equals(socialEditProfileRequest.getMemberId())) {
@@ -129,9 +132,15 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void editProfilePhoto(Long postId) {
+        if(postId==null){
+            throw new EntityNotFoundException(ENTITY_NOT_FOUNT);
+        }
         final Member member = accountUtil.getLoginMember();
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        if(post.getMember().getMemberId() != member.getMemberId()){
+            throw new AccountMismatchException();
+        }
         member.updateProfilePhotoId(post.getMainPhotoPath());
         memberRepository.save(member);
     }

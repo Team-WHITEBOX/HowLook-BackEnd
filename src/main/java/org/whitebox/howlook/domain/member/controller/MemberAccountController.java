@@ -14,6 +14,7 @@ import org.whitebox.howlook.global.result.ResultResponse;
 
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
@@ -64,7 +65,10 @@ public class MemberAccountController {
 
     @ApiOperation(value = "nickname 중복 조회")
     @GetMapping(value = "/nickcheck")
-    public ResponseEntity<ResultResponse> checkMemberNick(@RequestParam String nickName) {
+    public ResponseEntity<ResultResponse> checkMemberNick(
+            @RequestParam
+            @Length(min = 2, max = 12, message = "아이디는 2문자 이상 12문자 이하여야 합니다")
+            String nickName) {
         final boolean check = memberService.checkNickName(nickName);
         if (check) {
             return ResponseEntity.ok(ResultResponse.of(CHECK_NICKNAME_GOOD, true));

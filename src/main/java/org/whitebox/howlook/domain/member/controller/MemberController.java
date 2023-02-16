@@ -15,6 +15,7 @@ import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import java.util.List;
 
