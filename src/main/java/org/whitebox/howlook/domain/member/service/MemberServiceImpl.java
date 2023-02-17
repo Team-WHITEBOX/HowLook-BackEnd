@@ -11,7 +11,7 @@ import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.entity.MemberRole;
 import org.whitebox.howlook.domain.member.exception.AccountMismatchException;
 import org.whitebox.howlook.domain.member.exception.PasswordEqualWithOldException;
-import org.whitebox.howlook.domain.member.exception.memberIdExistException;
+import org.whitebox.howlook.domain.member.exception.MemberIdExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 import org.whitebox.howlook.domain.post.entity.Post;
@@ -41,7 +41,7 @@ public class MemberServiceImpl implements MemberService{
         String memberId = memberJoinDTO.getMemberId();
         boolean exist = memberRepository.existsById(memberId);
         if(exist){
-            throw new memberIdExistException();
+            throw new MemberIdExistException();
         }
         Member member = modelMapper.map(memberJoinDTO,Member.class);
         member.updatePassword(passwordEncoder.encode(memberJoinDTO.getMemberPassword()));
