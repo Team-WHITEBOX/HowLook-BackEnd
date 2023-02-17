@@ -120,9 +120,6 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void editProfilePhoto(Long postId) {
-        if(postId==null){
-            throw new EntityNotFoundException(ENTITY_NOT_FOUNT);
-        }
         final Member member = accountUtil.getLoginMember();
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
