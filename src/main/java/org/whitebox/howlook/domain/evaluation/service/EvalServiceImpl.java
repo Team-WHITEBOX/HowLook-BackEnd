@@ -157,7 +157,7 @@ public class EvalServiceImpl implements EvalService{
         Page<EvalReaderDTO> evalPage = evalRepository.findEvalReaderDTOPage(pageable);
         List<EvalReaderDTO> evalList = evalPage.getContent();
 
-        EvalReaderDTO readerDTOList = new EvalReaderDTO();
+        EvalReaderDTO readerDTO = new EvalReaderDTO();
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -165,17 +165,36 @@ public class EvalServiceImpl implements EvalService{
 
             EvalReaderDTO evalReaderDTO = modelMapper.map(evalList.get(i), EvalReaderDTO.class);
 
-            // 이미 달은 평가라면 반환하지 않게
-            EvalReply temp = evalReplyRepository
-                    .findMyReplyByPostid(evalReaderDTO.getPostId(),accountUtil.getLoginMember().getMemberId());
-
-            if(temp == null) {
-                readerDTOList = evalReaderDTO;
+            if(checkEvalHasMyReply(evalReaderDTO) || checkMyEvalPost(evalReaderDTO) ) {
+                readerDTO = evalReaderDTO;
             }
             else{
-                readerDTOList = getEvalPage(page+1,size);
+                readerDTO = getEvalPage(page+1,size);
             }
         }
-        return readerDTOList;
+        return readerDTO;
+    }
+
+    public boolean checkEvalHasMyReply(EvalReaderDTO evalReaderDTO)
+    {
+        // 내가 달은 평가가 없다면 true 리턴
+        EvalReply temp = evalReplyRepository
+                .findMyReplyByPostid(evalReaderDTO.getPostId(),accountUtil.getLoginMember().getMemberId());
+
+        if(temp == null)
+            return true;
+
+        return false;
+    }
+
+    public boolean checkMyEvalPost(EvalReaderDTO evalReaderDTO)
+    {
+        // 내가 쓴 글이라면 true 리턴
+        Evaluation evaluation = evalRepository.findByPid(evalReaderDTO.getPostId());
+
+        if(evaluation.getMember().getMemberId() == accountUtil.getLoginMember().getMemberId())
+            return true;
+
+        return false;
     }
 }
