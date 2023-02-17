@@ -283,6 +283,11 @@ public class PostServiceImpl implements PostService {
     public void unlikePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         Member member = accountUtil.getLoginMember();
+
+        if(post.getLikeCount() == 0) {
+            postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_LIKED));
+        }
+
         post.DownLikeCount();
         PostLike postLike = postLikeRepository.findByMemberAndPost(member,post).orElseThrow();
         postLikeRepository.delete(postLike);
