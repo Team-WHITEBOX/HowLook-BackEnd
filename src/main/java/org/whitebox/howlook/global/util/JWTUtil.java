@@ -1,7 +1,6 @@
 package org.whitebox.howlook.global.util;
 
 import io.jsonwebtoken.JwtException;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.log4j.Log4j2;
