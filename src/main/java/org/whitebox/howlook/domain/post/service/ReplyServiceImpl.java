@@ -115,16 +115,15 @@ public class ReplyServiceImpl implements ReplyService{
 
     @Override
     public void modify(ReplyDTO replyDTO) {
-
         Optional<Reply> replyOptional = replyRepository.findById(replyDTO.getReplyId());
 
         Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
         if(accountUtil.getLoginMember() == reply.getMember()) {
             reply.changeText(replyDTO.getContent());
-            replyRepository.save(reply);
         }
 
+        replyRepository.save(reply);
     }
 
     @Override // 게시글에 해당하는 댓글 읽어오기.
