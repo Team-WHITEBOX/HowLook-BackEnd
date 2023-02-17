@@ -18,7 +18,6 @@ import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.post.entity.Scrap;
 import org.whitebox.howlook.domain.post.repository.PostRepository;
 import org.whitebox.howlook.domain.post.repository.ScrapRepository;
-import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
@@ -37,7 +36,6 @@ public class MemberServiceImpl implements MemberService{
     private final PostRepository postRepository;
     private final ScrapRepository scrapRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UploadService uploadService; // 업로드 서비스
     @Override
     public void join(MemberJoinDTO memberJoinDTO) {
         String memberId = memberJoinDTO.getMemberId();
