@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.whitebox.howlook.domain.evaluation.dto.EvalPageDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalRegisterDTO;
 import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
@@ -19,6 +21,7 @@ import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
+import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.AccountUtil;
 import org.whitebox.howlook.global.util.LocalUploader;
 import org.whitebox.howlook.global.util.S3Uploader;
@@ -28,6 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.whitebox.howlook.global.result.ResultCode.EVAL_SEARCH_FAIL;
+import static org.whitebox.howlook.global.result.ResultCode.EVAL_SEARCH_SUCCESS;
 
 @Service
 @Log4j2
@@ -150,29 +156,56 @@ public class EvalServiceImpl implements EvalService{
     }
 
     @Override
-    public EvalReaderDTO getEvalPage(int page,int size)
+    public List<EvalReaderDTO> getEvalPage(int page,int size)
     {
-        final Pageable pageable = PageRequest.of(page,size);
-
-        Page<EvalReaderDTO> evalPage = evalRepository.findEvalReaderDTOPage(pageable);
-        List<EvalReaderDTO> evalList = evalPage.getContent();
-
-        EvalReaderDTO readerDTO = new EvalReaderDTO();
-
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        final Pageable pageable = PageRequest.of(page,size);
+        Page<EvalReaderDTO> evalPage = evalRepository.findEvalReaderDTOPage(pageable);
+        List<EvalReaderDTO> evalListFromPage = evalPage.getContent();
 
-        for(int i = 0; i < evalList.size(); i++) {
+        List<EvalReaderDTO> readerDTOList = new ArrayList();
 
-            EvalReaderDTO evalReaderDTO = modelMapper.map(evalList.get(i), EvalReaderDTO.class);
+        for(int i = 0; i < evalListFromPage.size(); i++) {
 
-            if(checkEvalHasMyReply(evalReaderDTO) || checkMyEvalPost(evalReaderDTO) ) {
-                readerDTO = evalReaderDTO;
+            EvalReaderDTO evalReaderDTO = modelMapper.map(evalListFromPage.get(i), EvalReaderDTO.class);
+
+            if(checkEvalHasMyReply(evalReaderDTO) && !checkMyEvalPost(evalReaderDTO) ) {
+                readerDTOList.add(evalReaderDTO);
             }
             else{
-                readerDTO = getEvalPage(page+1,size);
+                List<EvalReaderDTO> temp = getEvalPage(page+1,size);
+                if(temp != null) {
+                    for (int j = 0; j < temp.size(); j++)
+                        readerDTOList.add(temp.get(j));
+                }
             }
         }
-        return readerDTO;
+        return readerDTOList;
+    }
+
+    @Override
+    public EvalPageDTO getEvalWithHasMore(int page,int size)
+    {
+        final List<EvalReaderDTO> evalPage = getEvalPage(page,size);
+
+        if(evalPage == null || evalPage.size() == 0) // || evalPage.getPostId() == null)
+        {
+            return null;
+        }
+
+        EvalPageDTO evalPageDTO = new EvalPageDTO(evalPage.get(0));
+
+        if(evalPage.size() >= 2 && evalPage.get(0).getPostId() != evalPage.get(1).getPostId())
+        {
+            // hasMore = 1
+            evalPageDTO.setHasMore(1L);
+        }
+        else {
+            // hasMore = 0
+            evalPageDTO.setHasMore(0L);
+        }
+
+        return evalPageDTO;
     }
 
     public boolean checkEvalHasMyReply(EvalReaderDTO evalReaderDTO)

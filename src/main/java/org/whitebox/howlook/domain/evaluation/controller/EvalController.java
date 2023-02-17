@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.whitebox.howlook.domain.evaluation.dto.EvalPageDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalRegisterDTO;
 import org.whitebox.howlook.domain.evaluation.service.EvalService;
@@ -31,7 +32,7 @@ public class EvalController {
         if(bindingResult.hasErrors()) {
             log.info("has errors..");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-            return ResponseEntity.ok(ResultResponse.of(CREATE_POST_FAIL, false));
+            return ResponseEntity.ok(ResultResponse.of(EVAL_REGISTER_FAIL, false));
         }
 
         evalService.register(evalRegisterDTO);
@@ -54,30 +55,30 @@ public class EvalController {
 
         if(evalReaderDTOS.size() == 0)
         {
-            return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL));
+            return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_FAIL));
         }
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTOS));
+        return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalReaderDTOS));
     }
 
     @GetMapping("/readNextEval")
     public ResponseEntity<ResultResponse> readNextEval()
     {
-        final EvalReaderDTO evalPage = evalService.getEvalPage(0,1);
+        final EvalPageDTO evalPageDTO = evalService.getEvalWithHasMore(0,2);
 
-        if(evalPage == null)
+        if(evalPageDTO == null) // || evalPage.getPostId() == null)
         {
-            return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL));
+            return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_FAIL));
         }
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS,evalPage));
+        return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalPageDTO));
     }
 
     @GetMapping("/readByUserId")
     public ResponseEntity<ResultResponse> readByUserId(String userID) {
         List<EvalReaderDTO> evalReaderDTOS = evalService.readerUID(userID);
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTOS));
+        return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalReaderDTOS));
     }
     
 }
