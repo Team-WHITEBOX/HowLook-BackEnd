@@ -32,6 +32,7 @@ public class PostController {
         log.info("post POST register!");
         log.info(postRegisterDTO);
 
+        postService.registerPOST(postRegisterDTO);
         return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS));
     }
 
