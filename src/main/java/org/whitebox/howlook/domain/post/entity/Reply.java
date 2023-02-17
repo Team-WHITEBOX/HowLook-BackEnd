@@ -16,6 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @ToString
 @DynamicInsert
+
 public class Reply extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

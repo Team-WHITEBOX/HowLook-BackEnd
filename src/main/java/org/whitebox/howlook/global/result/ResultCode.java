@@ -6,8 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ResultCode {
-
-
     // Member
     REGISTER_SUCCESS(200, "M001", "회원가입에 성공하였습니다."),
     LOGIN_SUCCESS(200, "M002", "로그인에 성공하였습니다."),
