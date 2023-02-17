@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
 import org.whitebox.howlook.domain.post.dto.HashtagDTO;
+import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
 import org.whitebox.howlook.domain.post.service.PostService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
@@ -26,7 +27,7 @@ public class PostController {
 
 
     @ApiOperation(value = "피드 게시글 등록")
-    @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/regist",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerPost(@Valid @ModelAttribute PostRegisterDTO postRegisterDTO) {
         log.info("post POST register!");
         log.info(postRegisterDTO);
@@ -36,16 +37,16 @@ public class PostController {
     }
 
     @ApiOperation(value = "게시글 해시태그와 댓글 함께 삭제된다. 사진은 삭제되지 않음")
-    @DeleteMapping(value = "/delete")
-    public ResponseEntity<ResultResponse> deletePost(@RequestParam Long postId) {
-        postService.deletepost(postId);
+    @DeleteMapping(value = "/{postId}")
+    public ResponseEntity<ResultResponse> deletePost(@PathVariable("postId") Long postId) {
+        postService.deletePost(postId);
 
         return ResponseEntity.ok(ResultResponse.of(DELETE_POST_SUCCESS));
     }
 
     @ApiOperation(value = "게시글 id로 피드 게시글 조회")
     @GetMapping("/readbypid")
-    public ResponseEntity<ResultResponse> readpostbyPID(Long postId) {
+    public ResponseEntity<ResultResponse> readPostByPID(Long postId) {
         PostReaderDTO postReaderDTO = postService.readerPID(postId);
 
         log.info(postReaderDTO);
@@ -54,7 +55,7 @@ public class PostController {
     }
     @ApiOperation(value = "멤버 id로 피드 게시글 모두 조회")
     @GetMapping("/readbyuid")
-    public ResponseEntity<ResultResponse> readpostbyUID(String UserID) {
+    public ResponseEntity<ResultResponse> readPostByUID(String UserID) {
         List<PostReaderDTO> posts = postService.readerUID(UserID);
 
         log.info(posts);
@@ -64,7 +65,7 @@ public class PostController {
     @ApiOperation(value = "최근 피드 게시글 10개 조회")
     @GetMapping("/recent")
     public ResponseEntity<ResultResponse> getRecent10Posts(@RequestParam int page) {
-        final List<PostReaderDTO> postList = postService.getpostPage(10, page).getContent();
+        final List<PostReaderDTO> postList = postService.getPostPage(10, page).getContent();
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
     }
@@ -72,20 +73,20 @@ public class PostController {
     @ApiOperation(value = "좌표 기준 근처 게시글 10개 조회")
     @GetMapping("/near")
     public ResponseEntity<ResultResponse> getNear10Posts(@RequestParam int page,float latitude, float longitude) {
-        final List<PostReaderDTO> postList = postService.getNearpostPage(10, page,latitude,longitude).getContent();
+        final List<PostReaderDTO> postList = postService.getNearPostPage(10, page,latitude,longitude).getContent();
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
     }
     @ApiOperation(value = "스크랩")
     @PostMapping("/scrap")
-    public ResponseEntity<ResultResponse> scrappost(@RequestParam Long postId){
-        postService.scrappost(postId);
+    public ResponseEntity<ResultResponse> scrapPost(@RequestParam Long postId){
+        postService.scrapPost(postId);
         return ResponseEntity.ok(ResultResponse.of(BOOKMARK_POST_SUCCESS));
     }
     @ApiOperation(value = "스크랩 취소")
     @DeleteMapping("/scrap")
-    public ResponseEntity<ResultResponse> unScrappost(@RequestParam Long postId) {
-        postService.unScrappost(postId);
+    public ResponseEntity<ResultResponse> unScrapPost(@RequestParam Long postId) {
+        postService.unScrapPost(postId);
 
         return ResponseEntity.ok(ResultResponse.of(UN_BOOKMARK_POST_SUCCESS));
     }
@@ -94,23 +95,23 @@ public class PostController {
     @GetMapping("/search")
     @ApiOperation(value = "카테고리로 피드검색", notes= "카테고리(해시태그 + 사용자정보(키, 몸무게, 성별)로 피드검색함\n해시태그는 반드시 true/false중 하나 선택해야함.(비워두면 안됨)\n" +
             "page에는 표시하고 싶은 page번호 입력(0부터시작), 현재 한 페이지당 post 5개씩 출력됨.")
-    public ResponseEntity<ResultResponse> searchByCategories(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender, int page) {
-        final List<PostReaderDTO> posts = postService.searchpostByHashtag(hashtagDTO, heightHigh, heightLow, weightHigh, weightLow, gender, page, 5);
+    public ResponseEntity<ResultResponse> searchByCategories(SearchCategoryDTO searchCategoryDTO) {
+        final List<PostReaderDTO> posts = postService.searchPostByHashtag(searchCategoryDTO);
 
         return ResponseEntity.ok(ResultResponse.of(GET_HASHTAG_post_SUCCESS, posts));
     }
 
     @ApiOperation(value = "게시물 좋아요", notes = "POST 방식으로 추가")
     @PostMapping("/like")
-    public ResponseEntity<ResultResponse> likepost(@RequestParam Long postId) {
-        postService.likepost(postId);
+    public ResponseEntity<ResultResponse> likePost(@RequestParam Long postId) {
+        postService.likePost(postId);
         return ResponseEntity.ok(ResultResponse.of(LIKE_POST_SUCCESS));
     }
 
     @ApiOperation(value = "게시물 좋아요 해제", notes = "Delete 방식으로 제거")
     @DeleteMapping("/like")
-    public ResponseEntity<ResultResponse> unlikepost(@RequestParam Long postId) {
-        postService.unlikepost(postId);
+    public ResponseEntity<ResultResponse> unlikePost(@RequestParam Long postId) {
+        postService.unlikePost(postId);
         return ResponseEntity.ok(ResultResponse.of(UN_LIKE_POST_SUCCESS));
     }
 }

@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface TournamentRepositoryQuerydsl {
-//    Optional<THistoryResponse> findTHistoryResponseByDate(LocalDate date);
     Optional<THistoryList> findTHistoryListByDate(LocalDate date);
     Optional<EHistoryResponse> findEHistoryResponseByDate(LocalDate date);
 }

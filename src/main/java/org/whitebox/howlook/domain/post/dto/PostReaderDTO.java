@@ -29,7 +29,7 @@ public class PostReaderDTO {
 
     private Long replyCount;  //댓글개수
 
-    private Long  viewCount;       //조회수
+    private Long viewCount;       //조회수
 
     private String content;     //내용
 
@@ -45,7 +45,7 @@ public class PostReaderDTO {
 
     private HashtagDTO hashtagDTO;
 
-    private Boolean likeCheck;
+    private Boolean likeCheck; // 이 댓글에 좋아요를 눌렀는지 확인.
 
     @QueryProjection
     public PostReaderDTO(Post post){

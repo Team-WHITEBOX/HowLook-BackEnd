@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
+import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.post.entity.Scrap;
 import org.whitebox.howlook.domain.post.repository.PostRepository;
@@ -110,6 +111,9 @@ public class MemberServiceImpl implements MemberService{
     public void socialEditProfile(SocialEditProfileRequest socialEditProfileRequest) {
         final Member member = accountUtil.getLoginMember();
 
+        if (!member.isSocial()){
+            return;
+        }
 //        log.info("프로필 수정");
 //        if (memberRepository.existsById(socialEditProfileRequest.getMemberId())
 //                && !member.getMemberId().equals(socialEditProfileRequest.getMemberId())) {
@@ -128,9 +132,15 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void editProfilePhoto(Long postId) {
+        if(postId==null){
+            throw new EntityNotFoundException(ENTITY_NOT_FOUNT);
+        }
         final Member member = accountUtil.getLoginMember();
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        if(post.getMember().getMemberId() != member.getMemberId()){
+            throw new AccountMismatchException(POST_CANT_PROFILE);
+        }
         member.updateProfilePhotoId(post.getMainPhotoPath());
         memberRepository.save(member);
     }
@@ -144,10 +154,9 @@ public class MemberServiceImpl implements MemberService{
 
         final List<Post> posts = postRepository.findByMemberId(memberId);
         log.info(posts);
-        List<PostReaderDTO> postReaderDTOS = posts.stream().map(post -> new PostReaderDTO(post)).collect(Collectors.toList());
-        postReaderDTOS.forEach(postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));
+        List<SimplePostDTO> simplePostDTOs = posts.stream().map(post -> new SimplePostDTO(post.getPostId(),post.getMainPhotoPath())).collect(Collectors.toList());
 
-        result.setMemberPosts(postReaderDTOS);
+        result.setMemberPosts(simplePostDTOs);
         return result;
     }
 
@@ -159,10 +168,9 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public List<PostReaderDTO> getUserScrap(String memberId) {
+    public List<SimplePostDTO> getUserScrap(String memberId) {
         final List<Scrap> scraps = scrapRepository.findAllByMemberId(memberId);
-        final List<PostReaderDTO> postReaderDTOS = scraps.stream().map(scrap -> new PostReaderDTO(scrap.getPost())).collect(Collectors.toList());
-        postReaderDTOS.forEach(postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));
-        return postReaderDTOS;
+        final List<SimplePostDTO> SimplePostDTOs = scraps.stream().map(scrap -> new SimplePostDTO(scrap.getPost().getPostId(),scrap.getPost().getMainPhotoPath())).collect(Collectors.toList());
+        return SimplePostDTOs;
     }
 }

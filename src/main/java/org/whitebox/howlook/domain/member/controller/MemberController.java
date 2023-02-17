@@ -10,10 +10,12 @@ import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
 import org.whitebox.howlook.domain.member.service.MemberService;
+import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import java.util.List;
 
@@ -61,7 +63,7 @@ public class MemberController {
     @ApiOperation(value = "유저 스크랩 게시물 조회")
     @GetMapping("/{memberId}/scrap")
     public ResponseEntity<ResultResponse> getUserScrap(@PathVariable("memberId") String memberId) {
-        final List<PostReaderDTO> userScraps = memberService.getUserScrap(memberId);
+        final List<SimplePostDTO> userScraps = memberService.getUserScrap(memberId);
 
         return ResponseEntity.ok(ResultResponse.of(GET_MEMBER_SAVED_POSTS_SUCCESS,userScraps));
     }

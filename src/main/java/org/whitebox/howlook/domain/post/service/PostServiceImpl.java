@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
 import org.whitebox.howlook.domain.post.dto.HashtagDTO;
+import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
 import org.whitebox.howlook.domain.post.entity.*;
 import org.whitebox.howlook.domain.post.repository.*;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
@@ -154,7 +155,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostReaderDTO> getpostPage(int size, int page) {
+    public Page<PostReaderDTO> getPostPage(int size, int page) {
         final Pageable pageable = PageRequest.of(page, size);
         log.info(pageable);
         log.info(pageable.getOffset());
@@ -167,7 +168,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostReaderDTO> getNearpostPage(int size, int page, float latitude, float longitude)
+    public Page<PostReaderDTO> getNearPostPage(int size, int page, float latitude, float longitude)
     {
         final Pageable pageable = PageRequest.of(page, size);
 
@@ -179,7 +180,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void scrappost(Long postId) {
+    public void scrapPost(Long postId) {
         final Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         final Member member = accountUtil.getLoginMember();
 
@@ -191,7 +192,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void unScrappost(Long postId) {
+    public void unScrapPost(Long postId) {
         final Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         final Member member = accountUtil.getLoginMember();
 
@@ -200,12 +201,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostReaderDTO> searchpostByHashtag(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender,
-                                                   int page, int size) {
-        final Pageable pageable = PageRequest.of(page, size);
+    public List<PostReaderDTO> searchPostByHashtag(SearchCategoryDTO searchCategoryDTO) {
+        final Pageable pageable = PageRequest.of(searchCategoryDTO.getPage(), searchCategoryDTO.getSize());
 
         //해당 함수를 통해 hashtagDTO에서 true로 설정된 값만 있는 post의 ID를 불러온다.
-        List<PostReaderDTO> posts = postRepository.findpostByCategories(hashtagDTO, heightHigh, heightLow, weightHigh, weightLow, gender, pageable);
+        List<PostReaderDTO> posts = postRepository.findPostByCategories(searchCategoryDTO, pageable);
         posts.forEach(postReaderDTO -> {
             postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId()));
         });
@@ -214,7 +214,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletepost(Long postId) {
+    public void deletePost(Long postId) {
         //지우려는 유저(로그인유저)와 게시글의 유저가 같은지 확인
         String thismember = accountUtil.getLoginMemberId();
         String postmember = postRepository.findMemberIdByPostId(postId);
@@ -263,7 +263,7 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
     @Override
-    public void likepost(Long postId) {
+    public void likePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         Member member = accountUtil.getLoginMember();
 
@@ -276,7 +276,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void unlikepost(Long postId) {
+    public void unlikePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         Member member = accountUtil.getLoginMember();
         post.DownLikeCount();

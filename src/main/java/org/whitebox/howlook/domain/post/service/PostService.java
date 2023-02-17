@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
 import org.whitebox.howlook.domain.post.dto.HashtagDTO;
+import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
 
 import java.util.List;
 
@@ -13,19 +14,19 @@ public interface PostService {
 
     List<PostReaderDTO> readerUID(String UserID);
 
-    Page<PostReaderDTO> getpostPage(int size, int page);
+    Page<PostReaderDTO> getPostPage(int size, int page);
 
-    Page<PostReaderDTO> getNearpostPage(int size, int page, float latitude, float longitude);
+    Page<PostReaderDTO> getNearPostPage(int size, int page, float latitude, float longitude);
 
-    public void scrappost(Long postId);
+    public void scrapPost(Long postId);
 
-    public void unScrappost(Long postId);
+    public void unScrapPost(Long postId);
 
-    List<PostReaderDTO> searchpostByHashtag(HashtagDTO hashtagDTO, Long heightHigh, Long heightLow, Long weightHigh, Long weightLow, char gender, int page, int size);
+    List<PostReaderDTO> searchPostByHashtag(SearchCategoryDTO searchCategoryDTO);
 
-    public void deletepost(Long postId);
+    public void deletePost(Long postId);
 
-    public void likepost(Long postId);
+    public void likePost(Long postId);
 
-    public void unlikepost(Long postId);
+    public void unlikePost(Long postId);
 }

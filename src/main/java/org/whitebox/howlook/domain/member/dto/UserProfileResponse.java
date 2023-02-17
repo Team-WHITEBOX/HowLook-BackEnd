@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
+import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class UserProfileResponse {
     @ApiModelProperty(value = "게시글 개수")
     private Long memberPostCount;
     @ApiModelProperty(value = "게시글 목록", example = "['사진1','사진2','사진3']")
-    private List<PostReaderDTO> memberPosts;
+    private List<SimplePostDTO> memberPosts;
 
     @ApiModelProperty(value = "본인 여부", example = "false")
     private boolean isMe;
@@ -50,7 +51,7 @@ public class UserProfileResponse {
         this.profilePhoto = profilePhoto;
         this.isMe = isMe;
     }
-    public void setMemberPosts(List<PostReaderDTO> posts){
+    public void setMemberPosts(List<SimplePostDTO> posts){
         this.memberPosts = posts.stream().collect(Collectors.toList());
         this.memberPostCount = posts.stream().count();
     }

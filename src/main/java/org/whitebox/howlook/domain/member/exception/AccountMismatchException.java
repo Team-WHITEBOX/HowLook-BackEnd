@@ -7,5 +7,8 @@ public class AccountMismatchException extends BusinessException {
     public AccountMismatchException() {
         super(ErrorCode.ACCOUNT_MISMATCH);
     }
+    public AccountMismatchException(ErrorCode code) {
+        super(code);
+    }
 
 }

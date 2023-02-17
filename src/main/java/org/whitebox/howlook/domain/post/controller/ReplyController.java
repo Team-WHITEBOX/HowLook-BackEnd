@@ -24,8 +24,6 @@ public class ReplyController {
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> register(@Valid @RequestBody ReplyRegisterDTO replyRegisterDTO) // 댓글 등록
     {
-        log.info(replyRegisterDTO);
-
         replyService.register_reply(replyRegisterDTO);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.CREATE_COMMENT_SUCCESS));
     }
