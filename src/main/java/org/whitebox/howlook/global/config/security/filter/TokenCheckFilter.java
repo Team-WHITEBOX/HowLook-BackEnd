@@ -54,7 +54,7 @@ public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 �
 
             filterChain.doFilter(request,response);
         }catch (AccessTokenException accessTokenException){
-            throw accessTokenException;
+            accessTokenException.sendResponseError(response);
         }
     }
 

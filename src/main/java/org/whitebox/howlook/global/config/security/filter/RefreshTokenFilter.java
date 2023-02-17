@@ -96,7 +96,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             sendTokens(accessTokenValue, refreshTokenValue, response);
 
         }catch(RefreshTokenException refreshTokenException){
-            throw refreshTokenException;
+            refreshTokenException.sendResponseError(response);
         }
     }
 
