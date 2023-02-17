@@ -139,7 +139,7 @@ public class MemberServiceImpl implements MemberService{
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         if(post.getMember().getMemberId() != member.getMemberId()){
-            throw new AccountMismatchException();
+            throw new AccountMismatchException(POST_CANT_PROFILE);
         }
         member.updateProfilePhotoId(post.getMainPhotoPath());
         memberRepository.save(member);
