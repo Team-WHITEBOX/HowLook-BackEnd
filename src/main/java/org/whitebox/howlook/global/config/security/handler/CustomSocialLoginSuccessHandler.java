@@ -7,11 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.whitebox.howlook.global.config.security.dto.MemberSecurityDTO;
 import org.whitebox.howlook.global.util.JWTUtil;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,26 +51,5 @@ public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHan
         //response.getWriter().println(jsonStr);
         response.sendRedirect("http://3.34.164.14:8080/account/webview.html?accessToken="+accessToken+"&refreshToken="+refreshToken);
 
-//        RequestDispatcher dispatcher = request.getRequestDispatcher("http://localhost:8080/account/webview.html");
-//        request.setAttribute("accessToken",accessToken);
-//        request.setAttribute("refreshToken",refreshToken);
-//        dispatcher.forward(request, response);
-
-
-//        //소셜로그인이고 회원의 패스워드가 1111이라면
-//        if (memberSecurityDTO.isSocial()
-//                && (memberSecurityDTO.getMemberPassword().equals("1111")
-//                ||  passwordEncoder.matches("1111", memberSecurityDTO.getMemberPassword())
-//        )) {
-//            log.info("Should Change Password");
-//
-//            log.info("Redirect to Member Modify ");
-//            response.sendRedirect("/member/modify");
-//
-//            return;
-//        } else {
-//
-//            response.sendRedirect("/board/list");
-//        }
     }
 }

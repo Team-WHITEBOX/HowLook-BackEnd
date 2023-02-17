@@ -6,20 +6,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
+import org.whitebox.howlook.domain.member.dto.*;
+import org.whitebox.howlook.domain.member.entity.Member;
+import org.whitebox.howlook.domain.member.entity.MemberRole;
+import org.whitebox.howlook.domain.member.exception.AccountMismatchException;
+import org.whitebox.howlook.domain.member.exception.PasswordEqualWithOldException;
+import org.whitebox.howlook.domain.member.exception.MemberIdExistException;
+import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.post.entity.Scrap;
 import org.whitebox.howlook.domain.post.repository.PostRepository;
 import org.whitebox.howlook.domain.post.repository.ScrapRepository;
-import org.whitebox.howlook.domain.member.dto.*;
-import org.whitebox.howlook.domain.member.entity.Member;
-import org.whitebox.howlook.domain.member.entity.MemberRole;
-import org.whitebox.howlook.domain.member.exception.AccountMismatchException;
-import org.whitebox.howlook.domain.member.exception.memberIdExistException;
-import org.whitebox.howlook.domain.member.exception.PasswordEqualWithOldException;
-import org.whitebox.howlook.domain.member.repository.MemberRepository;
-import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
@@ -38,13 +36,12 @@ public class MemberServiceImpl implements MemberService{
     private final PostRepository postRepository;
     private final ScrapRepository scrapRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UploadService uploadService; // 업로드 서비스
     @Override
     public void join(MemberJoinDTO memberJoinDTO) {
         String memberId = memberJoinDTO.getMemberId();
         boolean exist = memberRepository.existsById(memberId);
         if(exist){
-            throw new memberIdExistException();
+            throw new MemberIdExistException();
         }
         Member member = modelMapper.map(memberJoinDTO,Member.class);
         member.updatePassword(passwordEncoder.encode(memberJoinDTO.getMemberPassword()));
@@ -93,12 +90,6 @@ public class MemberServiceImpl implements MemberService{
     public void editProfile(EditProfileRequest editProfileRequest) {
         final Member member = accountUtil.getLoginMember();
 
-//        log.info("프로필 수정");
-//        if (memberRepository.existsById(editProfileRequest.getMemberId())
-//                && !member.getMemberId().equals(editProfileRequest.getMemberId())) {
-//            log.info("예외");
-//            throw new UsernameAlreadyExistException();
-//        }
         log.info("수정");
         member.updateNickName(editProfileRequest.getMemberNickName());
         member.updateHeight(editProfileRequest.getMemberHeight());
@@ -114,12 +105,7 @@ public class MemberServiceImpl implements MemberService{
         if (!member.isSocial()){
             return;
         }
-//        log.info("프로필 수정");
-//        if (memberRepository.existsById(socialEditProfileRequest.getMemberId())
-//                && !member.getMemberId().equals(socialEditProfileRequest.getMemberId())) {
-//            log.info("예외");
-//            throw new UsernameAlreadyExistException();
-//        }
+
         log.info("수정");
         member.updateName(socialEditProfileRequest.getMemberName());
         member.updateNickName(socialEditProfileRequest.getMemberNickName());
@@ -132,9 +118,6 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void editProfilePhoto(Long postId) {
-        if(postId==null){
-            throw new EntityNotFoundException(ENTITY_NOT_FOUNT);
-        }
         final Member member = accountUtil.getLoginMember();
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));

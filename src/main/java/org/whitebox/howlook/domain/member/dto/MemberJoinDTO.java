@@ -1,7 +1,8 @@
 package org.whitebox.howlook.domain.member.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,8 +14,6 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class MemberJoinDTO {
     @ApiModelProperty(value = "아이디", example = "testuser1", required = true)
     @NotBlank(message = "아이디를 입력해주세요")

@@ -10,6 +10,9 @@ import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,11 +21,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostReaderDTO {
-
+    @Positive
     private Long postId;       //게시글 ids
 
     UserPostInfoResponse userPostInfo;
 
+    @NotNull(message = "사진은 반드시 한 장 이상 포함되므로 사진개수가 필요하옵니다.")
+    @Positive
     private Long photoCount;      //업로드한 사진 개수
 
     private Long likeCount;     //좋아요개수
@@ -33,6 +38,7 @@ public class PostReaderDTO {
 
     private String content;     //내용
 
+    @NotBlank(message = "사진이 반드시 있을 것이기 때문에 사진경로가 필요하외다.")
     private String mainPhotoPath; //사진 경로
 
     private List<PhotoDTO> PhotoDTOs;
@@ -43,6 +49,7 @@ public class PostReaderDTO {
     @JsonProperty("modDate")
     private LocalDateTime modificationDate;
 
+    @NotNull(message = "해시태그가 없는 게시물은 없소.")
     private HashtagDTO hashtagDTO;
 
     private Boolean likeCheck; // 이 댓글에 좋아요를 눌렀는지 확인.

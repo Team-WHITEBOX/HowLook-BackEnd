@@ -41,6 +41,5 @@ public class MemberProfileRepositoryImpl implements MemberProfileRepository{
                 .from(member)
                 .where(member.memberId.eq(memberId))
                 .fetchOne());
-//        return Optional.empty();
     }
 }

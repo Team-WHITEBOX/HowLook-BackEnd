@@ -12,9 +12,7 @@ import org.whitebox.howlook.domain.member.dto.loginDTO;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
-
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;

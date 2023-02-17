@@ -62,11 +62,6 @@ public class CustomSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)throws Exception {
         log.info("---------------configure-----------------");
-//        http.formLogin().loginPage("/member/login").usernameParameter("loginId").passwordParameter("password");
-        //       .loginProcessingUrl("/api/login")  login action url
-        //        .usernameParameter("loginId")    default : username
-        //        .passwordParameter("password")
-
         //authenticationManager 설정
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
@@ -87,16 +82,6 @@ public class CustomSecurityConfig {
         //반드시 필요
         http.authenticationManager(authenticationManager);
 
-        //APILoginFilter 위치조정
-//        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
-
-        //api로 시작하는 모든경로 토큰체크필터 동작
-//        http.addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class);
-
-        //refreshToken 호출처리
-  //      http.addFilterBefore(new RefreshTokenFilter("/refreshToken",jwtUtil), TokenCheckFilter.class);
-
-
         http.httpBasic().disable();
         http.formLogin().disable();
         http.csrf().disable();  // csrf 비활성화
@@ -116,8 +101,6 @@ public class CustomSecurityConfig {
         http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
         });
-
-//        http.rememberMe().key("12345678").tokenRepository(persistentTokenRepository()).userDetailsService(userDetailsService).tokenValiditySeconds(60*60*24*30);
 
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
 

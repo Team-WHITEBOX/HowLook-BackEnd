@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
@@ -15,8 +14,7 @@ import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
@@ -100,7 +98,7 @@ public class MemberController {
 
     @ApiOperation(value = "회원 프로필 대표 사진 등록")
     @PutMapping(value = "/photo")
-    public ResponseEntity<ResultResponse> editProfilePhoto(Long postId) {
+    public ResponseEntity<ResultResponse> editProfilePhoto(@RequestParam @NotNull Long postId) {
         memberService.editProfilePhoto(postId);
 
         return ResponseEntity.ok(ResultResponse.of(GET_EDIT_PROFILE_SUCCESS));
