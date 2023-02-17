@@ -32,7 +32,7 @@ public class SearchCategoryDTO {
     private Long weightLow;
 
     @NotBlank
-    @Pattern(regexp = "^[MF]{1,1}$", message = "성별은 M 또는 F로 입력해주세요")
+    @Pattern(regexp = "[MFA]", message = "성별은 M 또는 F로 입력해주세요")
     private char gender;
 
     private int page;
