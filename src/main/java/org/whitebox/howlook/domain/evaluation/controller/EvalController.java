@@ -57,7 +57,7 @@ public class EvalController {
             return ResponseEntity.ok(ResultResponse.of(FIND_POST_FAIL));
         }
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTOS));
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_BY_ID_SUCCESS,evalReaderDTOS));
     }
 
     @GetMapping("/readNextEval")
@@ -77,7 +77,7 @@ public class EvalController {
     public ResponseEntity<ResultResponse> readByUserId(String userID) {
         List<EvalReaderDTO> evalReaderDTOS = evalService.readerUID(userID);
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,evalReaderDTOS));
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_BY_MEMBER_ID_SUCCESS,evalReaderDTOS));
     }
     
 }

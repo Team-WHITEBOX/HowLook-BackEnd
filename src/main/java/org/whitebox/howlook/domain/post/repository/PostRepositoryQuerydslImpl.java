@@ -49,7 +49,9 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         booleanBuilder.and(post.member.weight.goe(searchCategoryDTO.getWeightLow()));
         booleanBuilder.and(post.member.weight.loe(searchCategoryDTO.getWeightHigh()));
 
-        booleanBuilder.and(post.member.gender.eq(searchCategoryDTO.getGender()));
+        if(searchCategoryDTO.getGender() != 'A') {
+            booleanBuilder.and(post.member.gender.eq(searchCategoryDTO.getGender()));
+        }
 
         if(searchCategoryDTO.getHashtagDTO().getAmekaji())
             booleanBuilder.and(post.hashtag.amekaji.eq(true));
