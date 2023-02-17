@@ -2,7 +2,6 @@ package org.whitebox.howlook.global.config.security.filter;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
+
+import static org.whitebox.howlook.global.error.ErrorCode.*;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -53,7 +54,7 @@ public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 �
 
             filterChain.doFilter(request,response);
         }catch (AccessTokenException accessTokenException){
-            accessTokenException.sendResponseError(response);
+            throw accessTokenException;
         }
     }
 
@@ -62,7 +63,7 @@ public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 �
         String headerStr = request.getHeader("Authorization");
 
         if(headerStr == null  || headerStr.length() < 8){
-            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.UNACCEPT);
+            throw new AccessTokenException(JWT_UNACCEPT);
         }
 
         //Bearer 생략
@@ -70,7 +71,7 @@ public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 �
         String tokenStr =  headerStr.substring(7);
 
         if(tokenType.equalsIgnoreCase("Bearer") == false){
-            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.BADTYPE);
+            throw new AccessTokenException(JWT_BADTYPE);
         }
 
         try{
@@ -79,13 +80,10 @@ public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 �
             return values;
         }catch(MalformedJwtException malformedJwtException){
             log.error("MalformedJwtException----------------------");
-            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.MALFORM);
-        }catch(SignatureException signatureException){
-            log.error("SignatureException----------------------");
-            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.BADSIGN);
+            throw new AccessTokenException(JWT_MALFORM);
         }catch(ExpiredJwtException expiredJwtException){
             log.error("ExpiredJwtException----------------------");
-            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.EXPIRED);
+            throw new AccessTokenException(JWT_EXPIRED);
         }
     }
 }

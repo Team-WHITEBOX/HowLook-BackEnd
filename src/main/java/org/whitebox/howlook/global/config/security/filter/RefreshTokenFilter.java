@@ -20,6 +20,8 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 
+import static org.whitebox.howlook.global.error.ErrorCode.REFRESH_EXPIRED;
+
 @Log4j2
 @RequiredArgsConstructor
 public class RefreshTokenFilter extends OncePerRequestFilter {
@@ -48,8 +50,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         try{
             checkAccessToken(accessToken);
         }catch (RefreshTokenException refreshTokenException){
-            refreshTokenException.sendResponseError(response);
-            return;
+            throw refreshTokenException;
         }
         Map<String, Object> refreshClaims = null;
 
@@ -95,8 +96,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             sendTokens(accessTokenValue, refreshTokenValue, response);
 
         }catch(RefreshTokenException refreshTokenException){
-            refreshTokenException.sendResponseError(response);
-            return;
+            throw refreshTokenException;
         }
     }
 
@@ -122,7 +122,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         }catch (ExpiredJwtException expiredJwtException){
             log.info("Access Token has expired");
         }catch(Exception exception){
-            throw new RefreshTokenException(RefreshTokenException.ErrorCase.NO_ACCESS);
+            throw new RefreshTokenException();
         }
     }
 
@@ -134,10 +134,10 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             return values;
 
         }catch(ExpiredJwtException expiredJwtException){
-            throw new RefreshTokenException(RefreshTokenException.ErrorCase.OLD_REFRESH);
+            throw new RefreshTokenException(REFRESH_EXPIRED);
         }catch(Exception exception){
             exception.printStackTrace();
-            new RefreshTokenException(RefreshTokenException.ErrorCase.NO_REFRESH);
+            new RefreshTokenException();
         }
         return null;
     }
