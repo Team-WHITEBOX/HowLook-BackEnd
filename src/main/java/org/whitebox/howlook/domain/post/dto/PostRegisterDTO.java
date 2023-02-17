@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class PostRegisterDTO {
 
-    @ApiModelProperty(value = "게시글 내용", example = "게시글내용은 없어도 되옵니다.", required = true)
+    @ApiModelProperty(value = "게시글 내용", example = "게시글내용은 없어도 되옵니다.")
     private String content;         //내용
 
     @NotNull(message = "PostRegisterDTO호출 시 위도(latitude)값은 필수입니다.")
