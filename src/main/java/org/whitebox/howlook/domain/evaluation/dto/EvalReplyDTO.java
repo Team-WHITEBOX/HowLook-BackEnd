@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EvalReplyDTO {
-    private Long replyId;       // 평가 id
     private Double score;       // 평가 점수
     private Long postId;           // 평가받을 글 id
 }

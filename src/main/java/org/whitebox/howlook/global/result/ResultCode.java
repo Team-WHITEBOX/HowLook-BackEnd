@@ -127,7 +127,11 @@ public enum ResultCode {
     RESULT_TOURNAMENT_SUCCESS(200, "T006", "토너먼트 랭킹 기록에 성공하였습니다."),
 
     // Eval
-    EVAL_REGISTER_SUCCESS(200, "E001", "평가 게시글 등록에 성공하였습니다.");
+    EVAL_REGISTER_SUCCESS(200, "E001", "평가 게시글 등록에 성공하였습니다."),
+    EVAL_SEARCH_SUCCESS(200, "E002", "평가 게시글 조회에 성공하였습니다."),
+    EVAL_REGISTER_FAIL(200, "E019", "평가 게시글 등록에 실패하였습니다."),
+    EVAL_SEARCH_FAIL(200, "E020", "평가 게시글 조회에 실패하였습니다.");
+
     private final int status;
     private final String code;
     private final String message;
