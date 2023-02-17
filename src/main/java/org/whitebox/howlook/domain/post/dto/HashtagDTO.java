@@ -5,15 +5,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.whitebox.howlook.domain.post.entity.Hashtag;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class HashtagDTO {
+
+    @NotNull
     private Boolean minimal;
+
+    @NotNull
     private Boolean casual;
+
+    @NotNull
     private Boolean street;
+
+    @NotNull
     private Boolean amekaji;
+
+    @NotNull
     private Boolean sporty;
+
+    @NotNull
     private Boolean guitar;
 
     public HashtagDTO(Hashtag hashtag) {

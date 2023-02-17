@@ -8,12 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
-import org.whitebox.howlook.domain.post.dto.HashtagDTO;
 import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
 import org.whitebox.howlook.domain.post.service.PostService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
@@ -25,14 +26,12 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 public class PostController {
     private final PostService postService;
 
-
     @ApiOperation(value = "피드 게시글 등록")
     @PostMapping(value = "/regist",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerPost(@Valid @ModelAttribute PostRegisterDTO postRegisterDTO) {
         log.info("post POST register!");
         log.info(postRegisterDTO);
 
-        postService.registerPOST(postRegisterDTO);
         return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS));
     }
 
@@ -46,12 +45,12 @@ public class PostController {
 
     @ApiOperation(value = "게시글 id로 피드 게시글 조회")
     @GetMapping("/readbypid")
-    public ResponseEntity<ResultResponse> readPostByPID(Long postId) {
+    public ResponseEntity<ResultResponse> readPostByPID(@NotNull(message = "postId는 필수입니다.") @Positive Long postId) {
         PostReaderDTO postReaderDTO = postService.readerPID(postId);
 
         log.info(postReaderDTO);
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS, postReaderDTO));
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_BY_ID_SUCCESS, postReaderDTO));
     }
     @ApiOperation(value = "멤버 id로 피드 게시글 모두 조회")
     @GetMapping("/readbyuid")
@@ -60,11 +59,11 @@ public class PostController {
 
         log.info(posts);
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_POST_SUCCESS,posts));
+        return ResponseEntity.ok(ResultResponse.of(FIND_POST_BY_MEMBER_ID_SUCCESS,posts));
     }
     @ApiOperation(value = "최근 피드 게시글 10개 조회")
     @GetMapping("/recent")
-    public ResponseEntity<ResultResponse> getRecent10Posts(@RequestParam int page) {
+    public ResponseEntity<ResultResponse> getRecent10Posts(@RequestParam @NotNull @Positive int page) {
         final List<PostReaderDTO> postList = postService.getPostPage(10, page).getContent();
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
@@ -72,20 +71,20 @@ public class PostController {
 
     @ApiOperation(value = "좌표 기준 근처 게시글 10개 조회")
     @GetMapping("/near")
-    public ResponseEntity<ResultResponse> getNear10Posts(@RequestParam int page,float latitude, float longitude) {
+    public ResponseEntity<ResultResponse> getNear10Posts(@RequestParam @NotNull int page, float latitude, float longitude) {
         final List<PostReaderDTO> postList = postService.getNearPostPage(10, page,latitude,longitude).getContent();
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
     }
     @ApiOperation(value = "스크랩")
     @PostMapping("/scrap")
-    public ResponseEntity<ResultResponse> scrapPost(@RequestParam Long postId){
+    public ResponseEntity<ResultResponse> scrapPost(@RequestParam @NotNull(message = "PostId는 필수입니다.") @Positive Long postId){
         postService.scrapPost(postId);
         return ResponseEntity.ok(ResultResponse.of(BOOKMARK_POST_SUCCESS));
     }
     @ApiOperation(value = "스크랩 취소")
     @DeleteMapping("/scrap")
-    public ResponseEntity<ResultResponse> unScrapPost(@RequestParam Long postId) {
+    public ResponseEntity<ResultResponse> unScrapPost(@RequestParam @NotNull(message = "PostId는 필수입니다.") @Positive Long postId) {
         postService.unScrapPost(postId);
 
         return ResponseEntity.ok(ResultResponse.of(UN_BOOKMARK_POST_SUCCESS));
@@ -98,19 +97,19 @@ public class PostController {
     public ResponseEntity<ResultResponse> searchByCategories(SearchCategoryDTO searchCategoryDTO) {
         final List<PostReaderDTO> posts = postService.searchPostByHashtag(searchCategoryDTO);
 
-        return ResponseEntity.ok(ResultResponse.of(GET_HASHTAG_post_SUCCESS, posts));
+        return ResponseEntity.ok(ResultResponse.of(GET_HASHTAG_POST_SUCCESS, posts));
     }
 
     @ApiOperation(value = "게시물 좋아요", notes = "POST 방식으로 추가")
     @PostMapping("/like")
-    public ResponseEntity<ResultResponse> likePost(@RequestParam Long postId) {
+    public ResponseEntity<ResultResponse> likePost(@RequestParam @NotNull(message = "PostId는 필수입니다.") @Positive Long postId) {
         postService.likePost(postId);
         return ResponseEntity.ok(ResultResponse.of(LIKE_POST_SUCCESS));
     }
 
     @ApiOperation(value = "게시물 좋아요 해제", notes = "Delete 방식으로 제거")
     @DeleteMapping("/like")
-    public ResponseEntity<ResultResponse> unlikePost(@RequestParam Long postId) {
+    public ResponseEntity<ResultResponse> unlikePost(@RequestParam @NotNull(message = "PostId는 필수입니다.") @Positive Long postId) {
         postService.unlikePost(postId);
         return ResponseEntity.ok(ResultResponse.of(UN_LIKE_POST_SUCCESS));
     }
