@@ -1,10 +1,7 @@
 package org.whitebox.howlook.domain.member.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
@@ -13,8 +10,6 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class UpdatePasswordRequest {
 
     @ApiModelProperty(value = "이전비밀번호", example = "b12341234", required = true)

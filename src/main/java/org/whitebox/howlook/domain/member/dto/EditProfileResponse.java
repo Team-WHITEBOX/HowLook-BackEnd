@@ -2,15 +2,11 @@ package org.whitebox.howlook.domain.member.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import org.whitebox.howlook.domain.member.entity.Member;
 
 @ApiModel("유저 정보 수정 응답 모델")
 @Getter
-@Builder
-@AllArgsConstructor
 public class EditProfileResponse {
 
     @ApiModelProperty(value = "아이디", example = "user1")

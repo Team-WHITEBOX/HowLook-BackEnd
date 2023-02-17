@@ -4,7 +4,6 @@ import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
-import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 
 import java.util.List;
@@ -29,10 +28,6 @@ public class UserProfileResponse {
     @ApiModelProperty(value = "프로필사진")
     private String profilePhoto;
 
-//    @ApiModelProperty(value = "해시태그", example = "#미니멀, #스트릿")
-//    private String memberTag;
-    
-    //랭킹
     @ApiModelProperty(value = "게시글 개수")
     private Long memberPostCount;
     @ApiModelProperty(value = "게시글 목록", example = "['사진1','사진2','사진3']")

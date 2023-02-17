@@ -1,7 +1,8 @@
 package org.whitebox.howlook.domain.member.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
@@ -12,8 +13,6 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class SocialEditProfileRequest {
 
     @ApiModelProperty(value = "이름", example = "홍길동", required = true)

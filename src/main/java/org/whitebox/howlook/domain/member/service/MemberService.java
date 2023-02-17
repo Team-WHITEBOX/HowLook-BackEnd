@@ -1,6 +1,5 @@
 package org.whitebox.howlook.domain.member.service;
 
-import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 

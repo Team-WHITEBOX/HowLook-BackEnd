@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.member.entity.Member;
+import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.global.config.security.dto.MemberSecurityDTO;
 
@@ -25,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info("loadUserByUsername: "+username);
         Optional<Member> result = memberRepository.findByMemberId(username);
         if(result.isEmpty()){  //해당 아이디 유저가 없다면
-            throw new UsernameNotFoundException("username not found .... ");
+            throw new MemberDoesNotExistException();
         }
         Member member = result.get();
         MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(
