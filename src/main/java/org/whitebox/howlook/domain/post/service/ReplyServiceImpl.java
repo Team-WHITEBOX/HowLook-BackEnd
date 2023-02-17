@@ -124,7 +124,6 @@ public class ReplyServiceImpl implements ReplyService{
             reply.changeText(replyDTO.getContent());
             replyRepository.save(reply);
         }
-
     }
 
     @Override // 게시글에 해당하는 댓글 읽어오기.

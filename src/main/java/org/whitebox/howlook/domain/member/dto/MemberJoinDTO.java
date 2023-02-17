@@ -60,5 +60,4 @@ public class MemberJoinDTO {
     @ApiModelProperty(value = "성별", example = "M", required = true)
     @Pattern(regexp = "^[MF]{1,1}$", message = "성별은 M 또는 F로 입력해주세요")
     private String gender;
-
 }
