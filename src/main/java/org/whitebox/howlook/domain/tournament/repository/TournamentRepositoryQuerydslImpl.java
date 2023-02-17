@@ -3,7 +3,10 @@ package org.whitebox.howlook.domain.tournament.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.whitebox.howlook.domain.tournament.dto.*;
+import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
+import org.whitebox.howlook.domain.tournament.dto.QEHistoryResponse;
+import org.whitebox.howlook.domain.tournament.dto.QTHistoryList;
+import org.whitebox.howlook.domain.tournament.dto.THistoryList;
 
 import java.time.LocalDate;
 import java.util.Optional;

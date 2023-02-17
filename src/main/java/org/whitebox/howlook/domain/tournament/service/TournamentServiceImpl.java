@@ -1,4 +1,5 @@
 package org.whitebox.howlook.domain.tournament.service;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -6,15 +7,15 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.post.repository.PostRepository;
-import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryList;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
-import org.whitebox.howlook.domain.tournament.repository.postToTournaRepository;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
+import org.whitebox.howlook.domain.tournament.repository.postToTournaRepository;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
@@ -24,7 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.whitebox.howlook.global.error.ErrorCode.*;
+import static org.whitebox.howlook.global.error.ErrorCode.ENTITY_NOT_FOUNT;
+import static org.whitebox.howlook.global.error.ErrorCode.POST_NOT_FOUND;
 
 @Log4j2
 @Service

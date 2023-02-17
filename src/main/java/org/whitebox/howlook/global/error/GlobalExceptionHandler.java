@@ -1,15 +1,5 @@
 package org.whitebox.howlook.global.error;
 
-import static org.springframework.http.HttpStatus.*;
-import static org.whitebox.howlook.global.error.ErrorCode.*;
-import static org.whitebox.howlook.global.error.ErrorCode.INTERNAL_SERVER_ERROR;
-import static org.whitebox.howlook.global.error.ErrorCode.METHOD_NOT_ALLOWED;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.ConstraintViolationException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -23,6 +13,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.whitebox.howlook.global.error.exception.BusinessException;
+
+import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.whitebox.howlook.global.error.ErrorCode.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

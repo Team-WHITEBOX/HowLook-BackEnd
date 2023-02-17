@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
+import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 
 import javax.validation.constraints.NotBlank;

@@ -1,6 +1,5 @@
 package org.whitebox.howlook.domain.evaluation.service;
 
-import org.springframework.data.domain.Page;
 import org.whitebox.howlook.domain.evaluation.dto.EvalPageDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalRegisterDTO;

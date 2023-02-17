@@ -5,12 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.evaluation.dto.EvalPageDTO;
@@ -21,7 +19,6 @@ import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
-import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.AccountUtil;
 import org.whitebox.howlook.global.util.LocalUploader;
 import org.whitebox.howlook.global.util.S3Uploader;
@@ -31,9 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.whitebox.howlook.global.result.ResultCode.EVAL_SEARCH_FAIL;
-import static org.whitebox.howlook.global.result.ResultCode.EVAL_SEARCH_SUCCESS;
 
 @Service
 @Log4j2

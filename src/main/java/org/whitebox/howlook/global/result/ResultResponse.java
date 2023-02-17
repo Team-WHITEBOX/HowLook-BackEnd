@@ -3,7 +3,6 @@ package org.whitebox.howlook.global.result;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
-import org.whitebox.howlook.global.error.ErrorCode;
 
 @ApiModel(description = "결과 응답 데이터 모델")
 @Getter

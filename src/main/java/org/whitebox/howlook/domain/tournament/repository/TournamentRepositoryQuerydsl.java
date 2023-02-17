@@ -2,7 +2,6 @@ package org.whitebox.howlook.domain.tournament.repository;
 
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryList;
-import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 
 import java.time.LocalDate;
 import java.util.Optional;
