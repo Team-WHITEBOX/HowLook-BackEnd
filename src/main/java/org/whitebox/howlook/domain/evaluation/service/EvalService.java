@@ -1,6 +1,7 @@
 package org.whitebox.howlook.domain.evaluation.service;
 
 import org.springframework.data.domain.Page;
+import org.whitebox.howlook.domain.evaluation.dto.EvalPageDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalRegisterDTO;
 
@@ -11,5 +12,6 @@ public interface EvalService {
     EvalReaderDTO reader(Long postId);
     public List<EvalReaderDTO> readerUID(String UserID);
     public List<EvalReaderDTO> readAll();
-    public EvalReaderDTO getEvalPage(int page, int size);
+    public List<EvalReaderDTO> getEvalPage(int page, int size);
+    public EvalPageDTO getEvalWithHasMore(int page, int size);
 }
