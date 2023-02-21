@@ -2,14 +2,10 @@ package org.whitebox.howlook.domain.evaluation.entity;
 
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.web.multipart.MultipartFile;
-import org.whitebox.howlook.domain.post.entity.BaseEntity;
 import org.whitebox.howlook.domain.member.entity.Member;
-import org.whitebox.howlook.domain.upload.entity.Upload;
+import org.whitebox.howlook.domain.post.entity.BaseEntity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter

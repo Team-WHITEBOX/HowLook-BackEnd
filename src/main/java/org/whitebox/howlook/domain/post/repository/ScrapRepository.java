@@ -2,9 +2,9 @@ package org.whitebox.howlook.domain.post.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.post.entity.Scrap;
-import org.whitebox.howlook.domain.member.entity.Member;
 
 import java.util.List;
 import java.util.Optional;

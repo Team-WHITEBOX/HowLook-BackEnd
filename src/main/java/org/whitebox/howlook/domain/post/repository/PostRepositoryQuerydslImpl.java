@@ -8,10 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
-import org.whitebox.howlook.domain.post.dto.HashtagDTO;
 import org.whitebox.howlook.domain.post.dto.QPostReaderDTO;
 import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
-import org.whitebox.howlook.domain.post.entity.QPost;
 
 import java.util.List;
 

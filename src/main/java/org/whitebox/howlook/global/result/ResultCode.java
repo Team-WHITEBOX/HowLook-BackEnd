@@ -6,8 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ResultCode {
-
-
     // Member
     REGISTER_SUCCESS(200, "M001", "회원가입에 성공하였습니다."),
     LOGIN_SUCCESS(200, "M002", "로그인에 성공하였습니다."),
@@ -85,7 +83,7 @@ public enum ResultCode {
     FIND_POST_FAIL(200, "F021", "게시물 조회에 실패하였습니다."),
     GET_POST_LIKES_SUCCESS(200, "F022", "게시물에 좋아요한 회원 목록 페이지 조회에 성공하였습니다."),
     MODIFY_REPLY_SUCCESS(200,"F023","댓글 수정에 성공하였습니다."),
-    GET_REPLY_IN_post_SUCESS(200,"F024","게시글 댓글 조회에 성공하였습니다."),
+    GET_REPLY_IN_POST_SUCCESS(200,"F024","게시글 댓글 조회에 성공하였습니다."),
     FIND_POST_BY_ID_SUCCESS(200, "F025", "아이디로 게시글 조회에 성공했습니다."),
     FIND_POST_BY_MEMBER_ID_SUCCESS(200, "F026", "멤버아디로 게시글 조회에 성공했습니다."),
 

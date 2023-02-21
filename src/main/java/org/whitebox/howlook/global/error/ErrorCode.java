@@ -70,6 +70,7 @@ public enum ErrorCode {
     POST_CANT_UPLOAD(400, "F015", "게시글을 등록할 수 없습니다."),
     POST_CANT_FOUND(400, "F016", "해당 정보에 부합하는 게시글을 찾을 수 없습니다."),
     POST_CANT_PROFILE(400, "F017", "타인의 사진은 프로필사진으로 등록할 수 없습니다."),
+    COMMENT_CANT_MODIFY(400,"F018", "타인의 댓글을 수정할 수 없습니다."),
     POST_NOT_LIKED(400, "F018", "좋아요가 눌리지 않은 게시글입니다."),
 
     // Chat

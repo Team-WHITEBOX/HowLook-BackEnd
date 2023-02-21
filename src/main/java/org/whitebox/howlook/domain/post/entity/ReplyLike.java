@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.whitebox.howlook.domain.member.entity.Member;
 

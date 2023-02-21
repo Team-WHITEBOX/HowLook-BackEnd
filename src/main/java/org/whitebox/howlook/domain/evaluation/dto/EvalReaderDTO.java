@@ -7,9 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor

@@ -10,8 +10,8 @@ import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.entity.MemberRole;
 import org.whitebox.howlook.domain.member.exception.AccountMismatchException;
-import org.whitebox.howlook.domain.member.exception.PasswordEqualWithOldException;
 import org.whitebox.howlook.domain.member.exception.MemberIdExistException;
+import org.whitebox.howlook.domain.member.exception.PasswordEqualWithOldException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 import org.whitebox.howlook.domain.post.entity.Post;
@@ -36,6 +36,7 @@ public class MemberServiceImpl implements MemberService{
     private final PostRepository postRepository;
     private final ScrapRepository scrapRepository;
     private final PasswordEncoder passwordEncoder;
+    @Transactional
     @Override
     public void join(MemberJoinDTO memberJoinDTO) {
         String memberId = memberJoinDTO.getMemberId();
@@ -85,7 +86,7 @@ public class MemberServiceImpl implements MemberService{
         final Member member = accountUtil.getLoginMember();
         return new EditProfileResponse(member);
     }
-
+    @Transactional
     @Override
     public void editProfile(EditProfileRequest editProfileRequest) {
         final Member member = accountUtil.getLoginMember();
@@ -97,7 +98,7 @@ public class MemberServiceImpl implements MemberService{
         member.updatePhone(editProfileRequest.getMemberPhone());
         memberRepository.save(member);
     }
-
+    @Transactional
     @Override
     public void socialEditProfile(SocialEditProfileRequest socialEditProfileRequest) {
         final Member member = accountUtil.getLoginMember();
@@ -115,7 +116,7 @@ public class MemberServiceImpl implements MemberService{
         member.updateBirthDay(socialEditProfileRequest.getMemberBirthDay());
         memberRepository.save(member);
     }
-
+    @Transactional
     @Override
     public void editProfilePhoto(Long postId) {
         final Member member = accountUtil.getLoginMember();

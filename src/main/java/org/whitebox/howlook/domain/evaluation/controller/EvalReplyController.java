@@ -2,7 +2,6 @@ package org.whitebox.howlook.domain.evaluation.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,7 +15,6 @@ import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
 
-import static org.whitebox.howlook.global.result.ResultCode.CREATE_POST_FAIL;
 import static org.whitebox.howlook.global.result.ResultCode.REGISTER_SUCCESS;
 
 @RestController

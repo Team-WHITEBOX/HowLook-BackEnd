@@ -14,7 +14,6 @@ import org.whitebox.howlook.domain.evaluation.service.EvalService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
-
 import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;

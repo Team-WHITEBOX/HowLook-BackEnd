@@ -1,8 +1,8 @@
 package org.whitebox.howlook.domain.post.service;
+
 import org.whitebox.howlook.domain.post.dto.ReplyDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyReadDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyRegisterDTO;
-import org.whitebox.howlook.domain.post.entity.Reply;
 
 import java.util.List;
 

@@ -3,7 +3,6 @@ package org.whitebox.howlook.domain.post.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
-import org.whitebox.howlook.domain.post.dto.HashtagDTO;
 import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
 
 import java.util.List;

@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.post.dto.ReplyDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyReadDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyRegisterDTO;
@@ -15,7 +16,6 @@ import org.whitebox.howlook.domain.post.entity.ReplyLike;
 import org.whitebox.howlook.domain.post.repository.PostRepository;
 import org.whitebox.howlook.domain.post.repository.ReplyLikeRepository;
 import org.whitebox.howlook.domain.post.repository.ReplyRepository;
-import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.global.error.ErrorCode;
 import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
@@ -115,15 +115,19 @@ public class ReplyServiceImpl implements ReplyService{
 
     @Override
     public void modify(ReplyDTO replyDTO) {
+
         Optional<Reply> replyOptional = replyRepository.findById(replyDTO.getReplyId());
 
         Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
         if(accountUtil.getLoginMember() == reply.getMember()) {
             reply.changeText(replyDTO.getContent());
+            replyRepository.save(reply);
         }
 
-        replyRepository.save(reply);
+        else {
+            throw new EntityAlreadyExistException(ErrorCode.COMMENT_CANT_MODIFY);
+        }
     }
 
     @Override // 게시글에 해당하는 댓글 읽어오기.

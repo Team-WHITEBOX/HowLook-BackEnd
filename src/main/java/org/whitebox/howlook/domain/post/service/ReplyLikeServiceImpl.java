@@ -1,7 +1,6 @@
 package org.whitebox.howlook.domain.post.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.post.entity.Reply;
 import org.whitebox.howlook.domain.post.entity.ReplyLike;

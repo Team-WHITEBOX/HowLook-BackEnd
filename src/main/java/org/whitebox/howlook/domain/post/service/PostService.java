@@ -3,7 +3,6 @@ package org.whitebox.howlook.domain.post.service;
 import org.springframework.data.domain.Page;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
-import org.whitebox.howlook.domain.post.dto.HashtagDTO;
 import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
 
 import java.util.List;

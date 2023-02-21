@@ -3,7 +3,6 @@ package org.whitebox.howlook.domain.tournament.service;
 
 import org.whitebox.howlook.domain.tournament.dto.EHistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.THistoryList;
-import org.whitebox.howlook.domain.tournament.dto.THistoryResponse;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 
 import java.time.LocalDate;
