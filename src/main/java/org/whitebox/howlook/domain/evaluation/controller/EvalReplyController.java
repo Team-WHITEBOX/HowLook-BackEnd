@@ -33,6 +33,6 @@ public class EvalReplyController {
     {
         evalReplyService.register(evalReplyDTO);
 
-        return ResponseEntity.ok(ResultResponse.of(EVAL_DATA_REGISTER_SUCCESS, evalReplyDTO));
+        return ResponseEntity.ok(ResultResponse.of(EVAL_REGISTER_SUCCESS, evalReplyDTO));
     }
 }

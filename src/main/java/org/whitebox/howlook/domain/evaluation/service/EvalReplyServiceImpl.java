@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.whitebox.howlook.global.error.ErrorCode.*;
 import static org.whitebox.howlook.global.result.ResultCode.*;
 
 @Service
@@ -42,12 +43,12 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         evalReply.setMember(accountUtil.getLoginMember());
 
         if(evalReplyDTO.getScore() > 10) {
-            throw new BusinessException(ErrorCode.EVAL_REGISTER_FAIL);
+            throw new BusinessException(EVAL_REGISTER_FAIL);
         }
 
         // 현재 내가 쓰려고하는 포스트 아이디
         Long pid = evalRepository.findByPid(evalReplyDTO.getPostId()).orElseThrow(
-            () -> new EntityNotFoundException(ErrorCode.EVAL_SEARCH_FAIL)
+            () -> new EntityNotFoundException(EVAL_NOT_EXIST)
         ).getPostId();
 
         // 이미 달은 평가라면 달리지않게 find 후 조건문 생성
@@ -61,7 +62,7 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         }
         else
         {
-            throw new BusinessException(ErrorCode.EVAL_ALREADY_EXSIST);
+            throw new BusinessException(EVAL_ALREADY_EXSIST);
         }
 
         return;

@@ -31,13 +31,13 @@ public class EvalController {
 
     @ApiOperation(value = "평가글 등록하기 : 사진 한장")
     @PostMapping(value = "/registerPost",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResultResponse> registerPosts(@Valid @ModelAttribute EvalRegisterDTO evalRegisterDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<ResultResponse> registerPosts(@Valid @ModelAttribute EvalRegisterDTO evalRegisterDTO) {
 
-        if(bindingResult.hasErrors()) {
-            log.info("has errors..");
-            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-            return ResponseEntity.ok(ResultResponse.of(EVAL_REGISTER_FAIL, false));
-        }
+//        if(bindingResult.hasErrors()) {
+//            log.info("has errors..");
+//            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+//            return ResponseEntity.ok(ResultResponse.of(EVAL_REGISTER_FAIL, false));
+//        }
 
         evalService.register(evalRegisterDTO);
 

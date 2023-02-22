@@ -49,7 +49,12 @@ public enum ErrorCode {
     POST_NOT_LIKED(400, "F013", "좋아요가 눌리지 않은 게시글입니다."),
 
     // HashTag
-    HASHTAG_NOT_FOUND(400, "H001", "존재하지 않는 해시태그 입니다.");
+    HASHTAG_NOT_FOUND(400, "H001", "존재하지 않는 해시태그 입니다."),
+
+    // Eval
+    EVAL_ALREADY_EXSIST(400, "E001", "평가 게시글이 이미 존재합니다."),
+    EVAL_REGISTER_FAIL(400, "E002", "평가 게시글 등록에 실패하였습니다."),
+    EVAL_NOT_EXIST(400, "E003", "존재하지 않는 게시글입니다.");
 
     private final int status;
     private final String code;

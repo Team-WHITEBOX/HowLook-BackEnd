@@ -28,7 +28,7 @@ public class EvalDataController {
         EvalDataDTO evalDataDTO = evalReplyService.ReadDateByPostId(postId);
         log.info(evalDataDTO);
 
-        return ResponseEntity.ok(ResultResponse.of(EVAL_DATA_SEARCH_SUCCESS, evalDataDTO));
+        return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS, evalDataDTO));
     }
 
 }
