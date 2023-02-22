@@ -1,17 +1,15 @@
 package org.whitebox.howlook.domain.post.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 
 import javax.validation.constraints.NotNull;
 
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 public class PostRegisterDTO {
 

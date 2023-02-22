@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.post.repository.PostRepository;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 import org.whitebox.howlook.domain.tournament.entity.TournamentHistory;
@@ -30,6 +31,7 @@ public class TournamentTask {
 
     //매일 일반/왕중왕전 비교해서 피드 불러오고 토너먼트 테이블에 저장.
     @Scheduled(cron = "0 30 0 * * *")
+    @Transactional
     public void postToTPost() {
 
         Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();   //그날의 날짜정보 가져오기
@@ -60,6 +62,7 @@ public class TournamentTask {
 
     //Normal tournament history 저장, 4개씩 저장
     @Scheduled(cron = "0 29 0 * * *")
+    @Transactional
     public void resultTournamentNormal(){
         Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();
         if(lastDay % 10 == 1) return;
@@ -73,6 +76,7 @@ public class TournamentTask {
 
     //Event Tournament(왕중왕전) 저장, 10개씩 저장.
     @Scheduled(cron = "0 29 0 * * *")
+    @Transactional
     public void resultTournamentWang(){
         Long lastDay = tournamentDateRepository.selectTournamentDatefromTournamentDateInfo();
         if(lastDay % 10 != 1) return;

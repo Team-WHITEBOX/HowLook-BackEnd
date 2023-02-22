@@ -24,7 +24,7 @@ public class ReplyRepositoryTests {
 
         Reply reply = Reply.builder()
                 .post(post)
-                .contents("댓글....")
+                .content("댓글....")
                 .member(member)
                 .build();
 

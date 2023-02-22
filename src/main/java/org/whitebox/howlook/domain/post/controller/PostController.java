@@ -13,7 +13,6 @@ import org.whitebox.howlook.domain.post.service.PostService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.List;

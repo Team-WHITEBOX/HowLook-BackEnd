@@ -1,15 +1,13 @@
 package org.whitebox.howlook.domain.post.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.whitebox.howlook.domain.post.entity.Reply;
 
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 public class ReplyReadDTO {
     // 댓글 정보

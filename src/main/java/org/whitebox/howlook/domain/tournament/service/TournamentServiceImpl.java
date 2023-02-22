@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.post.repository.PostRepository;
@@ -17,7 +17,6 @@ import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
 import org.whitebox.howlook.domain.tournament.repository.postToTournaRepository;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
-import org.whitebox.howlook.global.util.AccountUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,8 +35,9 @@ public class TournamentServiceImpl implements TournamentService {
     private final postToTournaRepository postToTournaRepository;
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
-    private final AccountUtil accountUtil;
     private final MemberRepository memberRepository;
+
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public List<TournamentPostDTO> getPosts(LocalDate date) {
@@ -50,6 +50,7 @@ public class TournamentServiceImpl implements TournamentService {
         return result;
     }
 
+    @Transactional
     @Override
     public void UpdatePosts(List<TournamentPostDTO> postDTOs) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -80,10 +81,6 @@ public class TournamentServiceImpl implements TournamentService {
         TournamentPostDTO dto = new TournamentPostDTO(post);
         return dto;
     }
-
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Override
     public List<TournamentPostDTO> findTop32postByDateForTourna()

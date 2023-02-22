@@ -67,6 +67,7 @@ public class PostServiceImpl implements PostService {
 
     //전달받은 postRegisterDTO값을 데이터베이스에 저장
     //해당 Post 자체데이터 + 사진데이터 테이블 + 해시테그 테이블 함께저장
+    @Transactional
     @Override
     public List<String> registerPOST(PostRegisterDTO postRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -184,6 +185,7 @@ public class PostServiceImpl implements PostService {
         return postPage;
     }
 
+    @Transactional
     @Override
     public void scrapPost(Long postId) {
         final Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
@@ -196,6 +198,7 @@ public class PostServiceImpl implements PostService {
         scrapRepository.save(scrap);
     }
 
+    @Transactional
     @Override
     public void unScrapPost(Long postId) {
         final Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
@@ -218,6 +221,7 @@ public class PostServiceImpl implements PostService {
         return posts;
     }
 
+    @Transactional
     @Override
     public void deletePost(Long postId) {
         //우선, 해당 게시글이 있는지를 확인한다.
@@ -268,6 +272,8 @@ public class PostServiceImpl implements PostService {
         hashtagRepository.delete(hashtag);
         postRepository.delete(post);
     }
+
+    @Transactional
     @Override
     public void likePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
@@ -281,6 +287,7 @@ public class PostServiceImpl implements PostService {
         postLikeRepository.save(new PostLike(member,post));
     }
 
+    @Transactional
     @Override
     public void unlikePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));

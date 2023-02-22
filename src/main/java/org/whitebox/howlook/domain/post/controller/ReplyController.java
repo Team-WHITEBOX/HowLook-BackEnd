@@ -6,8 +6,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.whitebox.howlook.domain.post.dto.*;
-import org.whitebox.howlook.domain.post.entity.Reply;
+import org.whitebox.howlook.domain.post.dto.ReplyModifyDTO;
+import org.whitebox.howlook.domain.post.dto.ReplyReadDTO;
+import org.whitebox.howlook.domain.post.dto.ReplyRegisterDTO;
 import org.whitebox.howlook.domain.post.service.ReplyService;
 import org.whitebox.howlook.global.result.ResultCode;
 import org.whitebox.howlook.global.result.ResultResponse;
@@ -55,7 +56,7 @@ public class ReplyController {
     @ApiOperation(value = "Replies of post", notes = "GET 방식으로 특정 게시물의 댓글 목록")
     @GetMapping(value = "/list/{postId}")
     public ResponseEntity<ResultResponse> getList(@PathVariable("postId") @NotNull(message = "게시글 아이디를 입력하세요.") @Positive Long postId) {
-        List<ReplyReadDTO> response = replyService.getListOfpost(postId);
+        List<ReplyReadDTO> response = replyService.getListOfPost(postId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.GET_REPLY_IN_POST_SUCCESS,response));
     }
 
