@@ -66,7 +66,7 @@ public class PostServiceImpl implements PostService {
     private final S3Uploader s3Uploader;
 
     @Value("${org.whitebox.server.upload}")
-    public String isLocal;
+    public String isServer;
 
 
     //전달받은 postRegisterDTO값을 데이터베이스에 저장
@@ -96,7 +96,7 @@ public class PostServiceImpl implements PostService {
 
         List<String> s3Paths = new ArrayList<>();
 
-        if(!isLocal.equals("true")) {
+        if(!isServer.equals("true")) {
             s3Paths = uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
         }
 
@@ -107,7 +107,7 @@ public class PostServiceImpl implements PostService {
             {
                 String m_path;
 
-                if(isLocal.equals("true")) {
+                if(isServer.equals("true")) {
                     m_path = uploadedFilePaths.get(0);
                 }
                 else

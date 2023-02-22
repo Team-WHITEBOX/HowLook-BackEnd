@@ -46,7 +46,7 @@ public class EvalServiceImpl implements EvalService{
     private final S3Uploader s3Uploader;
 
     @Value("${org.whitebox.server.upload}")
-    public String isLocal;
+    public String isServer;
 
     @Override
     public void register(EvalRegisterDTO evalRegisterDTO) {
@@ -62,7 +62,7 @@ public class EvalServiceImpl implements EvalService{
 
         String m_path;
 
-        if(isLocal.equals("true")) {
+        if(isServer.equals("true")) {
             m_path = uploadedFilePaths.get(0);
         }
         else
