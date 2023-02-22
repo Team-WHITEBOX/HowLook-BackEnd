@@ -13,6 +13,7 @@ import org.whitebox.howlook.domain.post.service.PostService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -38,7 +39,7 @@ public class PostController {
 
     @ApiOperation(value = "게시글 해시태그와 댓글 함께 삭제된다. 사진은 삭제되지 않음")
     @DeleteMapping(value = "/{postId}")
-    public ResponseEntity<ResultResponse> deletePost(@PathVariable("postId") Long postId) {
+    public ResponseEntity<ResultResponse> deletePost(@PathVariable("postId") @NotNull(message = "게시글id는 필수입니다.") @Positive Long postId) {
         postService.deletePost(postId);
 
         return ResponseEntity.ok(ResultResponse.of(DELETE_POST_SUCCESS));
@@ -53,9 +54,10 @@ public class PostController {
 
         return ResponseEntity.ok(ResultResponse.of(FIND_POST_BY_ID_SUCCESS, postReaderDTO));
     }
+
     @ApiOperation(value = "멤버 id로 피드 게시글 모두 조회")
     @GetMapping("/readbyuid")
-    public ResponseEntity<ResultResponse> readPostByUID(String UserID) {
+    public ResponseEntity<ResultResponse> readPostByUID(@RequestParam @NotNull(message = "userid는 필수입니다.") String UserID) {
         List<PostReaderDTO> posts = postService.readerUID(UserID);
 
         log.info(posts);
@@ -64,7 +66,7 @@ public class PostController {
     }
     @ApiOperation(value = "최근 피드 게시글 10개 조회")
     @GetMapping("/recent")
-    public ResponseEntity<ResultResponse> getRecent10Posts(@RequestParam @NotNull @Positive int page) {
+    public ResponseEntity<ResultResponse> getRecent10Posts(@RequestParam @NotNull(message = "요청페이지는 필수입니다.") @Positive int page) {
         final List<PostReaderDTO> postList = postService.getPostPage(10, page).getContent();
 
         return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));

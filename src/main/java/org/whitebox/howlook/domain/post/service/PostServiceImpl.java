@@ -25,6 +25,7 @@ import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.entity.Upload;
 import org.whitebox.howlook.domain.upload.repository.UploadRepository;
 import org.whitebox.howlook.domain.upload.service.UploadService;
+import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
@@ -151,8 +152,15 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostReaderDTO> readerUID(String UserID) {
         List<Post> posts = postRepository.findByMemberId(UserID);
+
+        //UserID에 일치하는 값 없을 경우 POST_NOT_FOUND 반환
+        if(posts == null) {
+            throw new EntityNotFoundException(POST_NOT_FOUND);
+        }
+
         List<PostReaderDTO> result = posts.stream().map(post ->  new PostReaderDTO(post)).collect(Collectors.toList());
         result.forEach( postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));
+
         return result;
     }
 
