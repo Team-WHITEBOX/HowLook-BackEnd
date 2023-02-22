@@ -7,7 +7,6 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.member.entity.Member;
-import org.whitebox.howlook.domain.post.dto.ReplyDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyModifyDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyReadDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyRegisterDTO;

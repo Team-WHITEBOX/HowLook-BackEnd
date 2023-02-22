@@ -2,10 +2,13 @@ package org.whitebox.howlook.domain.post.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.*;
 
-@Data
+@Getter
+@Setter
 public class SearchCategoryDTO {
 
     @NotNull(message = "해시태그는 모두 입력되어야 합니다.")

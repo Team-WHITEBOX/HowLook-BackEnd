@@ -7,7 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @AllArgsConstructor
 public class SimplePostDTO {
     private Long postId;       //게시글 id
