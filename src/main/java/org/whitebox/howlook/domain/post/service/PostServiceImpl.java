@@ -150,9 +150,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostReaderDTO> readerUID(String UserID) {
-        List<Post> posts = postRepository.findByMemberId(UserID);
+        final List<Post> posts = postRepository.findByMemberId(UserID).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+
+        //UserID에 일치하는 값 없을 경우 POST_NOT_FOUND 반환
         List<PostReaderDTO> result = posts.stream().map(post ->  new PostReaderDTO(post)).collect(Collectors.toList());
         result.forEach( postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));
+
         return result;
     }
 
@@ -217,6 +220,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(Long postId) {
+        //우선, 해당 게시글이 있는지를 확인한다.
+        final Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        Long hashtagid = post.getHashtag().getHashtagId();
+
         //지우려는 유저(로그인유저)와 게시글의 유저가 같은지 확인
         String thismember = accountUtil.getLoginMemberId();
         String postmember = postRepository.findMemberIdByPostId(postId);
@@ -224,9 +231,6 @@ public class PostServiceImpl implements PostService {
         if(!thismember.equals(postmember)) {
             throw new EntityAlreadyExistException(POST_CANT_DELETE);
         }
-
-        final Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
-        Long hashtagid = post.getHashtag().getHashtagId();
 
         final Hashtag hashtag = hashtagRepository.findById(hashtagid).orElseThrow(() -> new EntityNotFoundException(HASHTAG_NOT_FOUND));
         log.info(hashtagid);
