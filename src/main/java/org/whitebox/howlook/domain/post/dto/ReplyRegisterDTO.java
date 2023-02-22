@@ -20,7 +20,6 @@ public class ReplyRegisterDTO {
     @Size(min = 1, max = 1000, message = "댓글은 1문자 이상 1000문자 이하여야 합니다.")
     private String content; // 댓글 내용
 
-    @Positive
     @NotNull
     private long parentId; // 부모 댓글 ID
 }
