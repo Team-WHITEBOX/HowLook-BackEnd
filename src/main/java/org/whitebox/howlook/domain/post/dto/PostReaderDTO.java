@@ -2,7 +2,9 @@ package org.whitebox.howlook.domain.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;

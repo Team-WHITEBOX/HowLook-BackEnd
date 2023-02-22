@@ -1,7 +1,6 @@
 package org.whitebox.howlook.domain.post.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

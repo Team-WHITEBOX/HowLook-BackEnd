@@ -35,6 +35,7 @@ public class ReplyServiceImpl implements ReplyService{
     private final ModelMapper modelMapper;
     private final ReplyLikeRepository replyLikeRepository;
 
+    @Transactional
     @Override
     public long register_reply(ReplyRegisterDTO replyRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -113,6 +114,7 @@ public class ReplyServiceImpl implements ReplyService{
         replyRepository.delete(reply);
     }
 
+    @Transactional
     @Override
     public void modify(ReplyModifyDTO replyModifyDTO, Long replyId) {
 
@@ -131,7 +133,7 @@ public class ReplyServiceImpl implements ReplyService{
     }
 
     @Override // 게시글에 해당하는 댓글 읽어오기.
-    public List<ReplyReadDTO> getListOfpost(Long postId) {
+    public List<ReplyReadDTO> getListOfPost(Long postId) {
         List<Reply> replies = replyRepository.listOfpost(postId);
         Member member = accountUtil.getLoginMember();
         List<ReplyReadDTO> result = replies.stream().map(reply -> new ReplyReadDTO(reply)).collect(Collectors.toList());
@@ -144,6 +146,7 @@ public class ReplyServiceImpl implements ReplyService{
         return result;
     }
 
+    @Transactional
     @Override
     public void likeReply(Long ReplyId) { // 댓글 좋아요
         Optional<Reply> replyOptional = replyRepository.findById(ReplyId);
@@ -160,6 +163,7 @@ public class ReplyServiceImpl implements ReplyService{
         replyLikeRepository.save(new ReplyLike(member,reply));
     }
 
+    @Transactional
     @Override
     public void unlikeReply(Long ReplyId) { // 좋아요 취소
         Optional<Reply> replyOptional = replyRepository.findById(ReplyId);

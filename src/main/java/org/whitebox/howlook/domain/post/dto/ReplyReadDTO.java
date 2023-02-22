@@ -1,7 +1,9 @@
 package org.whitebox.howlook.domain.post.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.whitebox.howlook.domain.post.entity.Reply;
 
 @Getter

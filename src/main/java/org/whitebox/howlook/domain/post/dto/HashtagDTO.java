@@ -1,6 +1,7 @@
 package org.whitebox.howlook.domain.post.dto;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.whitebox.howlook.domain.post.entity.Hashtag;
 
 import javax.validation.constraints.NotNull;

@@ -1,7 +1,9 @@
 package org.whitebox.howlook.domain.post.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 
 import javax.validation.constraints.NotNull;
