@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.post.dto.ReplyDTO;
+import org.whitebox.howlook.domain.post.dto.ReplyModifyDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyReadDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyRegisterDTO;
 import org.whitebox.howlook.domain.post.entity.Post;
@@ -114,14 +115,14 @@ public class ReplyServiceImpl implements ReplyService{
     }
 
     @Override
-    public void modify(ReplyDTO replyDTO) {
+    public void modify(ReplyModifyDTO replyModifyDTO, Long replyId) {
 
-        Optional<Reply> replyOptional = replyRepository.findById(replyDTO.getReplyId());
+        Optional<Reply> replyOptional = replyRepository.findById(replyId);
 
         Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
         if(accountUtil.getLoginMember() == reply.getMember()) {
-            reply.changeText(replyDTO.getContent());
+            reply.changeText(replyModifyDTO.getContent());
             replyRepository.save(reply);
         }
 
