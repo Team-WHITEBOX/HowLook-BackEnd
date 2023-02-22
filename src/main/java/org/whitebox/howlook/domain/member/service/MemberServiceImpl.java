@@ -41,9 +41,11 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public void join(MemberJoinDTO memberJoinDTO) {
         String memberId = memberJoinDTO.getMemberId();
-        boolean exist = memberRepository.existsById(memberId);
-        if(exist){
+        if(memberRepository.existsById(memberId)){
             throw new MemberIdExistException();
+        }
+        if(memberRepository.existsByNickName(memberJoinDTO.getNickName())){
+            throw new MemberIdExistException(NICKNAME_ALREADY_EXIST);
         }
         Member member = modelMapper.map(memberJoinDTO,Member.class);
         member.updatePassword(passwordEncoder.encode(memberJoinDTO.getMemberPassword()));

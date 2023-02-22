@@ -7,4 +7,7 @@ public class MemberIdExistException extends BusinessException {
     public MemberIdExistException() {
         super(ErrorCode.MEMBERID_ALREADY_EXIST);
     }
+    public MemberIdExistException(ErrorCode errorCode) {
+        super(errorCode);
+    }
 }

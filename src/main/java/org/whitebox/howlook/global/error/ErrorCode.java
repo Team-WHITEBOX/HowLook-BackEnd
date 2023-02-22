@@ -17,7 +17,7 @@ public enum ErrorCode {
 
     // Member
     MEMBER_NOT_FOUND(400, "M001", "존재 하지 않는 유저입니다."),
-    USERNAME_ALREADY_EXIST(400, "M002", "이미 존재하는 사용자 이름입니다."),
+    NICKNAME_ALREADY_EXIST(400, "M002", "이미 존재하는 닉네임입니다."),
     MEMBERID_ALREADY_EXIST(400, "M003", "이미 존재하는 아이디입니다."),
     AUTHORITY_INVALID(403, "M004", "권한이 없습니다."),
     ACCOUNT_MISMATCH(401, "M005", "계정 정보가 일치하지 않습니다."),
