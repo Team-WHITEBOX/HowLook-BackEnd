@@ -97,7 +97,7 @@ public class PostServiceImpl implements PostService {
 
         List<String> s3Paths = new ArrayList<>();
 
-        if(!isServer.equals("true")) {
+        if(isServer.equals("true")) {
             s3Paths = uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
         }
 
@@ -109,11 +109,11 @@ public class PostServiceImpl implements PostService {
                 String m_path;
 
                 if(isServer.equals("true")) {
-                    m_path = uploadedFilePaths.get(0);
+                    m_path = s3Paths.get(0);
                 }
                 else
                 {
-                    m_path = s3Paths.get(0);
+                    m_path = uploadedFilePaths.get(0);
                 }
 
                 // Falcon : MainPhotoPath 및 PhotoCnt 저장하기

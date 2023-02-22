@@ -63,13 +63,13 @@ public class EvalServiceImpl implements EvalService{
         String m_path;
 
         if(isServer.equals("true")) {
-            m_path = uploadedFilePaths.get(0);
-        }
-        else
-        {
             List<String> s3Paths =
                     uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
             m_path = s3Paths.get(0);
+        }
+        else
+        {
+            m_path = uploadedFilePaths.get(0);
         }
 
 
