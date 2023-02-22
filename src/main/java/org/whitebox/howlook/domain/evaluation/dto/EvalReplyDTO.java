@@ -5,11 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class EvalReplyDTO {
+
+    @NotNull(message = "평가 점수는 필수입니다.")
     private Double score;       // 평가 점수
+
+    @NotNull(message = "postId는 필수입니다.")
     private Long postId;           // 평가받을 글 id
 }

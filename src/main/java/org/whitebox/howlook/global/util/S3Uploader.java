@@ -21,8 +21,11 @@ public class S3Uploader {
     public String bucket; // S3 버킷 이름
 
     // S3로 파일 업로드하기
-    public String upload(String filePath)throws RuntimeException {
-        File targetFile = new File(filePath);
+    public String upload(String inputImagePath)throws RuntimeException {
+        String outputImagePath = inputImagePath; // 출력 이미지 파일 경로
+        int maxFileSizeInBytes = 3000; // 최대 파일 크기 (단위: 바이트)
+
+        File targetFile = new File(inputImagePath);
         String uploadImageUrl = putS3(targetFile, targetFile.getName()); // s3로업로드
         removeOriginalFile(targetFile);
         return targetFile.getName();

@@ -127,6 +127,9 @@ public enum ResultCode {
     // Eval
     EVAL_REGISTER_SUCCESS(200, "E001", "평가 게시글 등록에 성공하였습니다."),
     EVAL_SEARCH_SUCCESS(200, "E002", "평가 게시글 조회에 성공하였습니다."),
+    EVAL_DATA_SEARCH_SUCCESS(200, "E003", "평가 게시글에 달린 통계 조회에 성공하였습니다."),
+    EVAL_DATA_REGISTER_SUCCESS(200, "E004", "평가 게시글에 평가 등록에 성공하였습니다."),
+    EVAL_DATA_REGISTER_FAIL(200, "E005", "평가 게시글에 평가 등록에 실패하였습니다."),
     EVAL_REGISTER_FAIL(200, "E019", "평가 게시글 등록에 실패하였습니다."),
     EVAL_SEARCH_FAIL(200, "E020", "평가 게시글 조회에 실패하였습니다.");
 
