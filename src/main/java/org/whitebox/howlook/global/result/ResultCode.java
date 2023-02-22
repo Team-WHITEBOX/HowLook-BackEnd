@@ -42,6 +42,9 @@ public enum ResultCode {
     FIND_POST_BY_ID_SUCCESS(200, "P016", "아이디로 게시글 조회에 성공했습니다."),
     FIND_POST_BY_MEMBER_ID_SUCCESS(200, "P017", "멤버아디로 게시글 조회에 성공했습니다."),
 
+    // Hashtag
+    GET_HASHTAG_POST_SUCCESS(200, "H001", "해시태그로 게시글 조회에 성공하였습니다."),
+
     // Tournament
     GET_TOURNAMENT_POST_SUCCESS(200, "T001", "토너먼트 게시글 조회에 성공하였습니다."),
     UPDATE_TOURNAMENT_SCORE_SUCCESS(200, "T002", "토너먼트 결과 업데이트에 성공하였습니다."),
