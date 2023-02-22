@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.post.dto.*;
+import org.whitebox.howlook.domain.post.entity.Reply;
 import org.whitebox.howlook.domain.post.service.ReplyService;
 import org.whitebox.howlook.global.result.ResultCode;
 import org.whitebox.howlook.global.result.ResultResponse;
@@ -46,9 +47,8 @@ public class ReplyController {
 
     @ApiOperation(value = "Modify Reply", notes = "PUT 방식으로 특정 댓글 수정")
     @PutMapping(value = "/{ReplyId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> modify(@PathVariable("ReplyId") @Positive @NotNull(message = "댓글 아이디를 입력하세요.") long ReplyId, @RequestBody ReplyDTO replyDTO) {
-        replyDTO.setReplyId(ReplyId);
-        replyService.modify(replyDTO);
+    public ResponseEntity<ResultResponse> modify(@PathVariable("ReplyId") @Positive @NotNull(message = "댓글 아이디를 입력하세요.") long replyId, @RequestBody ReplyModifyDTO replyModifyDTO) {
+        replyService.modify(replyModifyDTO,replyId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.MODIFY_REPLY_SUCCESS));
     }
 
