@@ -45,6 +45,9 @@ public class EvalServiceImpl implements EvalService{
     private final LocalUploader localUploader;
     private final S3Uploader s3Uploader;
 
+    @Value("${org.whitebox.local.upload}")
+    public String isLocal;
+
     @Override
     public void register(EvalRegisterDTO evalRegisterDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -57,11 +60,19 @@ public class EvalServiceImpl implements EvalService{
             uploadedFilePaths.addAll(localUploader.uploadLocal(file));
         }
 
-        List<String> s3Paths =
-                uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
+        String m_path;
+
+        if(isLocal.equals("true")) {
+            m_path = uploadedFilePaths.get(0);
+        }
+        else
+        {
+            List<String> s3Paths =
+                    uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
+            m_path = s3Paths.get(0);
+        }
 
 
-        String m_path = s3Paths.get(0);
         evaluation.setMainPhotoPath(m_path);
         evaluation.setMember(accountUtil.getLoginMember());
 

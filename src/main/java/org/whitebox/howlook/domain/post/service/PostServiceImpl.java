@@ -65,6 +65,10 @@ public class PostServiceImpl implements PostService {
     private final LocalUploader localUploader;
     private final S3Uploader s3Uploader;
 
+    @Value("${org.whitebox.local.upload}")
+    public String isLocal;
+
+
     //전달받은 postRegisterDTO값을 데이터베이스에 저장
     //해당 Post 자체데이터 + 사진데이터 테이블 + 해시테그 테이블 함께저장
     @Override
@@ -90,15 +94,26 @@ public class PostServiceImpl implements PostService {
             uploadedFilePaths.addAll(localUploader.uploadLocal(file));
         }
 
-        List<String> s3Paths =
-                uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
+        List<String> s3Paths = new ArrayList<>();
+
+        if(!isLocal.equals("true")) {
+            s3Paths = uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
+        }
 
         // 사진 업로드 코드
         if(uploadFileDTO.getFiles() != null)
         {
             for(int i = 0; i < uploadFileDTO.getFiles().size(); i++)
             {
-                String m_path = s3Paths.get(i);
+                String m_path;
+
+                if(isLocal.equals("true")) {
+                    m_path = uploadedFilePaths.get(0);
+                }
+                else
+                {
+                    m_path = s3Paths.get(0);
+                }
 
                 // Falcon : MainPhotoPath 및 PhotoCnt 저장하기
                 if(i == 0)
