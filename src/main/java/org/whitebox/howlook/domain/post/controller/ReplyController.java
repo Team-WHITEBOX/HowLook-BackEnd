@@ -23,52 +23,52 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReplyController {
     private final ReplyService replyService;
-    @ApiOperation(value = "Replies POST", notes = "POST ë°©ì‹?œ¼ë¡? ?Œ“ê¸? ?“±ë¡?")
+    @ApiOperation(value = "Replies POST", notes = "POST ë°©ì‹ìœ¼ë¡œ ëŒ“ê¸€ ë“±ë¡")
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> register(@Valid @RequestBody ReplyRegisterDTO replyRegisterDTO) // ?Œ“ê¸? ?“±ë¡?
+    public ResponseEntity<ResultResponse> register(@Valid @RequestBody ReplyRegisterDTO replyRegisterDTO)
     {
         replyService.register_reply(replyRegisterDTO);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.CREATE_COMMENT_SUCCESS));
     }
 
-    @ApiOperation(value = "Read Reply", notes = "?Š¹? • ?Œ“ê¸? ì¡°íšŒ") // ?Š¹? • ?Œ“ê¸? ë¶ˆëŸ¬?˜¤ê¸?
+    @ApiOperation(value = "Read Reply", notes = "íŠ¹ì • ëŒ“ê¸€ ì¡°íšŒ")
     @GetMapping(value = "/{ReplyId}")
-    public ResponseEntity<ResultResponse> getReplyDTO(@PathVariable("ReplyId") @Positive @NotNull(message = "?Œ“ê¸? ?•„?´?””ë¥? ?…? ¥?•˜?„¸?š”.") long ReplyId) {
+    public ResponseEntity<ResultResponse> getReplyDTO(@PathVariable("ReplyId") @Positive @NotNull(message = "ëŒ“ê¸€ ì•„ì´ë””ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.") long ReplyId) {
         ReplyReadDTO response = replyService.read(ReplyId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.GET_REPLY_SUCCESS,response));
     }
 
-    @ApiOperation(value = "Delete Reply" , notes  = "DELETE ë°©ì‹?œ¼ë¡? ?Š¹? • ?Œ“ê¸? ?‚­? œ") // ?Š¹? • ?Œ“ê¸? ?‚­? œ
+    @ApiOperation(value = "Delete Reply" , notes  = "DELETE ë°©ì‹ìœ¼ë¡œ íŠ¹ì • ëŒ“ê¸€ ì‚­ì œ")
     @DeleteMapping("/{ReplyId}")
     public ResponseEntity<ResultResponse> remove(@PathVariable("ReplyId") @Positive Long ReplyId) {
         replyService.remove(ReplyId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.DELETE_COMMENT_SUCCESS));
     }
 
-    @ApiOperation(value = "Modify Reply", notes = "PUT ë°©ì‹?œ¼ë¡? ?Š¹? • ?Œ“ê¸? ?ˆ˜? •")
+    @ApiOperation(value = "Modify Reply", notes = "PUT ë°©ì‹ìœ¼ë¡œ íŠ¹ì • ëŒ“ê¸€ ìˆ˜ì •")
     @PutMapping(value = "/{ReplyId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> modify(@PathVariable("ReplyId") @Positive @NotNull(message = "?Œ“ê¸? ?•„?´?””ë¥? ?…? ¥?•˜?„¸?š”.") long replyId, @RequestBody ReplyModifyDTO replyModifyDTO) {
+    public ResponseEntity<ResultResponse> modify(@PathVariable("ReplyId") @Positive @NotNull(message = "ëŒ“ê¸€ ì•„ì´ë””ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.") long replyId, @RequestBody ReplyModifyDTO replyModifyDTO) {
         replyService.modify(replyModifyDTO,replyId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.MODIFY_REPLY_SUCCESS));
     }
 
-    @ApiOperation(value = "Replies of post", notes = "GET ë°©ì‹?œ¼ë¡? ?Š¹? • ê²Œì‹œë¬¼ì˜ ?Œ“ê¸? ëª©ë¡") // ?•œ ê²Œì‹œë¬¼ì˜ ?Œ“ê¸?
+    @ApiOperation(value = "Replies of post", notes = "GET ë°©ì‹ìœ¼ë¡œ íŠ¹ì • ê²Œì‹œë¬¼ì˜ ëŒ“ê¸€ ëª©ë¡")
     @GetMapping(value = "/list/{postId}")
-    public ResponseEntity<ResultResponse> getList(@PathVariable("postId") @NotNull(message = "ê²Œì‹œê¸? ?•„?´?””ë¥? ?…? ¥?•˜?„¸?š”.") @Positive Long postId) {
+    public ResponseEntity<ResultResponse> getList(@PathVariable("postId") @NotNull(message = "ê²Œì‹œê¸€ ì•„ì´ë””ë¥¼ ì…ë ¥í•˜ì„¸ìš”.") @Positive Long postId) {
         List<ReplyReadDTO> response = replyService.getListOfpost(postId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.GET_REPLY_IN_POST_SUCCESS,response));
     }
 
-    @ApiOperation(value = "?Œ“ê¸? ì¢‹ì•„?š”", notes = "POST ë°©ì‹?œ¼ë¡? ì¶”ê??")
+    @ApiOperation(value = "ëŒ“ê¸€ ì¢‹ì•„ìš”", notes = "POST ë°©ì‹ìœ¼ë¡œ ì¶”ê°€")
     @PostMapping("/like")
-    public ResponseEntity<ResultResponse> likeReply(@RequestParam @Positive @NotNull(message = "?Œ“ê¸? ?•„?´?””ë¥? ?…? ¥?•˜?„¸?š”.") long ReplyId) {
+    public ResponseEntity<ResultResponse> likeReply(@RequestParam @Positive @NotNull(message = "ëŒ“ê¸€ ì•„ì´ë””ë¥¼ ì…ë ¥í•˜ì„¸ìš”.") long ReplyId) {
         replyService.likeReply(ReplyId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.LIKE_COMMENT_SUCCESS));
     }
 
-    @ApiOperation(value = "?Œ“ê¸? ì¢‹ì•„?š” ì·¨ì†Œ", notes = "Delete ë°©ì‹?œ¼ë¡? ?‚­? œ")
+    @ApiOperation(value = "ëŒ“ê¸€ ì¢‹ì•„ìš” ì·¨ì†Œ", notes = "Delete ë°©ì‹ìœ¼ë¡œ ì‚­ì œ")
     @DeleteMapping("/like")
-    public ResponseEntity<ResultResponse> unlikeReply(@RequestParam @Positive @NotNull(message = "?Œ“ê¸? ?•„?´?””ë¥? ?…? ¥?•˜?„¸?š”.") long ReplyId) {
+    public ResponseEntity<ResultResponse> unlikeReply(@RequestParam @Positive @NotNull(message = "ëŒ“ê¸€ ì•„ì´ë””ë¥¼ ì…ë ¥í•˜ì„¸ìš”.") long ReplyId) {
         replyService.unlikeReply(ReplyId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.UNLIKE_COMMENT_SUCCESS));
     }
