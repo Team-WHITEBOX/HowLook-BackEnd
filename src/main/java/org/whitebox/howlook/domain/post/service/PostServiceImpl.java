@@ -151,12 +151,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostReaderDTO> readerUID(String UserID) {
-        List<Post> posts = postRepository.findByMemberId(UserID);
+        final Optional<Post> posts = Optional.ofNullable(postRepository.findByMemberId(UserID).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND)));
 
         //UserID에 일치하는 값 없을 경우 POST_NOT_FOUND 반환
-        if(posts == null) {
-            throw new EntityNotFoundException(POST_NOT_FOUND);
-        }
 
         List<PostReaderDTO> result = posts.stream().map(post ->  new PostReaderDTO(post)).collect(Collectors.toList());
         result.forEach( postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));

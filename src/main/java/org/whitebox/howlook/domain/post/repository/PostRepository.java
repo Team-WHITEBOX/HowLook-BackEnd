@@ -4,12 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.whitebox.howlook.domain.post.entity.Post;
 
-import java.util.List;
+import java.util.Optional;
 
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryQuerydsl {
     @Query("select f from Post f where f.member.memberId = :memberId")
-    List<Post> findByMemberId(String memberId);
+    Optional<Post> findByMemberId(String memberId);
     @Query("select f from Post f where f.postId= :postId")
     Post findByPostId(Long postId);
 

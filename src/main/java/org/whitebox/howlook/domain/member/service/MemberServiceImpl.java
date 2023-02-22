@@ -22,6 +22,7 @@ import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.whitebox.howlook.global.error.ErrorCode.*;
@@ -136,7 +137,7 @@ public class MemberServiceImpl implements MemberService{
         final UserProfileResponse result = memberRepository.findUserProfileByMemberIdAndTargetMemberId(loginMemberId,memberId)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
 
-        final List<Post> posts = postRepository.findByMemberId(memberId);
+        final Optional<Post> posts = postRepository.findByMemberId(memberId);
         log.info(posts);
         List<SimplePostDTO> simplePostDTOs = posts.stream().map(post -> new SimplePostDTO(post.getPostId(),post.getMainPhotoPath())).collect(Collectors.toList());
 
