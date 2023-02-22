@@ -137,7 +137,7 @@ public class MemberServiceImpl implements MemberService{
         final UserProfileResponse result = memberRepository.findUserProfileByMemberIdAndTargetMemberId(loginMemberId,memberId)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
 
-        final Optional<Post> posts = postRepository.findByMemberId(memberId);
+        final List<Post> posts = postRepository.findByMemberId(memberId).orElseThrow();
         log.info(posts);
         List<SimplePostDTO> simplePostDTOs = posts.stream().map(post -> new SimplePostDTO(post.getPostId(),post.getMainPhotoPath())).collect(Collectors.toList());
 
