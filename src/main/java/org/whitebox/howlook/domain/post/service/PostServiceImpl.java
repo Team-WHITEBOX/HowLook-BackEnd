@@ -65,7 +65,7 @@ public class PostServiceImpl implements PostService {
     private final LocalUploader localUploader;
     private final S3Uploader s3Uploader;
 
-    @Value("${org.whitebox.local.upload}")
+    @Value("${org.whitebox.server.upload}")
     public String isLocal;
 
 

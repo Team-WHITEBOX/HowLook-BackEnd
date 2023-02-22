@@ -45,7 +45,7 @@ public class EvalServiceImpl implements EvalService{
     private final LocalUploader localUploader;
     private final S3Uploader s3Uploader;
 
-    @Value("${org.whitebox.local.upload}")
+    @Value("${org.whitebox.server.upload}")
     public String isLocal;
 
     @Override
