@@ -223,7 +223,7 @@ public class EvalServiceImpl implements EvalService{
     public boolean checkMyEvalPost(EvalReaderDTO evalReaderDTO)
     {
         // 내가 쓴 글이라면 true 리턴
-        Evaluation evaluation = evalRepository.findByPid(evalReaderDTO.getPostId());
+        Evaluation evaluation = evalRepository.findByPid(evalReaderDTO.getPostId()).get();
 
         if(evaluation.getMember().getMemberId() == accountUtil.getLoginMember().getMemberId())
             return true;

@@ -98,8 +98,13 @@ public enum ErrorCode {
     MEMBER_STORY_NOT_FOUND(400, "S003", "해당 회원은 24시간 이내에 스토리를 업로드하지 않았습니다."),
 
     // Map api(kakao)
-    KAKAO_MAP_API_FAIL(400, "K001", "카카오 맵 API 호출에 실패하였습니다.");
+    KAKAO_MAP_API_FAIL(400, "K001", "카카오 맵 API 호출에 실패하였습니다."),
 
+    // Evaluation
+    EVAL_DATA_REGISTER_FAIL(200, "E001", "평가 게시글에 평가 등록에 실패하였습니다."),
+    EVAL_REGISTER_FAIL(200, "E002", "평가 게시글 등록에 실패하였습니다."),
+    EVAL_SEARCH_FAIL(200, "E003", "평가 게시글 조회에 실패하였습니다."),
+    EVAL_ALREADY_EXSIST(200, "E004", "평가를 이미 등록하였습니다.");
 
     private final int status;
     private final String code;

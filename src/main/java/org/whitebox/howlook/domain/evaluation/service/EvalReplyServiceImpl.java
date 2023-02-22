@@ -20,6 +20,9 @@ import org.whitebox.howlook.global.util.AccountUtil;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
+import static org.whitebox.howlook.global.result.ResultCode.*;
 
 @Service
 @Log4j2
@@ -33,36 +36,35 @@ public class EvalReplyServiceImpl implements EvalReplyService{
     final AccountUtil accountUtil;
 
     @Override
-    public Boolean register(EvalReplyDTO evalReplyDTO) {
+    public void register(EvalReplyDTO evalReplyDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         EvalReply evalReply = modelMapper.map(evalReplyDTO, EvalReply.class);
         evalReply.setMember(accountUtil.getLoginMember());
 
         if(evalReplyDTO.getScore() > 10) {
-            throw new BusinessException(ErrorCode.INPUT_VALUE_INVALID);
+            throw new BusinessException(ErrorCode.EVAL_REGISTER_FAIL);
         }
 
         // 현재 내가 쓰려고하는 포스트 아이디
-        Long pid = evalRepository.findByPid(evalReplyDTO.getPostId()).getPostId();
-
-        if(pid == null) {
-            return false;
-            //throw new EntityNotFoundException(ErrorCode.POST_NOT_FOUND);
-        }
+        Long pid = evalRepository.findByPid(evalReplyDTO.getPostId()).orElseThrow(
+            () -> new EntityNotFoundException(ErrorCode.EVAL_SEARCH_FAIL)
+        ).getPostId();
 
         // 이미 달은 평가라면 달리지않게 find 후 조건문 생성
         EvalReply temp = evalReplyRepository.findMyReplyByPostid(pid,accountUtil.getLoginMember().getMemberId());
         //evalReaderDTO.setUserPostInfo(new UserPostInfoResponse(evalList.get(i).getMember()));
 
         if(temp == null) {
-            Evaluation evaluation = evalRepository.findByPid(pid);
+            Evaluation evaluation = evalRepository.findByPid(pid).get();
             evalReply.setEvaluation(evaluation);
             evalReplyRepository.save(evalReply);
-
-            return true;
+        }
+        else
+        {
+            throw new BusinessException(ErrorCode.EVAL_ALREADY_EXSIST);
         }
 
-        return false;
+        return;
     }
 
     @Override

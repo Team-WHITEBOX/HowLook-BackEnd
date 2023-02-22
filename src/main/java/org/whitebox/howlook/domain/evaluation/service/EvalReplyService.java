@@ -4,9 +4,10 @@ import org.whitebox.howlook.domain.evaluation.dto.EvalDataDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReplyDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EvalReplyService {
-    public Boolean register(EvalReplyDTO evalReplyDTO);
+    public void register(EvalReplyDTO evalReplyDTO);
 
     public EvalDataDTO ReadDateByPostId(Long postId);
 }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EvalRepository extends JpaRepository<Evaluation, Long>, EvalSearch,EvalSearchQuerydsl {
 
@@ -12,5 +13,5 @@ public interface EvalRepository extends JpaRepository<Evaluation, Long>, EvalSea
     List<Evaluation> findBymemberId(String memberId);
 
     @Query("select e from Evaluation e where e.postId = :pid")
-    Evaluation findByPid(Long pid);
+    Optional<Evaluation> findByPid(Long pid);
 }
