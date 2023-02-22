@@ -29,6 +29,8 @@ public class S3Uploader {
         return targetFile.getName();
     }
 
+
+
     // S3로 업로드
     private String putS3(File uploadFile, String fileName)throws RuntimeException
     {

@@ -33,7 +33,7 @@ public class EvalReplyServiceImpl implements EvalReplyService{
     final AccountUtil accountUtil;
 
     @Override
-    public void register(EvalReplyDTO evalReplyDTO) {
+    public Boolean register(EvalReplyDTO evalReplyDTO) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         EvalReply evalReply = modelMapper.map(evalReplyDTO, EvalReply.class);
         evalReply.setMember(accountUtil.getLoginMember());
@@ -45,19 +45,24 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         // 현재 내가 쓰려고하는 포스트 아이디
         Long pid = evalRepository.findByPid(evalReplyDTO.getPostId()).getPostId();
 
-        if(pid == null)
-            throw new EntityNotFoundException(ErrorCode.POST_NOT_FOUND);
+        if(pid == null) {
+            return false;
+            //throw new EntityNotFoundException(ErrorCode.POST_NOT_FOUND);
+        }
 
         // 이미 달은 평가라면 달리지않게 find 후 조건문 생성
         EvalReply temp = evalReplyRepository.findMyReplyByPostid(pid,accountUtil.getLoginMember().getMemberId());
         //evalReaderDTO.setUserPostInfo(new UserPostInfoResponse(evalList.get(i).getMember()));
 
         if(temp == null) {
-
             Evaluation evaluation = evalRepository.findByPid(pid);
             evalReply.setEvaluation(evaluation);
             evalReplyRepository.save(evalReply);
+
+            return true;
         }
+
+        return false;
     }
 
     @Override
