@@ -13,100 +13,43 @@ public enum ErrorCode {
     INPUT_TYPE_INVALID(400, "G004", "입력 타입이 유효하지 않습니다."),
     HTTP_MESSAGE_NOT_READABLE(400, "G005", "request message body가 없거나, 값 타입이 올바르지 않습니다."),
     HTTP_HEADER_INVALID(400, "G006", "request header가 유효하지 않습니다."),
-    IMAGE_TYPE_NOT_SUPPORTED(400, "G007", "지원하지 않는 이미지 타입입니다."),
-    FILE_CONVERT_FAIL(500, "G008", "변환할 수 없는 파일입니다."),
-    ENTITY_TYPE_INVALID(500, "G009", "올바르지 않은 entity type 입니다."),
-    FILTER_MUST_RESPOND(500, "G010", "필터에서 처리해야 할 요청이 Controller에 접근하였습니다."),
-    ENTITY_NOT_FOUNT(500, "G011", "존재하지 않는 Entity입니다."),
+    ENTITY_NOT_FOUNT(500, "G007", "존재하지 않는 Entity입니다."),
 
     // Member
     MEMBER_NOT_FOUND(400, "M001", "존재 하지 않는 유저입니다."),
     USERNAME_ALREADY_EXIST(400, "M002", "이미 존재하는 사용자 이름입니다."),
-    MEMBERID_ALREADY_EXIST(400, "M002", "이미 존재하는 아이디입니다."),
-    AUTHENTICATION_FAIL(401, "M003", "로그인이 필요한 화면입니다."),
+    MEMBERID_ALREADY_EXIST(400, "M003", "이미 존재하는 아이디입니다."),
     AUTHORITY_INVALID(403, "M004", "권한이 없습니다."),
     ACCOUNT_MISMATCH(401, "M005", "계정 정보가 일치하지 않습니다."),
-    EMAIL_NOT_CONFIRMED(400, "M007", "인증 이메일 전송을 먼저 해야합니다."),
-    PASSWORD_RESET_FAIL(400, "M008", "잘못되거나 만료된 코드입니다."),
-    BLOCK_ALREADY_EXIST(400, "M009", "이미 차단한 유저입니다."),
-    UNBLOCK_FAIL(400, "M010", "차단하지 않은 유저는 차단해제 할 수 없습니다."),
-    BLOCK_MYSELF_FAIL(400, "M011", "자기 자신을 차단 할 수 없습니다."),
-    UNBLOCK_MYSELF_FAIL(400, "M012", "자기 자신을 차단해제 할 수 없습니다."),
-    PASSWORD_EQUAL_WITH_OLD(400, "M013", "기존 비밀번호와 동일하게 변경할 수 없습니다."),
-    LOGOUT_BY_ANOTHER(401, "M014", "다른 기기에 의해 로그아웃되었습니다."),
-
-    // Follow
-    FOLLOW_ALREADY_EXIST(400, "F001", "이미 팔로우한 유저입니다."),
-    UNFOLLOW_FAIL(400, "F002", "팔로우하지 않은 유저는 언팔로우 할 수 없습니다."),
-    FOLLOW_MYSELF_FAIL(400, "F003", "자기 자신을 팔로우 할 수 없습니다."),
-    UNFOLLOW_MYSELF_FAIL(400, "F004", "자기 자신을 언팔로우 할 수 없습니다."),
-    FOLLOWER_DELETE_FAIL(400, "F005", "팔로워 삭제할 수 없는 대상입니다."),
+    PASSWORD_EQUAL_WITH_OLD(400, "M006", "기존 비밀번호와 동일하게 변경할 수 없습니다."),
+    LOGOUT_BY_ANOTHER(401, "M007", "다른 기기에 의해 로그아웃되었습니다."),
 
     // Jwt
     JWT_INVALID(401, "J001", "유효하지 않은 토큰입니다."),
     REFRESH_EXPIRED(401, "J002", "만료된 REFRESH 토큰입니다."),
-    REFRESH_INVALID(401, "J002", "유효하지 않은 REFRESH 토큰입니다."),
-    REFRESH_OLD(401, "J002", "오래된 REFRESH 토큰입니다."),
-    JWT_UNACCEPT(401,"J003","토큰이 없거나 짧습니다."),
-    JWT_BADTYPE(401, "J004","Bearer 타입 토큰이 아닙니다."),
-    JWT_EXPIRED(403, "J005", "만료된 토큰입니다."),
-    JWT_MALFORM(403, "J006","토큰값이 올바르지 않습니다."),
+    REFRESH_INVALID(401, "J003", "유효하지 않은 REFRESH 토큰입니다."),
+    JWT_UNACCEPT(401,"J004","토큰이 없거나 짧습니다."),
+    JWT_BADTYPE(401, "J005","Bearer 타입 토큰이 아닙니다."),
+    JWT_EXPIRED(403, "J006", "만료된 토큰입니다."),
+    JWT_MALFORM(403, "J007","토큰값이 올바르지 않습니다."),
 
     // post
     POST_NOT_FOUND(400, "F001", "존재하지 않는 게시물입니다."),
     POST_CANT_DELETE(400, "F002", "게시물 게시자만 삭제할 수 있습니다."),
-    POST_LIKE_NOT_FOUND(400, "F003", "해당 게시물에 좋아요를 누르지 않은 회원입니다."),
-    POST_LIKE_ALREADY_EXIST(400, "F004", "해당 게시물에 이미 좋아요를 누른 회원입니다."),
-    POST_IMAGES_AND_ALT_TEXTS_MISMATCH(400, "F005", "게시물 이미지 개수와 대체 텍스트 개수는 동일해야 합니다."),
-    SCRAP_ALREADY_EXIST(400, "F006", "이미 해당 게시물을 저장하였습니다."),
-    SCRAP_NOT_FOUND(400, "F007", "아직 해당 게시물을 저장하지 않았습니다."),
-    COMMENT_NOT_FOUND(400, "F008", "존재하지 않는 댓글입니다."),
-    COMMENT_CANT_DELETE(400, "F009", "타인이 작성한 댓글은 삭제할 수 없습니다."),
-    COMMENT_LIKE_ALREADY_EXIST(400, "F010", "해당 댓글에 이미 좋아요를 누른 회원입니다."),
-    COMMENT_LIKE_NOT_FOUND(400, "F011", "해당 댓글에 좋아요를 누르지 않은 회원입니다."),
-    COMMENT_CANT_UPLOAD(400, "F012", "댓글 기능이 해제된 게시물에는 댓글을 작성할 수 없습니다."),
-    REPLY_CANT_UPLOAD(400, "F013", "최상위 댓글에만 답글을 업로드할 수 있습니다."),
-    POST_TAGS_EXCEED(400, "F014", "사용자 태그는 최대 20명까지 가능합니다."),
-    POST_CANT_UPLOAD(400, "F015", "게시글을 등록할 수 없습니다."),
-    POST_CANT_FOUND(400, "F016", "해당 정보에 부합하는 게시글을 찾을 수 없습니다."),
-    POST_CANT_PROFILE(400, "F017", "타인의 사진은 프로필사진으로 등록할 수 없습니다."),
-    COMMENT_CANT_MODIFY(400,"F018", "타인의 댓글을 수정할 수 없습니다."),
-    POST_NOT_LIKED(400, "F018", "좋아요가 눌리지 않은 게시글입니다."),
-
-    // Chat
-    CHAT_ROOM_NOT_FOUND(400, "C001", "존재하지 않는 채팅방입니다."),
-    JOIN_ROOM_NOT_FOUND(400, "C002", "해당 채팅방에 참여하지 않은 회원입니다."),
-    MESSAGE_IMAGE_INVALID(400, "C003", "메시지로 전송할 이미지는 필수입니다."),
-    MESSAGE_NOT_FOUND(400, "C004", "존재하지 않는 메시지입니다."),
-    MESSAGE_SENDER_MISMATCH(400, "C005", "해당 메시지를 전송한 회원이 아닙니다."),
-    MESSAGE_LIKE_ALREADY_EXIST(400, "C006", "해당 메시지를 이미 좋아요한 회원입니다."),
-    MESSAGE_LIKE_NOT_FOUND(400, "C007", "해당 메시지를 좋아요하지 않은 회원입니다."),
-
-    // Alarm
-    MISMATCHED_ALARM_TYPE(400, "A001", "알람 형식이 올바르지 않습니다."),
-
-    // Email
-    EMAIL_SEND_FAIL(500, "E001", "이메일 전송 중 오류가 발생했습니다."),
+    POST_LIKE_ALREADY_EXIST(400, "F003", "해당 게시물에 이미 좋아요를 누른 회원입니다."),
+    SCRAP_ALREADY_EXIST(400, "F004", "이미 해당 게시물을 저장하였습니다."),
+    SCRAP_NOT_FOUND(400, "F005", "아직 해당 게시물을 저장하지 않았습니다."),
+    COMMENT_NOT_FOUND(400, "F006", "존재하지 않는 댓글입니다."),
+    COMMENT_CANT_DELETE(400, "F007", "타인이 작성한 댓글은 삭제할 수 없습니다."),
+    COMMENT_LIKE_ALREADY_EXIST(400, "F008", "해당 댓글에 이미 좋아요를 누른 회원입니다."),
+    COMMENT_LIKE_NOT_FOUND(400, "F009", "해당 댓글에 좋아요를 누르지 않은 회원입니다."),
+    POST_CANT_FOUND(400, "F010", "해당 정보에 부합하는 게시글을 찾을 수 없습니다."),
+    POST_CANT_PROFILE(400, "F011", "타인의 사진은 프로필사진으로 등록할 수 없습니다."),
+    COMMENT_CANT_MODIFY(400,"F012", "타인의 댓글을 수정할 수 없습니다."),
+    POST_NOT_LIKED(400, "F013", "좋아요가 눌리지 않은 게시글입니다."),
 
     // HashTag
-    HASHTAG_NOT_FOUND(400, "H001", "존재하지 않는 해시태그 입니다."),
-    HASHTAG_FOLLOW_FAIL(400, "H002", "해시태그 팔로우에 실패했습니다."),
-    HASHTAG_UNFOLLOW_FAIL(400, "H003", "해시태그 언팔로우에 실패했습니다."),
-    HASHTAG_PREFIX_MISMATCH(400, "H004", "해시태그는 #으로 시작해야 합니다."),
-
-    // Story
-    INVALID_STORY_IMAGE(400, "S001", "스토리 이미지는 필수입니다."),
-    INVALID_STORY_IMAGE_INDEX(400, "S002", "스토리 이미지 인덱스가 올바르지 않습니다."),
-    MEMBER_STORY_NOT_FOUND(400, "S003", "해당 회원은 24시간 이내에 스토리를 업로드하지 않았습니다."),
-
-    // Map api(kakao)
-    KAKAO_MAP_API_FAIL(400, "K001", "카카오 맵 API 호출에 실패하였습니다."),
-
-    // Evaluation
-    EVAL_DATA_REGISTER_FAIL(200, "E001", "평가 게시글에 평가 등록에 실패하였습니다."),
-    EVAL_REGISTER_FAIL(200, "E002", "평가 게시글 등록에 실패하였습니다."),
-    EVAL_SEARCH_FAIL(200, "E003", "평가 게시글 조회에 실패하였습니다."),
-    EVAL_ALREADY_EXSIST(200, "E004", "평가를 이미 등록하였습니다.");
+    HASHTAG_NOT_FOUND(400, "H001", "존재하지 않는 해시태그 입니다.");
 
     private final int status;
     private final String code;
