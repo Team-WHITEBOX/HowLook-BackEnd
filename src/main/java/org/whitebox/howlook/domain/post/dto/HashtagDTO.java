@@ -1,6 +1,8 @@
 package org.whitebox.howlook.domain.post.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.whitebox.howlook.domain.post.entity.Hashtag;
 
@@ -8,6 +10,8 @@ import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class HashtagDTO {
 
     @NotNull
