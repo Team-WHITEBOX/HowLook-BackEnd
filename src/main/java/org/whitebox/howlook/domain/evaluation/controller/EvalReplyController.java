@@ -29,7 +29,7 @@ public class EvalReplyController {
 
     @ApiOperation(value = "평가 글에 평가 남기기 : 평가 글 아이디, 점수")
     @PostMapping(value = "/register")
-    public ResponseEntity<ResultResponse> registerEval(@Valid @ModelAttribute EvalReplyDTO evalReplyDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes)
+    public ResponseEntity<ResultResponse> registerEval(@Valid @ModelAttribute EvalReplyDTO evalReplyDTO)
     {
         evalReplyService.register(evalReplyDTO);
 
