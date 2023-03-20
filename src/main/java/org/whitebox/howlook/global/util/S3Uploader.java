@@ -48,7 +48,14 @@ public class S3Uploader {
         return outputImagePath;
     }
 
+    public static int[] resizeImage(int x, int y, int a) {
+        double ratio = Math.sqrt((double) a / 3);
+        int newX = (int) (x * ratio / Math.max(x, y));
+        int newY = (int) (y * ratio / Math.max(x, y));
+        return new int[] {newX, newY};
+    }
     public File reSize(File file, int maxSize) throws IOException {
+        log.info(maxSize);
         // 이미지를 지정된 maxSize 이하의 크기로 조정
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Thumbnails.of(file).size(maxSize, maxSize).toOutputStream(outputStream);
