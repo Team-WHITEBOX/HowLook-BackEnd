@@ -89,7 +89,7 @@ public class CustomSecurityConfig {
 
         http.authorizeRequests()
              //   .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()  //cors preflight 요청 통과
-                .antMatchers("/account/**","/swagger*/**","/v3/api-docs","/api/v2/**").permitAll()
+                .antMatchers("/account/**","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**").permitAll()
                 .antMatchers("/sample/doB").hasAnyRole("ADMIN")
                 .antMatchers("/sample/doA","/member/**").hasAnyRole("USER")
                 .anyRequest().authenticated()
