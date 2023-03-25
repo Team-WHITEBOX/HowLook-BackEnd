@@ -25,10 +25,9 @@ import static org.whitebox.howlook.global.error.ErrorCode.*;
 @Log4j2
 @RequiredArgsConstructor
 public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 후 정보 contextHolder에 등록
-    private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
-
-    private static final String[] whiteList = {"/account/**","/swagger**","/v3/api-docs**","/api/v2**","/ws**"};
+    private final CustomUserDetailsService userDetailsService;
+    private final String[] whiteList;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();

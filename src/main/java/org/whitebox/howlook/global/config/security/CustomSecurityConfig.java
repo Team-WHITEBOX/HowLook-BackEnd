@@ -48,6 +48,8 @@ public class CustomSecurityConfig {
     private final JWTUtil jwtUtil;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final MemberRepository memberRepository;
+    private static final String[] WHITELIST = {"/account/**","/swagger-resources","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**"};
+
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -89,7 +91,7 @@ public class CustomSecurityConfig {
 
         http.authorizeRequests()
              //   .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()  //cors preflight 요청 통과
-                .antMatchers("/account/**","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**").permitAll()
+                .antMatchers(WHITELIST).permitAll()
                 .antMatchers("/sample/doB").hasAnyRole("ADMIN")
                 .antMatchers("/sample/doA","/member/**").hasAnyRole("USER")
                 .anyRequest().authenticated()
@@ -123,7 +125,7 @@ public class CustomSecurityConfig {
     }
 
     private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil, CustomUserDetailsService userDetailsService){
-        return new TokenCheckFilter(userDetailsService,jwtUtil);
+        return new TokenCheckFilter(jwtUtil,userDetailsService,WHITELIST);
     }
 
     @Bean
