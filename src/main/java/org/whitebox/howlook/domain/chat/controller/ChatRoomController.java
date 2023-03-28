@@ -2,13 +2,10 @@ package org.whitebox.howlook.domain.chat.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.whitebox.howlook.domain.chat.dto.ChatRoom;
-import org.whitebox.howlook.domain.chat.repository.ChatRepository;
+import org.whitebox.howlook.domain.chat.dto.ChatRoomDTO;
+import org.whitebox.howlook.domain.chat.service.ChatService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import java.util.ArrayList;
@@ -21,19 +18,19 @@ import static org.whitebox.howlook.global.result.ResultCode.CREATE_POST_SUCCESS;
 @RequiredArgsConstructor
 @RequestMapping("/chatroom")
 public class ChatRoomController {
-    private final ChatRepository chatRepository;
+    private final ChatService chatService;
 
     // 채팅 리스트 화면
     @GetMapping("/")
-    public ResponseEntity<ResultResponse> goChatRoom(){
-        List<ChatRoom> chatRooms = chatRepository.findAllRoom();
-        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS,chatRooms));
+    public ResponseEntity<ResultResponse> chatRoomList(){
+        List<ChatRoomDTO> chatRoomDTOS = chatService.chatRoomList();
+        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS, chatRoomDTOS));
     }
 
     // 채팅방 생성
     @PostMapping("/room")
     public ResponseEntity<ResultResponse> createRoom(@RequestParam String name) {
-        ChatRoom room = chatRepository.createChatRoom(name);
+        ChatRoomDTO room = chatService.createRoom(name);
         return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS,room.getRoomId()));
     }
 //
@@ -51,19 +48,18 @@ public class ChatRoomController {
 
     // 채팅에 참여한 유저 리스트 반환
     @GetMapping("/userlist")
-    public ArrayList<String> userList(String roomId) {
-
-        return chatRepository.getUserList(roomId);
+    public List<String> userList(String roomId) {
+        return chatService.userList(roomId);
     }
 
     // 채팅에 참여한 유저 닉네임 중복 확인
-    @GetMapping("/duplicateName")
-    public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {
-
-        // 유저 이름 확인
-        String userName = chatRepository.isDuplicateName(roomId, username);
-        log.info("동작확인 {}", userName);
-
-        return userName;
-    }
+//    @GetMapping("/duplicateName")
+//    public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {
+//
+//        // 유저 이름 확인
+//        String userName = chatRepository.isDuplicateName(roomId, username);
+//        log.info("동작확인 {}", userName);
+//
+//        return userName;
+//    }
 }
