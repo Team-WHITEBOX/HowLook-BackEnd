@@ -12,12 +12,7 @@ import java.util.*;
 @Slf4j
 public class ChatRepository {
 
-    private Map<String, ChatRoom> chatRoomMap;
-
-    @PostConstruct
-    private void init() {
-        chatRoomMap = new LinkedHashMap<>();
-    }
+    private Map<String, ChatRoom> chatRoomMap = new LinkedHashMap<>();
 
     // 전체 채팅방 조회
     public List<ChatRoom> findAllRoom(){
@@ -37,7 +32,7 @@ public class ChatRepository {
     public ChatRoom createChatRoom(String roomName){
         ChatRoom chatRoom = new ChatRoom().create(roomName); // 채팅룸 이름으로 채팅 룸 생성 후
 
-        // map 에 채팅룸 아이디와 만들어진 채팅룸을 저장장
+        // map 에 채팅룸 아이디와 만들어진 채팅룸을 저장
         chatRoomMap.put(chatRoom.getRoomId(), chatRoom);
 
         return chatRoom;

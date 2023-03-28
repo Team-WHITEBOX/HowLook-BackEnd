@@ -11,6 +11,7 @@ import org.whitebox.howlook.domain.chat.dto.ChatRoom;
 import org.whitebox.howlook.domain.chat.repository.ChatRepository;
 import org.whitebox.howlook.global.result.ResultResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.CREATE_POST_SUCCESS;
@@ -47,4 +48,22 @@ public class ChatRoomController {
 //        return "chatroom";
 //    }
 
+
+    // 채팅에 참여한 유저 리스트 반환
+    @GetMapping("/userlist")
+    public ArrayList<String> userList(String roomId) {
+
+        return chatRepository.getUserList(roomId);
+    }
+
+    // 채팅에 참여한 유저 닉네임 중복 확인
+    @GetMapping("/duplicateName")
+    public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {
+
+        // 유저 이름 확인
+        String userName = chatRepository.isDuplicateName(roomId, username);
+        log.info("동작확인 {}", userName);
+
+        return userName;
+    }
 }
