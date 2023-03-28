@@ -142,12 +142,7 @@ public class PostServiceImpl implements PostService {
         Member member = accountUtil.getLoginMember();
         Post post = result.orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         log.info(post);
-
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        PostReaderDTO postReaderDTO = modelMapper.map(post, PostReaderDTO.class);
-
-        postReaderDTO.setHashtagDTO(new HashtagDTO(post.getHashtag()));
-        postReaderDTO.setUserPostInfo(new UserPostInfoResponse(post.getMember()));
+        PostReaderDTO postReaderDTO = new PostReaderDTO(post);
 
         // 사진 경로 가져오기
         postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postId));
