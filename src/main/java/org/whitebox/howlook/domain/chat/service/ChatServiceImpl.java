@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.whitebox.howlook.global.error.ErrorCode.CHATROOM_NOT_FOUND;
-import static org.whitebox.howlook.global.error.ErrorCode.NICKNAME_NOT__FOUND;
+import static org.whitebox.howlook.global.error.ErrorCode.*;
 
 @Log4j2
 @Service
@@ -29,14 +28,14 @@ public class ChatServiceImpl implements ChatService{
     @Override
     public List<ChatRoomDTO> chatRoomList() {
         List<ChatRoom> chatRoomList = chatRepository.findAll();
-        List<ChatRoomDTO> chatRoomDTOS = chatRoomList.stream().map(chatRoom -> rootConfig.getMapper().map(chatRoom,ChatRoomDTO.class)).collect(Collectors.toList());
+        List<ChatRoomDTO> chatRoomDTOS = chatRoomList.stream().map(chatRoom -> new ChatRoomDTO(chatRoom)).collect(Collectors.toList());
         return chatRoomDTOS;
     }
 
     @Override
     @Transactional
     public ChatRoomDTO createRoom(String roomName) {
-        ChatRoom chatRoom = ChatRoom.builder().roomId(UUID.randomUUID().toString()).roomName(roomName).build();
+        ChatRoom chatRoom = ChatRoom.builder().roomId(UUID.randomUUID().toString()).roomName(roomName).userCount(0).build();
         chatRepository.save(chatRoom);
         return rootConfig.getMapper().map(chatRoom,ChatRoomDTO.class);
     }
@@ -44,7 +43,7 @@ public class ChatServiceImpl implements ChatService{
     @Override
     public List<String> userList(String roomId) {
         ChatRoom chatRoom = chatRepository.findById(roomId).orElseThrow(() -> new EntityNotFoundException(CHATROOM_NOT_FOUND));
-        List<String> users = chatRoom.getUserList().stream().map(user -> user.getNickName()).collect(Collectors.toList());
+        List<String> users = chatRoom.getUserList().stream().map(user -> user.getMemberId()).collect(Collectors.toList());
         return users;
     }
 
@@ -52,7 +51,7 @@ public class ChatServiceImpl implements ChatService{
     @Transactional
     public void addUser(String roomId, String userName) {
         ChatRoom chatRoom = chatRepository.findById(roomId).orElseThrow(() -> new EntityNotFoundException(CHATROOM_NOT_FOUND));
-        Member user = memberRepository.findByNickName(userName).orElseThrow(() -> new EntityNotFoundException(NICKNAME_NOT__FOUND));
+        Member user = memberRepository.findByMemberId(userName).orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
         chatRoom.upUserCount();
         chatRoom.addUser(user);
     }
@@ -61,7 +60,7 @@ public class ChatServiceImpl implements ChatService{
     @Transactional
     public void delUser(String roomId, String userName) {
         ChatRoom chatRoom = chatRepository.findById(roomId).orElseThrow(() -> new EntityNotFoundException(CHATROOM_NOT_FOUND));
-        Member user = memberRepository.findByNickName(userName).orElseThrow(() -> new EntityNotFoundException(NICKNAME_NOT__FOUND));
+        Member user = memberRepository.findByMemberId(userName).orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
         chatRoom.downUserCount();
         chatRoom.removeUser(user);
     }

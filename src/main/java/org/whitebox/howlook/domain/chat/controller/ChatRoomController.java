@@ -8,10 +8,9 @@ import org.whitebox.howlook.domain.chat.dto.ChatRoomDTO;
 import org.whitebox.howlook.domain.chat.service.ChatService;
 import org.whitebox.howlook.global.result.ResultResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.whitebox.howlook.global.result.ResultCode.CREATE_POST_SUCCESS;
+import static org.whitebox.howlook.global.result.ResultCode.*;
 
 @RestController
 @Slf4j
@@ -24,14 +23,14 @@ public class ChatRoomController {
     @GetMapping("/")
     public ResponseEntity<ResultResponse> chatRoomList(){
         List<ChatRoomDTO> chatRoomDTOS = chatService.chatRoomList();
-        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS, chatRoomDTOS));
+        return ResponseEntity.ok(ResultResponse.of(GET_CHATLIST_SUCCESS, chatRoomDTOS));
     }
 
     // 채팅방 생성
     @PostMapping("/room")
     public ResponseEntity<ResultResponse> createRoom(@RequestParam String name) {
         ChatRoomDTO room = chatService.createRoom(name);
-        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS,room.getRoomId()));
+        return ResponseEntity.ok(ResultResponse.of(CREATE_CHATROOM_SUCCESS,room.getRoomId()));
     }
 //
 //    // 채팅방 입장 화면
@@ -48,8 +47,9 @@ public class ChatRoomController {
 
     // 채팅에 참여한 유저 리스트 반환
     @GetMapping("/userlist")
-    public List<String> userList(String roomId) {
-        return chatService.userList(roomId);
+    public ResponseEntity<ResultResponse> userList(String roomId) {
+        List<String> userList = chatService.userList(roomId);
+        return ResponseEntity.ok(ResultResponse.of(GET_CHAT_USERLIST_SUCCESS,userList));
     }
 
     // 채팅에 참여한 유저 닉네임 중복 확인

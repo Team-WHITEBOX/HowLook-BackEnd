@@ -54,7 +54,12 @@ public enum ResultCode {
     // Eval
     EVAL_REGISTER_SUCCESS(200, "E001", "평가 게시글 등록에 성공하였습니다."),
     EVAL_SEARCH_SUCCESS(200, "E002", "평가 게시글 조회에 성공하였습니다."),
-    EVAL_SEARCH_FAIL(200, "E003", "평가 게시글 조회에 실패하였습니다.");
+    EVAL_SEARCH_FAIL(200, "E003", "평가 게시글 조회에 실패하였습니다."),
+
+    // chat
+    GET_CHATLIST_SUCCESS(200,"C001","채팅방 목록 조회에 성공하였습니다."),
+    CREATE_CHATROOM_SUCCESS(200,"C002","채팅방 생성에 성공하였습니다."),
+    GET_CHAT_USERLIST_SUCCESS(200,"C003","채팅방 유저 목록 조회에 성공하였습니다.");
 
     private final int status;
     private final String code;
