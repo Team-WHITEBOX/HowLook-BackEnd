@@ -3,9 +3,11 @@ package org.whitebox.howlook.domain.post.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.whitebox.howlook.domain.post.dto.PostPageDTO;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
 import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
@@ -66,17 +68,17 @@ public class PostController {
     @ApiOperation(value = "최근 피드 게시글 10개 조회")
     @GetMapping("/recent")
     public ResponseEntity<ResultResponse> getRecent10Posts(@RequestParam @NotNull(message = "요청페이지는 필수입니다.") @Positive int page) {
-        final List<PostReaderDTO> postList = postService.getPostPage(10, page).getContent();
-
-        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
+        final Page<PostReaderDTO> postList = postService.getPostPage(10, page);
+        final PostPageDTO postPageDTO = new PostPageDTO(postList);
+        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postPageDTO));
     }
 
     @ApiOperation(value = "좌표 기준 근처 게시글 10개 조회")
     @GetMapping("/near")
     public ResponseEntity<ResultResponse> getNear10Posts(@RequestParam @NotNull int page, float latitude, float longitude) {
-        final List<PostReaderDTO> postList = postService.getNearPostPage(10, page,latitude,longitude).getContent();
-
-        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
+        final Page<PostReaderDTO> postList = postService.getNearPostPage(10, page,latitude,longitude);
+        final PostPageDTO postPageDTO = new PostPageDTO(postList);
+        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postPageDTO));
     }
     @ApiOperation(value = "스크랩")
     @PostMapping("/scrap")
