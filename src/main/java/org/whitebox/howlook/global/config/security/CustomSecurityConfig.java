@@ -48,7 +48,7 @@ public class CustomSecurityConfig {
     private final JWTUtil jwtUtil;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final MemberRepository memberRepository;
-    private static final String[] WHITELIST = {"/account/**","/swagger-resources","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**"};
+    private static final String[] WHITELIST = {"/account/**","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**"};
 
 
     @Bean
@@ -98,13 +98,13 @@ public class CustomSecurityConfig {
                 .and()
                 .addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class);
+                .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class)
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
 
         http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
         });
 
-        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
 
         http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService()).and().successHandler(authenticationSuccessHandler());
         return http.build();
