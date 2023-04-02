@@ -67,10 +67,37 @@ public class CustomSecurityConfig {
         //authenticationManager 설정
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-
         //Get AuthenticationManager
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
+        http.authenticationManager(authenticationManager);
+        http.httpBasic().disable();
+        http.formLogin().disable();
+        http.csrf().disable();  // csrf 비활성화
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT위해 세션 사용안함
+        http.authorizeRequests()
+                .antMatchers(WHITELIST).permitAll()
+                .antMatchers("/sample/doB").hasAnyRole("ADMIN")
+                .antMatchers("/member/**").hasAnyRole("USER")
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(apiLoginFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class)
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
+        http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
+            httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
+        });
+        http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService()).and().successHandler(authenticationSuccessHandler());
+        return http.build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler(){
+        return new Custom403Handler();
+    }
+
+    private APILoginFilter apiLoginFilter(AuthenticationManager authenticationManager){
         //APILoginFilter
         APILoginFilter apiLoginFilter = new APILoginFilter("/account/generateToken");
         apiLoginFilter.setAuthenticationManager(authenticationManager);
@@ -80,39 +107,7 @@ public class CustomSecurityConfig {
         //핸들러 세팅
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
         apiLoginFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
-
-        //반드시 필요
-        http.authenticationManager(authenticationManager);
-
-        http.httpBasic().disable();
-        http.formLogin().disable();
-        http.csrf().disable();  // csrf 비활성화
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT위해 세션 사용안함
-
-        http.authorizeRequests()
-             //   .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()  //cors preflight 요청 통과
-                .antMatchers(WHITELIST).permitAll()
-                .antMatchers("/sample/doB").hasAnyRole("ADMIN")
-                .antMatchers("/sample/doA","/member/**").hasAnyRole("USER")
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class)
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
-
-        http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
-            httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
-        });
-
-
-        http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService()).and().successHandler(authenticationSuccessHandler());
-        return http.build();
-    }
-
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler(){
-        return new Custom403Handler();
+        return apiLoginFilter;
     }
 
     public CustomOAuth2UserService customOAuth2UserService(){
