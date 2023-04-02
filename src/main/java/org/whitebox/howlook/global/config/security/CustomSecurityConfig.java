@@ -43,23 +43,11 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CustomSecurityConfig {
 
-    private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final MemberRepository memberRepository;
     private static final String[] WHITELIST = {"/account/**","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**"};
-
-
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler(){
-        return new CustomSocialLoginSuccessHandler(passwordEncoder(),jwtUtil);
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)throws Exception {
@@ -90,6 +78,16 @@ public class CustomSecurityConfig {
         });
         http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService()).and().successHandler(authenticationSuccessHandler());
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler(){
+        return new CustomSocialLoginSuccessHandler(passwordEncoder(),jwtUtil);
     }
 
     @Bean
@@ -135,10 +133,4 @@ public class CustomSecurityConfig {
         return source;
     }
 
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository(){
-        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
-        repo.setDataSource(dataSource);
-        return repo;
-    }
 }
