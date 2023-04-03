@@ -1,19 +1,31 @@
 # HowLook-BackEnd
 Spring Boot+Flutter 를 사용해 개발한 패션 SNS입니다.
 
+시연영상 : https://www.youtube.com/watch?v=HEArI2TpQAY
+
+스웨거 api : 
+
 <br/>
 
 ## 개요
 
->사용기술
+> 백엔드 사용기술
 - Spring Boot
 - Spring Security + JWT + Oauth2
-- JPA
+- Spring Data JPA
 - Query DSL
-- Mysql
-- AWS
+- MySQL
+- AWS (ec2,s3)
+
+
+> 시스템 아키텍처 (1차)
+
+![캡스톤 아키텍처](https://user-images.githubusercontent.com/74866067/229481359-e20aad37-86c0-4e93-b111-96f63faeea28.png)
+
 
 >패키지 구조
+
+패키지 구조를 도메인형으로 나누어 직관적으로 구분이 가능하고 협업에 편리하도록 설계하였습니다.
 
 ![패키지 구조](https://user-images.githubusercontent.com/74866067/229355074-5649c3a0-c9fd-4ec6-996a-1314a74038e6.JPG)
 
@@ -25,9 +37,136 @@ Spring Boot+Flutter 를 사용해 개발한 패션 SNS입니다.
 
   
     
+## 주요 구조
+
+
+- Controller
+
+스프링 서버는 rest api로서 작동하며 통일된 형식으로 응답합니다.
+```
+@RestController
+@RequestMapping("/member")
+@Log4j2
+@RequiredArgsConstructor
+public class MemberController {
+    private final MemberService memberService;
+    private final AccountUtil accountUtil;
+    
+    ...
+    
+    @ApiOperation(value = "회원 프로필 수정 GET")
+    @GetMapping(value = "/edit")
+    public ResponseEntity<ResultResponse> getMemberEdit() {
+        final EditProfileResponse editProfileResponse = memberService.getEditProfile();
+
+        return ResponseEntity.ok(ResultResponse.of(GET_EDIT_PROFILE_SUCCESS, editProfileResponse));
+    }
+
+    @ApiOperation(value = "회원 프로필 수정")
+    @PutMapping(value = "/edit")
+    public ResponseEntity<ResultResponse> editProfile(@Valid @RequestBody EditProfileRequest editProfileRequest) {
+        memberService.editProfile(editProfileRequest);
+
+        return ResponseEntity.ok(ResultResponse.of(EDIT_PROFILE_SUCCESS));
+    }
+    
+    ...
+    
+}
+```
+
+- Service
+
+비즈니스 로직을 수행합니다.
+```
+@Log4j2
+@Service
+@RequiredArgsConstructor
+public class MemberServiceImpl implements MemberService{
+    private final AccountUtil accountUtil;
+    private final ModelMapper modelMapper;
+    private final MemberRepository memberRepository;
+    
+    ...
+    
+    @Override
+    public EditProfileResponse getEditProfile() {
+        final Member member = accountUtil.getLoginMember(); // JWT토큰으로 사용자 추출
+        return new EditProfileResponse(member);
+    }
+    
+    @Transactional
+    @Override
+    public void editProfile(EditProfileRequest editProfileRequest) {
+        final Member member = accountUtil.getLoginMember();
+
+        log.info("수정");
+        member.updateNickName(editProfileRequest.getMemberNickName());
+        member.updateHeight(editProfileRequest.getMemberHeight());
+        member.updateWeight(editProfileRequest.getMemberWeight());
+        member.updatePhone(editProfileRequest.getMemberPhone());
+        memberRepository.save(member);
+    }
+    
+    ...
+    
+}
+```
+
+- Repository
+
+Spring Date JPA가  Repository, 쿼리메서드 기능으로 편리한 간단한 쿼리작업을 쉽게합니다.
+```
+public interface MemberRepository extends JpaRepository<Member,String>,MemberProfileRepository {
+    ...
+    
+    @EntityGraph(attributePaths = "roleSet")
+    Optional<Member> findByMemberId(@Param("memberId") String memberId);
+    
+    Optional<Member> findByNickName(@Param("nickName") String nickName);
+    
+    boolean existsByNickName(String nickName);
+}    
+```
+QueryDSL을 사용해 쿼리를 자바코드로 작성하고 개발 효율을 높입니다.
+```
+@RequiredArgsConstructor
+public class MemberProfileRepositoryImpl implements MemberProfileRepository{
+    private final JPAQueryFactory queryFactory;
+    
+    @Override
+    public Optional<UserProfileResponse> findUserProfileByMemberIdAndTargetMemberId(String loginMemberId, String memberId){
+        return Optional.ofNullable(queryFactory
+                .select(new QUserProfileResponse(
+                        member.memberId,
+                        member.nickName,
+                        member.height,
+                        member.weight,
+                        member.profilePhoto,
+                        member.memberId.eq(loginMemberId)))
+                .from(member)
+                .where(member.memberId.eq(memberId))
+                .fetchOne());
+    }
+    
+    ...
+}
+```
+
+- DTO와 Entity 분리
+
+관심사 분리로 예상치 못한 에러를 방지하고, 필요한 데이터만 전달합니다.
+
+![dto,entity](https://user-images.githubusercontent.com/74866067/229475117-3e72dc18-27ad-4790-844f-8d42dc4b5a2a.JPG)
+
+  
+  
 ## Security
 
 - securityConfig
+
+스프링 시큐리티의 필터를 이용하여 로그인,토큰 발급,인증 과정을 처리하였습니다.
+
 ```
         http.authenticationManager(authenticationManager);
         http.httpBasic().disable();
@@ -49,9 +188,41 @@ Spring Boot+Flutter 를 사용해 개발한 패션 SNS입니다.
         });
         http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService()).and().successHandler(authenticationSuccessHandler());
 ```
+- CustomOAuth2UserService
+
+카카오 로그인 api를 이용하여 소셜로그인을 구현하여 (비회원이라면 회원가입 후) 자체 JWT토큰을 발급합니다.
+```
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+    
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        ClientRegistration clientRegistration = userRequest.getClientRegistration();
+        String clientName = clientRegistration.getClientName();
+
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+        Map<String, Object> paramMap = oAuth2User.getAttributes();
+        Map<String,String> account = new HashMap<>();
+
+        switch (clientName){
+            case "kakao":
+                account = getKakao(paramMap);
+                break;
+        }
+        return generateDTO(account, paramMap);
+    }
+    
+    ...
+    
+}
+```
 
 ## 응답 객체
 - ResultResponse
+
+RestController의 반환 객체를 통일하였습니다.
 ```
 public class ResultResponse {
     @ApiModelProperty(value = "Http 상태 코드")
@@ -77,7 +248,7 @@ public class ResultResponse {
     }
 }
 ```
-- 성공 응답 JSON
+- 성공 응답 JSON 예시
 ```
 {
   "status": 200,
@@ -94,6 +265,8 @@ public class ResultResponse {
 ```
 
 - ErrorResponse
+
+요청 실패 시 에러응답 객체를 통일하였습니다.
 ```
 public class ErrorResponse {
 
@@ -118,7 +291,7 @@ public class ErrorResponse {
     ...
 }
 ```
-- 에러 응답 JSON
+- 에러 응답 JSON 예시
 ```
 {
   "status": 401,
@@ -128,7 +301,27 @@ public class ErrorResponse {
 }
 ```
 
+- GlobalExceptionHandler
+```
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    ...
+    
+    @ExceptionHandler
+    protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        final ErrorResponse response = ErrorResponse.of(errorCode, e.getErrors());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
+    }
+    
+    ...
+}
+```
+
 ## 컨벤션
+
+>자바 네이밍 컨벤션 준수 (카멜케이스 등)
+
 
 >커밋 컨벤션
 
