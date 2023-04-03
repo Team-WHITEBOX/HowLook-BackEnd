@@ -345,3 +345,11 @@ footer (optional)
 - perf	성능 개선
 - test	테스트 추가
 - chore	빌드 과정 또는 보조 기능(문서 생성기능 등) 수정
+
+
+## 기타
+
+> '대경권 SW산학프로젝트 경진대회' 우수상
+
+![20230309_144556](https://user-images.githubusercontent.com/74866067/229505181-9e7c8b67-8853-415a-a21b-61971d3d750a.jpg)
+
