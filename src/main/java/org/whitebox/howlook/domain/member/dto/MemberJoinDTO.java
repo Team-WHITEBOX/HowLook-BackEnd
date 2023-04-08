@@ -1,8 +1,10 @@
 package org.whitebox.howlook.domain.member.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,6 +16,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberJoinDTO {
     @ApiModelProperty(value = "아이디", example = "testuser1", required = true)
     @NotBlank(message = "아이디를 입력해주세요")
@@ -53,6 +58,7 @@ public class MemberJoinDTO {
     private int weight;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "생일을 입력해주세요")
     private LocalDate birthDay;
 
