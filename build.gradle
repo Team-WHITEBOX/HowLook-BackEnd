@@ -63,6 +63,10 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	//rabbitmq
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'
 }
 
 tasks.named('test') {
