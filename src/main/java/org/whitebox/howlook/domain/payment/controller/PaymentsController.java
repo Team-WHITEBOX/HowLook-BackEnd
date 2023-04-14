@@ -1,6 +1,5 @@
 package org.whitebox.howlook.domain.payment.controller;
 
-import com.siot.IamportRestClient.Iamport;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.IamportPaycoClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -43,7 +42,7 @@ public class PaymentsController {
         return iamportClient.paymentByImpUid(paymentInfo.getImpUid());
     }
 
-    @PostMapping("verifyIamport")
+    @PostMapping("/verifyIamport")
     public IamportResponse<Payment> verifyIamport(@RequestBody Map<String,String> map) throws IamportResponseException, IOException {
 
         String impUid = map.get("imp_uid");

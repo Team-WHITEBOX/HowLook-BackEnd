@@ -97,10 +97,4 @@ public class GlobalExceptionHandler {
         final ErrorResponse response = ErrorResponse.of(INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    //  결제관련오류 (실제 결제금액과 서버에서 결제금액이 다른경우)
-    @ExceptionHandler
-    public ResponseEntity<String> verifyIamportException(){
-        return new ResponseEntity<>("실제 결제금액과 서버에서 결제금액이 다릅니다.",HttpStatus.BAD_REQUEST);
-    }
 }

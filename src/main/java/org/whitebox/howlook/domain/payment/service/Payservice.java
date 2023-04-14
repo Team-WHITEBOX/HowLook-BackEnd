@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
+import org.whitebox.howlook.domain.payment.exception.DifferentAmountException;
 import org.whitebox.howlook.domain.payment.repository.PaymentRepository;
 import org.whitebox.howlook.global.error.GlobalExceptionHandler;
 
@@ -24,9 +25,9 @@ public class Payservice {
 
     @Transactional
     public void verifyIamportPayment(IamportResponse<Payment> irsp, int amount) { // 결제가격을 매겨변수로.
+
         if (irsp.getResponse().getAmount().intValue() != amount) {
-            log.info("실제 결제금액과 서버에서 결제금액이 다릅니다.");
-            return; // 오류처리 다시하기
+            throw new DifferentAmountException();
         }
 
         PaymentInfo pay = PaymentInfo.builder()
