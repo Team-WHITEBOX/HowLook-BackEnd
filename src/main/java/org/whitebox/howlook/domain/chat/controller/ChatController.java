@@ -4,17 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.whitebox.howlook.domain.chat.dto.ChatDTO;
+import org.whitebox.howlook.domain.chat.entity.Chat;
+import org.whitebox.howlook.domain.chat.repository.mongo.ChatRepository;
 import org.whitebox.howlook.domain.chat.service.ChatService;
+import org.whitebox.howlook.global.config.RootConfig;
 
 import java.time.LocalDateTime;
 
@@ -23,26 +21,23 @@ import java.time.LocalDateTime;
 @RestController
 public class ChatController {
 
-    private final SimpMessageSendingOperations template;
+    //private final SimpMessageSendingOperations template;
 
     private  final RabbitTemplate rabbitTemplate;
     private final ChatService chatService;
+    private final ChatRepository chatRepository;
+    private final RootConfig rootConfig;
 
     private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
     private final static String CHAT_QUEUE_NAME = "chat.queue";
 
-    // MessageMapping 을 통해 webSocket 로 들어오는 메시지를 발신 처리한다.
-    // 이때 클라이언트에서는 /pub/chat/message 로 요청하게 되고 이것을 controller 가 받아서 처리한다.
-    // 처리가 완료되면 /sub/chat/room/roomId 로 메시지가 전송된다.
+    // /pub/chat.message.{roomId} 로 요청하면 브로커를 통해 처리
+    // /exchange/chat.exchange/room.{roomId} 를 구독한 클라이언트에 메시지가 전송된다.
     @MessageMapping("chat.enter.{chatRoomId}")
-    public void enterUser(@Payload ChatDTO chat, @DestinationVariable String chatRoomId, SimpMessageHeaderAccessor headerAccessor) {
+    public void enterUser(@Payload ChatDTO chat, @DestinationVariable String chatRoomId) {
 
         // 채팅방에 유저 추가
-        chatService.addUser(chat.getRoomId(), chat.getSender());
-
-        // socket session 에 유저이름 저장
-        headerAccessor.getSessionAttributes().put("userName", chat.getSender());
-        headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
+        chatService.enterRoom(chat.getRoomId(), chat.getSender());
 
         chat.setTime(LocalDateTime.now());
         chat.setMessage(chat.getSender() + " 님 입장!!");
@@ -59,11 +54,12 @@ public class ChatController {
 
     }
 
-    //receive()는 단순히 큐에 들어온 메세지를 소비만 한다. (현재는 디버그용도)
+    //기본적으로 chat.queue가 exchange에 바인딩 되어있기 때문에 모든 메시지 처리
     @RabbitListener(queues = CHAT_QUEUE_NAME)
-    public void receive(ChatDTO chat){
-
-        System.out.println("received : " + chat.getMessage());
+    public void receive(ChatDTO chatDTO){
+        System.out.println("received : " + chatDTO.getMessage());
+        Chat chat = rootConfig.getMapper().map(chatDTO,Chat.class);
+        chatRepository.save(chat);
     }
 
     // 유저 퇴장 시에는 EventListener 을 통해서 유저 퇴장을 확인

@@ -20,12 +20,10 @@ public class ChatRoomDTO {
     private String roomId; // 채팅방 아이디
     private String roomName; // 채팅방 이름
     private long userCount; // 채팅방 인원수
-    private List<String> userList = new ArrayList<>();
 
     public ChatRoomDTO(ChatRoom chatRoom){
         this.roomId = chatRoom.getRoomId();
         this.roomName = chatRoom.getRoomName();
         this.userCount = chatRoom.getUserCount();
-        this.userList = chatRoom.getUserList().stream().map(userList-> userList.getMemberId()).collect(Collectors.toList());
     }
 }

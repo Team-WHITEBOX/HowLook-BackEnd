@@ -18,8 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        //메시지 구독 url (topic을 구독)
-        //config.enableSimpleBroker("/sub");
+        //메시지 구독 url
         config.enableStompBrokerRelay("/exchange");
         //메시지 발행 url
         config.setPathMatcher(new AntPathMatcher("."));

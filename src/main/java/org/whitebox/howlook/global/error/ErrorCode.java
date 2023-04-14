@@ -57,7 +57,9 @@ public enum ErrorCode {
     EVAL_NOT_EXIST(400, "E003", "존재하지 않는 게시글입니다."),
 
     // chat
-    CHATROOM_NOT_FOUND(400,"C001","존재하지 않는 채팅방입니다.");
+    CHATROOM_NOT_FOUND(400,"C001","존재하지 않는 채팅방입니다."),
+    CHATROOM_MEMBER_NOT_FOUND(400,"C002","참여 중인 채팅방이 아닙니다."),
+    ALREADY_ENTER_ROOM(400,"C003","이미 참여중인 채팅방입니다.");
 
     private final int status;
     private final String code;
