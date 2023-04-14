@@ -1,0 +1,43 @@
+package org.whitebox.howlook.domain.payment.service;
+
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
+import org.whitebox.howlook.domain.payment.repository.PaymentRepository;
+import org.whitebox.howlook.global.error.GlobalExceptionHandler;
+
+@Log4j2
+@Service
+public class Payservice {
+    @Autowired
+    private PaymentRepository payRepository;
+
+    @Transactional
+    public PaymentInfo paymentLookupService(long paymentsNO) {
+        PaymentInfo paymentsInfo = payRepository.getById(paymentsNO);
+        return paymentsInfo;
+    }
+
+    @Transactional
+    public void verifyIamportPayment(IamportResponse<Payment> irsp, int amount) { // 결제가격을 매겨변수로.
+        if (irsp.getResponse().getAmount().intValue() != amount) {
+            log.info("실제 결제금액과 서버에서 결제금액이 다릅니다.");
+            return; // 오류처리 다시하기
+        }
+
+        PaymentInfo pay = PaymentInfo.builder()
+                .payMethod(irsp.getResponse().getPayMethod())
+                .impUid(irsp.getResponse().getPayMethod())
+                .merchantUid(irsp.getResponse().getMerchantUid())
+                .amount(irsp.getResponse().getAmount().intValue())
+                .buyerAddr(irsp.getResponse().getBuyerAddr())
+                .buyerPostcode(irsp.getResponse().getBuyerPostcode())
+                .build();
+
+        payRepository.save(pay);
+    }
+}
