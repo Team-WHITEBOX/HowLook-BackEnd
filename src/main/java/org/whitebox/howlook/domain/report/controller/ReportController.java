@@ -21,8 +21,8 @@ public class ReportController {
 
     @ApiOperation(value = "신고하려는 postid만 보내주쇼")
     @PostMapping(value="/reportpost")
-    public ResponseEntity<ResultCode> reportPosts(ReportDTO reportDTO) {
-        reportPostService.report(reportDTO);
+    public ResponseEntity<ResultCode> reportPosts(Long postId) {
+        reportPostService.report(postId);
 
         return ResponseEntity.ok(ResultCode.CREATE_POST_SUCCESS);
     }
