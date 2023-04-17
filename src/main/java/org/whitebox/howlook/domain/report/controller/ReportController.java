@@ -6,7 +6,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.whitebox.howlook.domain.report.dto.ReportDTO;
 import org.whitebox.howlook.domain.report.service.ReportPostService;
 import org.whitebox.howlook.global.result.ResultCode;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +21,8 @@ public class ReportController {
     @ApiOperation(value = "신고하려는 postid만 보내주쇼")
     @PostMapping(value="/reportpost")
     public ResponseEntity<ResultCode> reportPosts(Long postId) {
-        reportPostService.report(postId);
+        reportPostService.reportPost(postId);
 
-        return ResponseEntity.ok(ResultCode.CREATE_POST_SUCCESS);
+        return ResponseEntity.ok(ResultCode.REPORT_POST_SUCCESS);
     }
 }

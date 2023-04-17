@@ -3,7 +3,7 @@ package org.whitebox.howlook.domain.report.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.whitebox.howlook.domain.post.entity.Hashtag;
+import org.whitebox.howlook.domain.post.dto.HashtagDTO;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class ReportDTO {
 
     private Long postId;
 
-    private String member;      //원래 Member member이나 이름만 넘어오면되니 String으로 설정
+    private String memberId;      //원래 Member member이나 이름만 넘어가면되니 String으로 설정
 
     private Long photoCount;      //업로드한 사진 개수
 
@@ -39,5 +39,5 @@ public class ReportDTO {
 
     private LocalDateTime modificationDate;
 
-    private Hashtag hashtag;
+    private HashtagDTO hashtagDTO;
 }
