@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,8 @@ import org.whitebox.howlook.domain.report.dto.ReportDTO;
 public class ReportPostServiceImpl implements ReportPostService{
     private final ModelMapper modelMapper;
     private final PostService postService;
+    @Value("${REPORTSERVER.URL}")
+    private String reportServer;
 
     public ResponseEntity<String> reportPost(Long postId) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -38,21 +41,9 @@ public class ReportPostServiceImpl implements ReportPostService{
         });
         ReportDTO reportDTO = modelMapper.map(postReaderDTO, ReportDTO.class);
 
-        System.out.println("PostId:" +reportDTO.getPostId());
-        System.out.println("MemberId:" +reportDTO.getMemberId());
-        System.out.println("PhotoCount:" + reportDTO.getPhotoCount());
-        System.out.println("LikeCount:" + reportDTO.getLikeCount());
-        System.out.println("ReplyCount:" + reportDTO.getPostReplyCount());
-        System.out.println("viewCount:" + reportDTO.getViewCount());
-        System.out.println("Content:" + reportDTO.getContent());
-        System.out.println("MainPhotoPath:" + reportDTO.getMainPhotoPath());
-        System.out.println("photoDTOs:" + reportDTO.getPhotoDTOs());
-        System.out.println("registrationDate:" + reportDTO.getRegistrationDate());
-        System.out.println("modificationDate:" + reportDTO.getModificationDate());
-        System.out.println("Hashtag:" + reportDTO.getHashtagDTO());
 
         WebClient webClient = WebClient.builder()
-                .baseUrl("http://localhost:8080")
+                .baseUrl("http://"+reportServer)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 
