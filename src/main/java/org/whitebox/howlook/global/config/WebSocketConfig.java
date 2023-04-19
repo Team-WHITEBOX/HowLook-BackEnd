@@ -34,6 +34,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.enableStompBrokerRelay("/exchange")
                 .setClientLogin(rabbitUser)
                 .setClientPasscode(rabbitPwd)
+                .setSystemLogin(rabbitUser)
+                .setSystemPasscode(rabbitPwd)
                 .setRelayHost(rabbitHost)
                 .setRelayPort(rabbitPort)
                 .setVirtualHost(rabbitVHost);
