@@ -1,9 +1,12 @@
 package org.whitebox.howlook.domain.report.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.post.dto.HashtagDTO;
+import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 
 import java.time.LocalDateTime;
@@ -40,4 +43,19 @@ public class ReportDTO {
     private LocalDateTime modificationDate;
 
     private HashtagDTO hashtagDTO;
+
+    @QueryProjection
+    public ReportDTO(Post post){
+        this.postId = post.getPostId();
+        this.memberId = post.getMember().getMemberId();
+        this.photoCount = post.getPhotoCount();
+        this.likeCount = post.getLikeCount();
+        this.postReplyCount = post.getPostReplyCount();
+        this.viewCount = post.getViewCount();
+        this.content = post.getContent();
+        //this.mainPhotoPath = post.getMainPhotoPath();
+        this.registrationDate = post.getRegDate();
+        this.modificationDate = post.getModDate();
+        this.hashtagDTO = new HashtagDTO(post.getHashtag());
+    }
 }

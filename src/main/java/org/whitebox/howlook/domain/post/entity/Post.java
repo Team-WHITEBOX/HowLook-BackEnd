@@ -54,9 +54,7 @@ public class Post extends BaseEntity{
     @OneToOne
     private Hashtag hashtag;
 
-    public void setHashtag(Hashtag hashtag){
-        this.hashtag = hashtag;
-    }
+    public void setHashtag(Hashtag hashtag){this.hashtag = hashtag;}
 
     public void setMember(Member member){
         this.member = member;
