@@ -32,6 +32,9 @@ public class RabbitConfig {
     private String rabbitHost;
     @Value("${spring.rabbitmq.virtual-host}")
     private String rabbitVh;
+    @Value("${RABBITMQ.PORT}")
+    private int rabbitPort;
+
     //Queue 등록
     @Bean
     public Queue queue(){ return new Queue(CHAT_QUEUE_NAME, true); }
@@ -69,6 +72,7 @@ public class RabbitConfig {
         factory.setVirtualHost(rabbitVh);
         factory.setUsername(rabbitUser);
         factory.setPassword(rabbitPw);
+        factory.setPort(rabbitPort);
         return factory;
     }
 
