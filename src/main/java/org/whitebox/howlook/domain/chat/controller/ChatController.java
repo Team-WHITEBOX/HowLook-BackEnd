@@ -57,7 +57,7 @@ public class ChatController {
     //기본적으로 chat.queue가 exchange에 바인딩 되어있기 때문에 모든 메시지 처리
     @RabbitListener(queues = CHAT_QUEUE_NAME)
     public void receive(ChatDTO chatDTO){
-        System.out.println("received : " + chatDTO.getMessage());
+        log.info("received : " + chatDTO.getMessage());
         Chat chat = rootConfig.getMapper().map(chatDTO,Chat.class);
         chatRepository.save(chat);
     }

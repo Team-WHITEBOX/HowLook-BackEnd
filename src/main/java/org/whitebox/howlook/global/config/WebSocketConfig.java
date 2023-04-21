@@ -17,15 +17,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 //@Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Value("${RABBITMQ.USER}")
+    @Value("${RABBITMQ_USER}")
     private String rabbitUser;
-    @Value("${RABBITMQ.PWD}")
+    @Value("${RABBITMQ_PWD}")
     private String rabbitPwd;
-    @Value("${RABBITMQ.HOST}")
+    @Value("${RABBITMQ_HOST}")
     private String rabbitHost;
-    @Value("${RABBITMQ.PORT}")
+    @Value("${RABBITMQ_PORT}")
     private int rabbitPort;
-    @Value("${RABBITMQ.VHOST}")
+    @Value("${RABBITMQ_VHOST}")
     private String rabbitVHost;
 
     @Override

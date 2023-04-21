@@ -36,7 +36,7 @@ import java.util.List;
 public class ReportPostServiceImpl implements ReportPostService{
     private final ModelMapper modelMapper;
     private final PostService postService;
-    @Value("${REPORTSERVER.URL}")
+    @Value("${REPORTSERVER_URL}")
     private String reportServer;
 
     public ResponseEntity<String> reportPost(Long postId) {
