@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.whitebox.howlook.domain.member.service.CustomUserDetailsService;
@@ -25,18 +26,20 @@ import static org.whitebox.howlook.global.error.ErrorCode.*;
 @Log4j2
 @RequiredArgsConstructor
 public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 후 정보 contextHolder에 등록
-    private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
-
-    private static final String[] whiteList = {"/account/**","/swagger**","/v3/api-docs**","/api/v2**"};
+    private final CustomUserDetailsService userDetailsService;
+    private final String[] whiteList;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        if(PatternMatchUtils.simpleMatch(whiteList,request.getRequestURI())){
-            log.info("pass token filter .....");
-            filterChain.doFilter(request, response);
-            return;
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+        for(String list : whiteList){
+            if(antPathMatcher.match(list,path)){
+                log.info("pass token filter .....");
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
 
         log.info("Token Check Filter.....................");
