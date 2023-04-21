@@ -32,7 +32,7 @@ public class RabbitConfig {
     private String rabbitHost;
     @Value("${spring.rabbitmq.virtual-host}")
     private String rabbitVh;
-    @Value("${RABBITMQ.PORT}")
+    @Value("${RABBITMQ_PORT}")
     private int rabbitPort;
 
     //Queue 등록
