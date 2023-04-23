@@ -18,10 +18,12 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.service.PostService;
 import org.whitebox.howlook.domain.report.dto.ReportDTO;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
+import org.whitebox.howlook.global.util.AccountUtil;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -36,6 +38,7 @@ import java.util.List;
 public class ReportPostServiceImpl implements ReportPostService{
     private final ModelMapper modelMapper;
     private final PostService postService;
+    private final AccountUtil accountUtil;
     @Value("${REPORTSERVER_URL}")
     private String reportServer;
 
@@ -49,12 +52,14 @@ public class ReportPostServiceImpl implements ReportPostService{
         reportDTO.setMemberId(postReaderDTO.getUserPostInfo().getMemberId());
         reportDTO.setPostReplyCount(postReaderDTO.getReplyCount());
 
+        reportDTO.setReporterId(accountUtil.getLoginMemberId());
+
         WebClient webClient = WebClient.builder()
                 .baseUrl("http://"+reportServer)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 
-        return webClient.post().uri(uriBuilder -> uriBuilder.path("/report/reportPost")
+        return webClient.post().uri(uriBuilder -> uriBuilder.path("/report")
                 .build())
                 .bodyValue(reportDTO)
                 .retrieve()

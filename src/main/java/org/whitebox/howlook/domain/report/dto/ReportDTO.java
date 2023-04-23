@@ -44,6 +44,8 @@ public class ReportDTO {
 
     private HashtagDTO hashtagDTO;
 
+    private String reporterId;
+
     @QueryProjection
     public ReportDTO(Post post){
         this.postId = post.getPostId();
