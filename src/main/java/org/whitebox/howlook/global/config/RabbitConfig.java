@@ -72,7 +72,7 @@ public class RabbitConfig {
         factory.setVirtualHost(rabbitVh);
         factory.setUsername(rabbitUser);
         factory.setPassword(rabbitPw);
-        factory.setPort(rabbitPort);
+        factory.setPort(5672);
         return factory;
     }
 
