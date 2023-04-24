@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,34 +43,6 @@ public class Member {
 //
 //    }
 
-    public void updatePassword(String memberPassword){ this.memberPassword = memberPassword; }
-    public void updateNickName(String nickName){
-        this.nickName = nickName;
-    }
-    public void updateName(String name){
-        this.name = name;
-    }
-    public void updatePhone(String phone){
-        this.phone = phone;
-    }
-    public void updateHeight(Long height){
-        this.height = height;
-    }
-    public void updateWeight(Long weight){
-        this.weight = weight;
-    }
-    public void updateBirthDay(LocalDate date){
-        this.birthDay = date;
-    }
-    public void updateDel(boolean del){
-        this.del = del;
-    }
-    public void updateSocial(boolean social){
-        this.social = social;
-    }
-    public void updateProfilePhotoId(String profilePhoto){
-        this.profilePhoto = profilePhoto;
-    }
     public void addRole(MemberRole memberRole){
         this.roleSet.add(memberRole);
     }

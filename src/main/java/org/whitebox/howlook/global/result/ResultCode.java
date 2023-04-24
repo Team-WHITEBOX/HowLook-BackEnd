@@ -54,7 +54,10 @@ public enum ResultCode {
     // Eval
     EVAL_REGISTER_SUCCESS(200, "E001", "평가 게시글 등록에 성공하였습니다."),
     EVAL_SEARCH_SUCCESS(200, "E002", "평가 게시글 조회에 성공하였습니다."),
-    EVAL_SEARCH_FAIL(200, "E003", "평가 게시글 조회에 실패하였습니다.");
+    EVAL_SEARCH_FAIL(200, "E003", "평가 게시글 조회에 실패하였습니다."),
+
+    // Report
+    REPORT_POST_SUCCESS(200, "R001", "게시글 신고에 성공했습니다.");
 
     private final int status;
     private final String code;

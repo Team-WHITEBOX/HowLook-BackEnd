@@ -3,7 +3,10 @@ package org.whitebox.howlook.domain.member.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 
 import java.util.List;
@@ -11,6 +14,9 @@ import java.util.stream.Collectors;
 
 @ApiModel("유저 프로필 조회 응답 모델")
 @Getter
+@Setter
+@Builder
+@AllArgsConstructor
 public class UserProfileResponse {
 
     @ApiModelProperty(value = "아이디", example = "user1")

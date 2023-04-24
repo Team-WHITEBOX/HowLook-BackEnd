@@ -36,6 +36,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	// 아임포트 관련 gradle
 	implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
