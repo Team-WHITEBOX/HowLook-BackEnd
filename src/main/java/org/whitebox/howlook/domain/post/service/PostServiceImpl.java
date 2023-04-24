@@ -30,6 +30,7 @@ import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 import org.whitebox.howlook.global.util.LocalUploader;
 import org.whitebox.howlook.global.util.S3Uploader;
+import org.whitebox.howlook.global.util.WeatherUtil;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class PostServiceImpl implements PostService {
                 }
                 else
                 {
-                    m_path = uploadedFilePaths.get(0);
+                    m_path = uploadedFilePaths.get(i);
                 }
 
                 // Falcon : MainPhotoPath 및 PhotoCnt 저장하기
