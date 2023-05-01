@@ -61,7 +61,7 @@ public class MemberController {
     @ApiOperation(value = "유저 스크랩 게시물 조회")
     @GetMapping("/{memberId}/scrap")
     public ResponseEntity<ResultResponse> getUserScrap(@PathVariable("memberId") String memberId) {
-        final List<SimplePostDTO> userScraps = memberService.getUserScrap(memberId);
+        final ScrapsResponse userScraps = memberService.getUserScrap(memberId);
 
         return ResponseEntity.ok(ResultResponse.of(GET_MEMBER_SAVED_POSTS_SUCCESS,userScraps));
     }
