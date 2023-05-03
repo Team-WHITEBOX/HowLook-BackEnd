@@ -16,6 +16,7 @@ import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.global.config.RootConfig;
 import org.whitebox.howlook.global.error.exception.BusinessException;
+import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
@@ -53,6 +54,9 @@ public class ChatServiceImpl implements ChatService{
     @Override
     @Transactional
     public ChatRoomDTO createRoom(String roomName) {
+        if(chatRoomRepository.findByRoomName(roomName).isPresent()){
+            throw new EntityAlreadyExistException(CHATROOM_ALREADY_EXIST);
+        }
         ChatRoom chatRoom = ChatRoom.builder().roomId(UUID.randomUUID().toString()).roomName(roomName).userCount(0).build();
         chatRoomRepository.save(chatRoom);
         return rootConfig.getMapper().map(chatRoom,ChatRoomDTO.class);
