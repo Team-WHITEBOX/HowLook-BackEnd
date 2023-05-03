@@ -7,15 +7,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
-import org.whitebox.howlook.global.error.ErrorCode;
-import org.whitebox.howlook.global.error.exception.BusinessException;
+import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.global.util.JWTUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -30,25 +28,14 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {  /
 
         log.info("Login Success Handler......................");
 
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        String accessToken = jwtUtil.generateToken(authentication);
+        String refreshToken = jwtUtil.generateRefreshToken(authentication.getName());
+        TokenDTO tokenDTO = TokenDTO.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 
-        log.info(authentication);
-        String memberId = authentication.getName();
-        //memberRepository.getWithRoles(memberId).orElseThrow(()->new BusinessException(ErrorCode.LOGOUT_BY_ANOTHER));
-        log.info(memberId); //username
-        Map<String, Object> claim = Map.of("memberId", memberId);
-        //Access Token 유효기간 1일
-        String accessToken = jwtUtil.generateToken(claim, 1);
-        //Refresh Token 유효기간 30일
-        String refreshToken = jwtUtil.generateToken(claim, 30);
-
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
         Gson gson = new Gson();
 
-        Map<String,String> keyMap = Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken);
-
-        String jsonStr = gson.toJson(keyMap);
+        String jsonStr = gson.toJson(tokenDTO);
 
         response.getWriter().println(jsonStr);
 

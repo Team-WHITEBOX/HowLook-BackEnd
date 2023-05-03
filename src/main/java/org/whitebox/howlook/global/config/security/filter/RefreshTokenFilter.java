@@ -5,8 +5,9 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.whitebox.howlook.global.config.security.exception.RefreshTokenException;
+import org.whitebox.howlook.global.error.exception.BusinessException;
 import org.whitebox.howlook.global.util.JWTUtil;
 
 import javax.servlet.FilterChain;
@@ -20,7 +21,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 
-import static org.whitebox.howlook.global.error.ErrorCode.REFRESH_EXPIRED;
+import static org.whitebox.howlook.global.error.ErrorCode.REFRESH_FAIL;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
     private final String refreshPath;
     private final JWTUtil jwtUtil;
 
+    // TODO: 2023-05-03 refreshToken 리팩토링 필요
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
@@ -43,22 +45,25 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
         String accessToken = tokens.get("accessToken");
         String refreshToken = tokens.get("refreshToken");
+        Authentication authentication = null;
 
-        log.info("accessToken: " + accessToken);
-        log.info("refreshToken: " + refreshToken);
-
-        try{
-            checkAccessToken(accessToken);
-        }catch (RefreshTokenException refreshTokenException){
-            throw refreshTokenException;
-        }
-        Map<String, Object> refreshClaims = null;
+        if (accessToken==null) return;
 
         try {
+            jwtUtil.validateToken(accessToken);
+        }catch (ExpiredJwtException e){
+            authentication = jwtUtil.getAuthentication(accessToken);
+        }catch (Exception e){
+            throw new BusinessException(REFRESH_FAIL);
+        }
 
-            refreshClaims = checkRefreshToken(refreshToken);
-            log.info(refreshClaims);
+        if (accessToken != null && jwtUtil.validateToken(accessToken)) {
+            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
+            authentication = jwtUtil.getAuthentication(accessToken);
+        }
 
+        if (refreshToken != null && jwtUtil.validateToken(refreshToken)) {
+            Map<String, Object> refreshClaims = jwtUtil.parseClaims(refreshToken);
             //Refresh Token의 유효시간이 얼마 남지 않은 경우
             Integer exp = (Integer)refreshClaims.get("exp");
 
@@ -70,33 +75,16 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             //만일 3일 미만인 경우에는 Refresh Token도 다시 생성
             long gapTime = (expTime.getTime() - current.getTime());
 
-            log.info("-----------------------------------------");
-            log.info("current: " + current);
-            log.info("expTime: " + expTime);
-            log.info("gap: " + gapTime );
-
-            String memberId = (String)refreshClaims.get("memberId");
-
             //이상태까지 오면 무조건 AccessToken은 새로 생성
-            String accessTokenValue = jwtUtil.generateToken(Map.of("memberId", memberId), 1);
-
-            String refreshTokenValue = tokens.get("refreshToken");
+            accessToken = jwtUtil.generateToken(authentication);
 
             //RefrshToken이 3일도 안남았다면..
-            //if(gapTime < (1000 * 60  * 3  ) ){
             if(gapTime < (1000 * 60 * 60 * 24 * 3  ) ){
                 log.info("new Refresh Token required...  ");
-                refreshTokenValue = jwtUtil.generateToken(Map.of("memberId", memberId), 30);
+                refreshToken = jwtUtil.generateRefreshToken(authentication.getName());
             }
 
-            log.info("Refresh Token result....................");
-            log.info("accessToken: " + accessTokenValue);
-            log.info("refreshToken: " + refreshTokenValue);
-
-            sendTokens(accessTokenValue, refreshTokenValue, response);
-
-        }catch(RefreshTokenException refreshTokenException){
-            refreshTokenException.sendResponseError(response);
+            sendTokens(accessToken, refreshToken, response);
         }
     }
 
@@ -111,33 +99,6 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
         }catch(Exception e){
             log.error(e.getMessage());
-        }
-        return null;
-    }
-
-    private void checkAccessToken(String accessToken)throws RefreshTokenException {
-
-        try{
-            jwtUtil.validateToken(accessToken);
-        }catch (ExpiredJwtException expiredJwtException){
-            log.info("Access Token has expired");
-        }catch(Exception exception){
-            throw new RefreshTokenException();
-        }
-    }
-
-    private Map<String, Object> checkRefreshToken(String refreshToken)throws RefreshTokenException{
-
-        try {
-            Map<String, Object> values = jwtUtil.validateToken(refreshToken);
-
-            return values;
-
-        }catch(ExpiredJwtException expiredJwtException){
-            throw new RefreshTokenException(REFRESH_EXPIRED);
-        }catch(Exception exception){
-            exception.printStackTrace();
-            new RefreshTokenException();
         }
         return null;
     }

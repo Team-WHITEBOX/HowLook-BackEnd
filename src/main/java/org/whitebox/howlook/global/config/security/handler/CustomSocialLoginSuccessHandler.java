@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.whitebox.howlook.global.config.security.dto.MemberSecurityDTO;
+import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.global.util.JWTUtil;
 
 import javax.servlet.ServletException;
@@ -30,26 +31,21 @@ public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHan
         log.info("CustomLoginSuccessHandler onAuthenticationSuccess ..........");
         log.info(authentication.getPrincipal());
 
-        MemberSecurityDTO memberSecurityDTO = (MemberSecurityDTO) authentication.getPrincipal();
-
-
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        Map<String, Object> claim = Map.of("memberId", memberSecurityDTO.getMemberId());
-        //Access Token 유효기간 1일
-        String accessToken = jwtUtil.generateToken(claim, 1);
-        //Refresh Token 유효기간 30일
-        String refreshToken = jwtUtil.generateToken(claim, 30);
+        String accessToken = jwtUtil.generateToken(authentication);
+        String refreshToken = jwtUtil.generateRefreshToken(authentication.getName());
+        TokenDTO tokenDTO = TokenDTO.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 
         Gson gson = new Gson();
 
-        Map<String,String> keyMap = Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken);
+//        Map<String,String> keyMap = Map.of(
+//                "accessToken", accessToken,
+//                "refreshToken", refreshToken);
 
-        String jsonStr = gson.toJson(keyMap);
+        String jsonStr = gson.toJson(tokenDTO);
         //response.getWriter().println(jsonStr);
-        response.sendRedirect("http://3.34.164.14:8080/account/webview.html?accessToken="+accessToken+"&refreshToken="+refreshToken);
+        response.sendRedirect("http://3.34.164.14:8080/account/webview.html?accessToken="+tokenDTO.getAccessToken()+"&refreshToken="+tokenDTO.getRefreshToken());
 
     }
 }

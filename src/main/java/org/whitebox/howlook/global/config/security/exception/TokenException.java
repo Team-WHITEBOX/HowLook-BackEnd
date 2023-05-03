@@ -8,16 +8,15 @@ import org.whitebox.howlook.global.error.exception.BusinessException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
 
-import static org.whitebox.howlook.global.error.ErrorCode.REFRESH_INVALID;
+import static org.whitebox.howlook.global.error.ErrorCode.JWT_INVALID;
+import static org.whitebox.howlook.global.error.ErrorCode.JWT_UNACCEPT;
 
-public class RefreshTokenException extends BusinessException {
-    public RefreshTokenException() {
-        super(REFRESH_INVALID);
+public class TokenException extends BusinessException {
+    public TokenException() {
+        super(JWT_UNACCEPT);
     }
-    public RefreshTokenException(ErrorCode errorCode) {
+    public TokenException(ErrorCode errorCode) {
         super(errorCode);
     }
 

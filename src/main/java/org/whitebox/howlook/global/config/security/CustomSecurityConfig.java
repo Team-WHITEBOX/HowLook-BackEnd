@@ -1,18 +1,22 @@
 package org.whitebox.howlook.global.config.security;
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -32,10 +36,18 @@ import org.whitebox.howlook.global.config.security.handler.APILoginSuccessHandle
 import org.whitebox.howlook.global.config.security.handler.Custom403Handler;
 import org.whitebox.howlook.global.config.security.handler.CustomAuthenticationFailureHandler;
 import org.whitebox.howlook.global.config.security.handler.CustomSocialLoginSuccessHandler;
+import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.ErrorResponse;
 import org.whitebox.howlook.global.util.JWTUtil;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.Arrays;
+
+import static org.whitebox.howlook.global.error.ErrorCode.JWT_UNACCEPT;
 
 @Log4j2
 @Configuration
@@ -67,10 +79,10 @@ public class CustomSecurityConfig {
                 .antMatchers(WHITELIST).permitAll()
                 .antMatchers("/sample/doB").hasAnyRole("ADMIN")
                 .antMatchers("/member/**").hasAnyRole("USER")
-                .anyRequest().authenticated()
+                .anyRequest().hasAnyRole("USER")
                 .and()
                 .addFilterBefore(apiLoginFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenCheckFilter(jwtUtil,WHITELIST), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class)
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
         http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
@@ -85,6 +97,25 @@ public class CustomSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+//    public AuthenticationEntryPoint authenticationEntryPoint(){
+//        AuthenticationEntryPoint authenticationEntryPoint = new AuthenticationEntryPoint() {
+//            @Override
+//            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+//                response.setStatus(401);
+//                response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
+//
+//                final ErrorResponse errorResponse = ErrorResponse.of(JWT_UNACCEPT);
+//                Gson gson = new Gson();
+//
+//                try {
+//                    response.getWriter().println(gson.toJson(errorResponse));
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        };
+//        return authenticationEntryPoint;
+//    }
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(){
         return new CustomSocialLoginSuccessHandler(passwordEncoder(),jwtUtil);
@@ -117,8 +148,8 @@ public class CustomSecurityConfig {
         return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
-    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil, CustomUserDetailsService userDetailsService){
-        return new TokenCheckFilter(jwtUtil,userDetailsService,WHITELIST);
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil,String[] whiteList){
+        return new TokenCheckFilter(jwtUtil,whiteList);
     }
 
     @Bean
