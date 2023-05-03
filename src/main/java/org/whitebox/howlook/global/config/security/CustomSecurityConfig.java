@@ -43,11 +43,42 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CustomSecurityConfig {
 
-    private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final MemberRepository memberRepository;
+    private static final String[] WHITELIST = {"/account/**","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**"};
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http)throws Exception {
+        log.info("---------------configure-----------------");
+        //authenticationManager 설정
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        //Get AuthenticationManager
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+
+        http.authenticationManager(authenticationManager);
+        http.httpBasic().disable();
+        http.formLogin().disable();
+        http.csrf().disable();  // csrf 비활성화
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT위해 세션 사용안함
+        http.authorizeRequests()
+                .antMatchers(WHITELIST).permitAll()
+                .antMatchers("/sample/doB").hasAnyRole("ADMIN")
+                .antMatchers("/member/**").hasAnyRole("USER")
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(apiLoginFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class)
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
+        http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
+            httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
+        });
+        http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService()).and().successHandler(authenticationSuccessHandler());
+        return http.build();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -60,15 +91,11 @@ public class CustomSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)throws Exception {
-        log.info("---------------configure-----------------");
-        //authenticationManager 설정
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    public AccessDeniedHandler accessDeniedHandler(){
+        return new Custom403Handler();
+    }
 
-        //Get AuthenticationManager
-        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
-
+    private APILoginFilter apiLoginFilter(AuthenticationManager authenticationManager){
         //APILoginFilter
         APILoginFilter apiLoginFilter = new APILoginFilter("/account/generateToken");
         apiLoginFilter.setAuthenticationManager(authenticationManager);
@@ -78,39 +105,7 @@ public class CustomSecurityConfig {
         //핸들러 세팅
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
         apiLoginFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
-
-        //반드시 필요
-        http.authenticationManager(authenticationManager);
-
-        http.httpBasic().disable();
-        http.formLogin().disable();
-        http.csrf().disable();  // csrf 비활성화
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT위해 세션 사용안함
-
-        http.authorizeRequests()
-             //   .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()  //cors preflight 요청 통과
-                .antMatchers("/account/**","/swagger*/**","/v3/api-docs","/api/v2/**").permitAll()
-                .antMatchers("/sample/doB").hasAnyRole("ADMIN")
-                .antMatchers("/sample/doA","/member/**").hasAnyRole("USER")
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class);
-
-        http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
-            httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
-        });
-
-        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
-
-        http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService()).and().successHandler(authenticationSuccessHandler());
-        return http.build();
-    }
-
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler(){
-        return new Custom403Handler();
+        return apiLoginFilter;
     }
 
     public CustomOAuth2UserService customOAuth2UserService(){
@@ -123,7 +118,7 @@ public class CustomSecurityConfig {
     }
 
     private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil, CustomUserDetailsService userDetailsService){
-        return new TokenCheckFilter(userDetailsService,jwtUtil);
+        return new TokenCheckFilter(jwtUtil,userDetailsService,WHITELIST);
     }
 
     @Bean
@@ -138,10 +133,4 @@ public class CustomSecurityConfig {
         return source;
     }
 
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository(){
-        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
-        repo.setDataSource(dataSource);
-        return repo;
-    }
 }

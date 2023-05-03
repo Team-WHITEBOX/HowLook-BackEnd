@@ -22,7 +22,6 @@ import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.whitebox.howlook.global.error.ErrorCode.*;
@@ -39,7 +38,7 @@ public class MemberServiceImpl implements MemberService{
     private final PasswordEncoder passwordEncoder;
     @Transactional
     @Override
-    public void join(MemberJoinDTO memberJoinDTO) {
+    public Member join(MemberJoinDTO memberJoinDTO) {
         String memberId = memberJoinDTO.getMemberId();
         if(memberRepository.existsById(memberId)){
             throw new MemberIdExistException();
@@ -48,14 +47,14 @@ public class MemberServiceImpl implements MemberService{
             throw new MemberIdExistException(NICKNAME_ALREADY_EXIST);
         }
         Member member = modelMapper.map(memberJoinDTO,Member.class);
-        member.updatePassword(passwordEncoder.encode(memberJoinDTO.getMemberPassword()));
+        member.setMemberPassword(passwordEncoder.encode(memberJoinDTO.getMemberPassword()));
         member.addRole(MemberRole.USER);
 
         log.info("========================");
         log.info(member);
         log.info(member.getRoleSet());
 
-        memberRepository.save(member);
+        return memberRepository.save(member);
     }
     @Transactional(readOnly = true)
     @Override
@@ -80,7 +79,7 @@ public class MemberServiceImpl implements MemberService{
             throw new PasswordEqualWithOldException();
         }
         final String encryptedPassword = passwordEncoder.encode(updatePasswordRequest.getNewPassword());
-        member.updatePassword(encryptedPassword);
+        member.setMemberPassword(encryptedPassword);
         memberRepository.save(member);
     }
 
@@ -95,10 +94,10 @@ public class MemberServiceImpl implements MemberService{
         final Member member = accountUtil.getLoginMember();
 
         log.info("수정");
-        member.updateNickName(editProfileRequest.getMemberNickName());
-        member.updateHeight(editProfileRequest.getMemberHeight());
-        member.updateWeight(editProfileRequest.getMemberWeight());
-        member.updatePhone(editProfileRequest.getMemberPhone());
+        member.setNickName(editProfileRequest.getMemberNickName());
+        member.setHeight(editProfileRequest.getMemberHeight());
+        member.setWeight(editProfileRequest.getMemberWeight());
+        member.setPhone(editProfileRequest.getMemberPhone());
         memberRepository.save(member);
     }
     @Transactional
@@ -111,12 +110,12 @@ public class MemberServiceImpl implements MemberService{
         }
 
         log.info("수정");
-        member.updateName(socialEditProfileRequest.getMemberName());
-        member.updateNickName(socialEditProfileRequest.getMemberNickName());
-        member.updateHeight(socialEditProfileRequest.getMemberHeight());
-        member.updateWeight(socialEditProfileRequest.getMemberWeight());
-        member.updatePhone(socialEditProfileRequest.getMemberPhone());
-        member.updateBirthDay(socialEditProfileRequest.getMemberBirthDay());
+        member.setName(socialEditProfileRequest.getMemberName());
+        member.setNickName(socialEditProfileRequest.getMemberNickName());
+        member.setHeight(socialEditProfileRequest.getMemberHeight());
+        member.setWeight(socialEditProfileRequest.getMemberWeight());
+        member.setPhone(socialEditProfileRequest.getMemberPhone());
+        member.setBirthDay(socialEditProfileRequest.getMemberBirthDay());
         memberRepository.save(member);
     }
     @Transactional
@@ -128,7 +127,7 @@ public class MemberServiceImpl implements MemberService{
         if(post.getMember().getMemberId() != member.getMemberId()){
             throw new AccountMismatchException(POST_CANT_PROFILE);
         }
-        member.updateProfilePhotoId(post.getMainPhotoPath());
+        member.setProfilePhoto(post.getMainPhotoPath());
         memberRepository.save(member);
     }
 
@@ -155,9 +154,10 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public List<SimplePostDTO> getUserScrap(String memberId) {
+    public ScrapsResponse getUserScrap(String memberId) {
         final List<Scrap> scraps = scrapRepository.findAllByMemberId(memberId);
-        final List<SimplePostDTO> SimplePostDTOs = scraps.stream().map(scrap -> new SimplePostDTO(scrap.getPost().getPostId(),scrap.getPost().getMainPhotoPath())).collect(Collectors.toList());
-        return SimplePostDTOs;
+        final List<SimplePostDTO> simplePostDTOs = scraps.stream().map(scrap -> new SimplePostDTO(scrap.getPost().getPostId(),scrap.getPost().getMainPhotoPath())).collect(Collectors.toList());
+        final ScrapsResponse scrapsResponse = ScrapsResponse.builder().scraps(simplePostDTOs).build();
+        return scrapsResponse;
     }
 }

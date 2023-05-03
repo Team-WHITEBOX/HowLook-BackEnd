@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.upload.entity.Upload;
+import springfox.documentation.swagger2.mappers.LicenseMapper;
 
 import javax.persistence.*;
 import java.util.ArrayList;

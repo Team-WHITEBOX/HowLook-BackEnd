@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.post.dto.HashtagDTO;
@@ -155,12 +154,7 @@ public class PostServiceImpl implements PostService {
         Member member = accountUtil.getLoginMember();
         Post post = result.orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
         log.info(post);
-
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        PostReaderDTO postReaderDTO = modelMapper.map(post, PostReaderDTO.class);
-
-        postReaderDTO.setHashtagDTO(new HashtagDTO(post.getHashtag()));
-        postReaderDTO.setUserPostInfo(new UserPostInfoResponse(post.getMember()));
+        PostReaderDTO postReaderDTO = new PostReaderDTO(post);
 
         // 사진 경로 가져오기
         postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postId));

@@ -13,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -39,7 +40,7 @@ public class PostReaderDTO {
     @NotBlank(message = "사진이 반드시 있을 것이기 때문에 사진경로가 필요하외다.")
     private String mainPhotoPath; //사진 경로
 
-    private List<PhotoDTO> PhotoDTOs;
+    private List<PhotoDTO> PhotoDTOs = new ArrayList<>();
 
     @JsonProperty("regDate")
     private LocalDateTime registrationDate;
