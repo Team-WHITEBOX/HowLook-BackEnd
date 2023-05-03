@@ -8,9 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -33,10 +30,7 @@ public class WeatherUtil {
     public Object[] getWeather(double Latitude, double Longitude) throws IOException, ParseException
     {
         String date = getDate(0);
-        log.info(date);
         String now_time = getTime();
-
-        LatXLngY tmp = convertGRID_GPS(TO_GRID, Latitude, Longitude);
 
         if(now_time == "-100")
         {
@@ -44,16 +38,19 @@ public class WeatherUtil {
             date = getDate(1);
         }
 
+        LatXLngY tmp = convertGRID_GPS(TO_GRID, Latitude, Longitude);
+
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=JsL7YEOWVFU7jvmdgbuTqLZAfu0VhVoaaYteAwjcZzoOeia5oKpEnQcLazkmqhpMf1fKIix4SqmT0zFwQvs8dQ%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("12", "UTF-8")); /*한 페이지 결과 수*/
         urlBuilder.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /*요청자료형식(XML/JSON) Default: XML*/
-        urlBuilder.append("&" + URLEncoder.encode("base_date","UTF-8") + "=" + URLEncoder.encode(date, "UTF-8")); /*‘21년 6월 28일 발표*/
-        urlBuilder.append("&" + URLEncoder.encode("base_time","UTF-8") + "=" + URLEncoder.encode(now_time, "UTF-8")); /*06시 발표(정시단위) */
+        urlBuilder.append("&" + URLEncoder.encode("base_date","UTF-8") + "=" + URLEncoder.encode(date, "UTF-8")); /* 20210628 == 21년 6월 28일 발표*/
+        urlBuilder.append("&" + URLEncoder.encode("base_time","UTF-8") + "=" + URLEncoder.encode(now_time, "UTF-8")); /* 0600 == 06시 발표(정시단위) */
         urlBuilder.append("&" + URLEncoder.encode("nx","UTF-8") + "=" + URLEncoder.encode(String.valueOf((int)tmp.x), "UTF-8")); /*예보지점의 X 좌표값*/
         urlBuilder.append("&" + URLEncoder.encode("ny","UTF-8") + "=" + URLEncoder.encode(String.valueOf((int)tmp.y), "UTF-8")); /*예보지점의 Y 좌표값*/
         URL url = new URL(urlBuilder.toString());
+
         log.info(urlBuilder.toString());
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -141,7 +138,6 @@ public class WeatherUtil {
         // LCC DFS 좌표변환 ( code : "TO_GRID"(위경도->좌표, lat_X:위도,  lng_Y:경도), "TO_GPS"(좌표->위경도,  lat_X:x, lng_Y:y) )
         //
 
-
         double DEGRAD = Math.PI / 180.0;
         double RADDEG = 180.0 / Math.PI;
 
@@ -202,6 +198,7 @@ public class WeatherUtil {
         }
         return rs;
     }
+
     class LatXLngY
     {
         public double lat;
@@ -214,10 +211,10 @@ public class WeatherUtil {
 
     public String getDate(int minus)
     {
-        // 현재 시간 가져오기
+        // 현재 날짜 가져오기
         LocalDate now = LocalDate.now().minusDays(minus);
 
-        // DateTimeFormatter를 사용하여 시간 포맷 변경
+        // DateTimeFormatter를 사용하여 날짜 포맷 변경
         String formattedDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         return  formattedDate;
@@ -234,52 +231,28 @@ public class WeatherUtil {
 
         return  convertTime(formattedTime);
     }
-    public String convertTime(String inputTime) {
-        List<Integer> list = new ArrayList<>();
-        list.add(23);
-        list.add(20);
-        list.add(17);
-        list.add(14);
-        list.add(11);
-        list.add(8);
-        list.add(5);
-        list.add(2);
-        list.add(-1);
 
+
+    public String convertTime(String inputTime) {
+        int[] arr = {23, 20, 17, 14, 11, 8, 5, 2 ,-1};
         int inputHour = Integer.parseInt(inputTime.substring(0, 2));
         int inputMinute = Integer.parseInt(inputTime.substring(2));
 
         boolean refresh = false;
+
         if(inputMinute > 10)
         {
             refresh = true;
         }
 
-        if(refresh)
-        {
-            for(int i = 0; i < list.size(); i++)
-            {
-                if(list.get(i) <= inputHour)
-                {
-                    inputHour = list.get(i);
-                    break;
-                }
-            }
-        }
-        else
-        {
-            for(int i = 0; i < list.size(); i++)
-            {
-                if(list.get(i) < inputHour)
-                {
-                    inputHour = list.get(i);
-                    break;
-                }
+        for (int i = 0; i < arr.length; i++) {
+            if ((!refresh && arr[i] < inputHour) || (refresh && arr[i] <= inputHour)) {
+                inputHour = arr[i];
+                break;
             }
         }
 
         String convertedHourStr = String.format("%02d", inputHour);
-
         return convertedHourStr + "00";
     }
 }
