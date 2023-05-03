@@ -23,6 +23,9 @@ public class ChatRoom {
     private String roomId; // 채팅방 아이디
     private String roomName; // 채팅방 이름
     private long userCount; // 채팅방 인원수
+//    @OneToMany(mappedBy = "chatRoom")
+//    @Builder.Default
+//    private List<ChatRoomMember> memberList = new ArrayList<>();
 
     public void upUserCount(){
         this.userCount++;

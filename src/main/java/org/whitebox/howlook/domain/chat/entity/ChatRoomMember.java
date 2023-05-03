@@ -16,8 +16,10 @@ public class ChatRoomMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @JoinColumn(name = "chatRoomId")
     private ChatRoom chatRoom;
     @ManyToOne
+    @JoinColumn(name = "memberId")
     private Member member;
 
     private LocalDateTime enterTime;
