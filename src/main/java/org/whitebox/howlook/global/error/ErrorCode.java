@@ -59,7 +59,10 @@ public enum ErrorCode {
     // chat
     CHATROOM_NOT_FOUND(400,"C001","존재하지 않는 채팅방입니다."),
     CHATROOM_MEMBER_NOT_FOUND(400,"C002","참여 중인 채팅방이 아닙니다."),
-    ALREADY_ENTER_ROOM(400,"C003","이미 참여중인 채팅방입니다.");
+    ALREADY_ENTER_ROOM(400,"C003","이미 참여중인 채팅방입니다."),
+
+    // Payment
+    AMOUNT_NOT_EQUAL(400, "P001", "실제 결제금액과 서버에서 결제금액이 다릅니다.");
 
     private final int status;
     private final String code;

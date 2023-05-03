@@ -39,6 +39,9 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+	// 아임포트 관련 gradle
+	implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
+
 	implementation('org.springframework.boot:spring-boot-starter-security')
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
@@ -81,5 +84,12 @@ sourceSets {
 		java {
 			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
 		}
+	}
+}
+
+// Iamport 관련
+allprojects {
+	repositories {
+		maven {url 'https://jitpack.io'}
 	}
 }
