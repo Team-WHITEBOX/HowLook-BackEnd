@@ -2,6 +2,7 @@ package org.whitebox.howlook.global.util;
 
 import com.querydsl.core.Tuple;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -24,6 +25,9 @@ import org.json.simple.parser.ParseException;
 @Log4j2
 public class WeatherUtil {
 
+    @Value("${weather.service-key}")
+    private String serviceKey; // 저장될 경로
+
     Long NX = 149L; /* X축 격자점 수 */
     Long NY = 253L; /* Y축 격자점 수 */
 
@@ -41,7 +45,7 @@ public class WeatherUtil {
         LatXLngY tmp = convertGRID_GPS(TO_GRID, Latitude, Longitude);
 
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"); /*URL*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=JsL7YEOWVFU7jvmdgbuTqLZAfu0VhVoaaYteAwjcZzoOeia5oKpEnQcLazkmqhpMf1fKIix4SqmT0zFwQvs8dQ%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=" + serviceKey); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
         urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("12", "UTF-8")); /*한 페이지 결과 수*/
         urlBuilder.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /*요청자료형식(XML/JSON) Default: XML*/
