@@ -39,8 +39,14 @@ public class ChatServiceImpl implements ChatService{
     private final AccountUtil accountUtil;
     @Override
     public List<ChatRoomDTO> chatRoomList() {
+        Member member = accountUtil.getLoginMember();
         List<ChatRoom> chatRoomList = chatRoomRepository.findAll();
-        List<ChatRoomDTO> chatRoomDTOS = chatRoomList.stream().map(chatRoom -> new ChatRoomDTO(chatRoom)).collect(Collectors.toList());
+        List<ChatRoomDTO> chatRoomDTOS = chatRoomList.stream().map(chatRoom -> {
+            ChatRoomDTO chatRoomDTO= new ChatRoomDTO(chatRoom);
+            if(chatRoomMemberRepository.findByChatRoomAndMember(chatRoom,member).isPresent()) chatRoomDTO.setEnter(true);
+            return chatRoomDTO;
+        }).collect(Collectors.toList());
+
         return chatRoomDTOS;
     }
 
@@ -55,6 +61,7 @@ public class ChatServiceImpl implements ChatService{
     @Override
     public List<String> roomMemberList(String roomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new EntityNotFoundException(CHATROOM_NOT_FOUND));
+        //List<ChatRoomMember> chatRoomMembers = chatRoom.getMemberList();
         List<ChatRoomMember> chatRoomMembers = chatRoomMemberRepository.findAllByChatRoom(chatRoom);
         List<String> members = new ArrayList<>();
         if(!chatRoomMembers.isEmpty()) {
@@ -91,6 +98,7 @@ public class ChatServiceImpl implements ChatService{
     public List<ChatDTO> getChatList(String roomId) {
         Member member = accountUtil.getLoginMember();
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new EntityNotFoundException(CHATROOM_NOT_FOUND));
+        //ChatRoomMember chatRoomMember = (ChatRoomMember) chatRoom.getMemberList().stream().filter(roomMember -> roomMember.getMember().getMemberId().equals(member.getMemberId()));
         ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByChatRoomAndMember(chatRoom,member).orElseThrow(()->new EntityNotFoundException(CHATROOM_MEMBER_NOT_FOUND));
         List<Chat> chats = chatRepository.findAllByRoomIdAndTimeAfter(roomId,chatRoomMember.getEnterTime());
         List<ChatDTO> chatDTOS = chats.stream().map(chat -> rootConfig.getMapper().map(chat, ChatDTO.class)).collect(Collectors.toList());
