@@ -3,6 +3,7 @@ package org.whitebox.howlook.domain.post.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +12,12 @@ import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
 import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
 import org.whitebox.howlook.domain.post.service.PostService;
 import org.whitebox.howlook.global.result.ResultResponse;
+import org.whitebox.howlook.global.util.WeatherUtil;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.io.IOException;
 import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
@@ -25,10 +28,26 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final WeatherUtil weatherUtil;
+
+    @GetMapping(value = "/temperature")
+    public ResponseEntity<ResultResponse> weatherGet(double Latitude, double Longitude) throws IOException, ParseException
+    {
+        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS,weatherUtil.getWeather(Latitude, Longitude)));
+    }
+
+    @ApiOperation(value = "날씨 기준 최근 게시글 10개 조회")
+    @GetMapping("/weather")
+    public ResponseEntity<ResultResponse> getWeather10Posts(@RequestParam @NotNull int page, float latitude, float longitude) throws IOException, ParseException {
+        final List<PostReaderDTO> postList = postService.getWeatherPostPage(10, page,latitude,longitude).getContent();
+
+        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
+    }
+    
 
     @ApiOperation(value = "피드 게시글 등록")
     @PostMapping(value = "/regist",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResultResponse> registerPost(@Valid @ModelAttribute PostRegisterDTO postRegisterDTO) {
+    public ResponseEntity<ResultResponse> registerPost(@Valid @ModelAttribute PostRegisterDTO postRegisterDTO) throws IOException, ParseException {
         log.info("post POST register!");
         log.info(postRegisterDTO);
 
