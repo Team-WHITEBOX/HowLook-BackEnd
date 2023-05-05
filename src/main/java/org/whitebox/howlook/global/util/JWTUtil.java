@@ -1,5 +1,7 @@
 package org.whitebox.howlook.global.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -12,9 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.global.config.security.exception.TokenException;
-import org.whitebox.howlook.global.error.exception.BusinessException;
 
 import java.security.Key;
 import java.time.ZonedDateTime;
@@ -33,17 +33,17 @@ public class JWTUtil {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(Authentication authentication) {
+    public String generateToken(String userName,Collection<? extends GrantedAuthority> authorities) {
         // 권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
+        String authority = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
         // Access Token 생성
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("auth", authorities)
+                .setSubject(userName)
+                .claim("auth", authority)
                 .setExpiration(Date.from(ZonedDateTime.now().plusDays(1).toInstant()))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -56,7 +56,7 @@ public class JWTUtil {
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setSubject(username)
-                .setExpiration(Date.from(ZonedDateTime.now().plusDays(30).toInstant()))
+                .setExpiration(Date.from(ZonedDateTime.now().plusDays(15).toInstant()))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
@@ -92,10 +92,10 @@ public class JWTUtil {
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             throw new TokenException(JWT_MALFORM);
-        } catch (ExpiredJwtException e) {
-            throw new TokenException(JWT_EXPIRED);
         } catch (IllegalArgumentException e) {
             throw new TokenException(JWT_MALFORM);
+        } catch (ExpiredJwtException e) {
+            throw new TokenException(JWT_EXPIRED);
         }
     }
     
@@ -106,5 +106,24 @@ public class JWTUtil {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+
+    public HashMap<Object,String> parseClaimsByExpiredToken(String accessToken) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken);
+        } catch (ExpiredJwtException e) {
+            try {
+                String[] splitJwt = accessToken.split("\\.");
+
+                Base64.Decoder decoder = Base64.getDecoder();
+                String payload = new String(decoder.decode(splitJwt[1] .getBytes()));
+
+                return new ObjectMapper().readValue(payload, HashMap.class);
+            } catch (JsonProcessingException je) {
+                log.error(je.getMessage());
+                return null;
+            }
+        }
+        return null;
     }
 }

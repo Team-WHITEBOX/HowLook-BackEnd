@@ -3,6 +3,7 @@ package org.whitebox.howlook.global.config.security.handler;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Map;
 
 
@@ -22,8 +24,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
+    private final RedisTemplate redisTemplate;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -33,8 +35,9 @@ public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHan
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        String accessToken = jwtUtil.generateToken(authentication);
+        String accessToken = jwtUtil.generateToken(authentication.getName(),authentication.getAuthorities());
         String refreshToken = jwtUtil.generateRefreshToken(authentication.getName());
+        redisTemplate.opsForValue().set("RT:"+authentication.getName(),refreshToken, Duration.ofDays(15));
         TokenDTO tokenDTO = TokenDTO.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 
         Gson gson = new Gson();

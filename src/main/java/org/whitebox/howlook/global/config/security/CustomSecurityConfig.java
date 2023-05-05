@@ -3,9 +3,11 @@ package org.whitebox.howlook.global.config.security;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -59,6 +61,7 @@ public class CustomSecurityConfig {
     private final JWTUtil jwtUtil;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final MemberRepository memberRepository;
+    private final RedisTemplate redisTemplate;
     private static final String[] WHITELIST = {"/account/**","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**"};
 
     @Bean
@@ -73,6 +76,7 @@ public class CustomSecurityConfig {
         http.authenticationManager(authenticationManager);
         http.httpBasic().disable();
         http.formLogin().disable();
+        http.logout().disable();
         http.csrf().disable();  // csrf 비활성화
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT위해 세션 사용안함
         http.authorizeRequests()
@@ -83,7 +87,7 @@ public class CustomSecurityConfig {
                 .and()
                 .addFilterBefore(apiLoginFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tokenCheckFilter(jwtUtil,WHITELIST), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class)
+                .addFilterBefore(refreshTokenCheckFilter("/account/refreshToken", jwtUtil), TokenCheckFilter.class)
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
         http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
@@ -92,33 +96,20 @@ public class CustomSecurityConfig {
         return http.build();
     }
 
+    @NotNull
+    private RefreshTokenFilter refreshTokenCheckFilter(String path,JWTUtil jwtUtil) {
+        RefreshTokenFilter refreshTokenFilter = new RefreshTokenFilter(path,jwtUtil,redisTemplate,memberRepository);
+        return refreshTokenFilter;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
-//    public AuthenticationEntryPoint authenticationEntryPoint(){
-//        AuthenticationEntryPoint authenticationEntryPoint = new AuthenticationEntryPoint() {
-//            @Override
-//            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-//                response.setStatus(401);
-//                response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
-//
-//                final ErrorResponse errorResponse = ErrorResponse.of(JWT_UNACCEPT);
-//                Gson gson = new Gson();
-//
-//                try {
-//                    response.getWriter().println(gson.toJson(errorResponse));
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        };
-//        return authenticationEntryPoint;
-//    }
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(){
-        return new CustomSocialLoginSuccessHandler(passwordEncoder(),jwtUtil);
+        return new CustomSocialLoginSuccessHandler(jwtUtil,redisTemplate);
     }
 
     @Bean
@@ -132,7 +123,7 @@ public class CustomSecurityConfig {
         apiLoginFilter.setAuthenticationManager(authenticationManager);
 
         //APILoginSuccessHandler
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil,memberRepository);
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil,redisTemplate);
         //핸들러 세팅
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
         apiLoginFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
