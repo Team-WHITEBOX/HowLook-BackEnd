@@ -1,5 +1,4 @@
 package org.whitebox.howlook.domain.post.controller;
-
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

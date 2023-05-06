@@ -44,7 +44,6 @@ public class PaymentsController {
 
     @PostMapping("/verifyIamport")
     public IamportResponse<Payment> verifyIamport(@RequestBody Map<String,String> map) throws IamportResponseException, IOException {
-
         String impUid = map.get("imp_uid");
         int amount = Integer.parseInt(map.get("amount"));
 
