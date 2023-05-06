@@ -32,6 +32,8 @@ public class PostController {
     private final PostService postService;
     private final WeatherUtil weatherUtil;
 
+
+    @ApiOperation(value = "[테스트용] 위도 경도 날씨")
     @GetMapping(value = "/temperature")
     public ResponseEntity<ResultResponse> weatherGet(double Latitude, double Longitude) throws IOException, ParseException
     {
