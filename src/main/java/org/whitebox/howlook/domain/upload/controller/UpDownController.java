@@ -34,51 +34,14 @@ public class UpDownController {
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
 
-    // 게시글 업로드 시 붙은 사진 같이 업로드하기 위해 POST
-    @ApiOperation(value = "Upload POST", notes = "POST 방식으로 파일 등록")
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<UploadResultDTO> upload(UploadFileDTO uploadFileDTO)
-    {
-        // 사진 업로드 코드
-        log.info(uploadFileDTO);
-        final List<UploadResultDTO> list = new ArrayList<>();
-        // post에 사진을 업로드하기 위한 기반 코드
-//        if(uploadFileDTO.getFiles() != null)
-//        {
-//            // forEach 문으로 선택한 사진 수 만큼 실행 됨
-//            uploadFileDTO.getFiles().forEach(multipartFile -> {
-//                String originalName = multipartFile.getOriginalFilename();
-//                String uuid = UUID.randomUUID().toString();
-//
-//                Path savePath = Paths.get(uploadPath, uuid+"_"+originalName);
-//
-//                try{
-//                    multipartFile.transferTo(savePath);
-//                }catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//
-//                // 여기까지는 사진을 Server에 저장하는 코드
-//                // 여기서부터 사진 정보를 DB에 저장하는 코드
-//                // UploadFileDTO를 통해 db에 사진 저장경로를 Insert
-//                Long pId = uploadFileDTO.getpostId();
-////                UploadResultDTO temp = UploadResultDTO.builder().Path(uploadPath+"\\"+uuid+"_"+originalName).postId(pId).build();
-//                list.add(temp);
-//
-//                uploadService.register(temp);
-//
-//            });
-  //      }
-        return list;
-    }
-
     // 게시글 아이디에 붙어있는 사진 경로를 반환
     @ApiOperation(value = "Get photo by postid", notes = "Get 방식으로 게시글에 붙은 사진 경로 조회")
     @GetMapping("/read")
     public List<PhotoDTO> readPhoto(Long postId) {
         List<PhotoDTO> list = new ArrayList<>();
         list = uploadService.getPhotoData(postId);
+
+        // 만약 postId 가 없다면 예외처리 필요함
 
         return list;
     }

@@ -19,5 +19,5 @@ public interface MemberService {
     UserProfileResponse getUserProfile(String memberId);
     UserPostInfoResponse getUserPostInfo(String memberId);
 
-    List<SimplePostDTO> getUserScrap(String memberId);
+    ScrapsResponse getUserScrap(String memberId);
 }

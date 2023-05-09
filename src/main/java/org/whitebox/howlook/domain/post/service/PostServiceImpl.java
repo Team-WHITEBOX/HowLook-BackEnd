@@ -3,6 +3,7 @@ package org.whitebox.howlook.domain.post.service;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.json.simple.parser.ParseException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +30,10 @@ import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 import org.whitebox.howlook.global.util.LocalUploader;
 import org.whitebox.howlook.global.util.S3Uploader;
+import org.whitebox.howlook.global.util.WeatherUtil;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +66,7 @@ public class PostServiceImpl implements PostService {
     private String uploadPath; // 저장될 경로
     private final LocalUploader localUploader;
     private final S3Uploader s3Uploader;
-
+    private final WeatherUtil weatherUtil;
     @Value("${org.whitebox.server.upload}")
     public String isServer;
 
@@ -72,7 +75,7 @@ public class PostServiceImpl implements PostService {
     //해당 Post 자체데이터 + 사진데이터 테이블 + 해시테그 테이블 함께저장
     @Transactional
     @Override
-    public List<String> registerPOST(PostRegisterDTO postRegisterDTO) {
+    public List<String> registerPOST(PostRegisterDTO postRegisterDTO) throws IOException, ParseException {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Post post = modelMapper.map(postRegisterDTO, Post.class);
         post.setMember(accountUtil.getLoginMember());
@@ -84,9 +87,19 @@ public class PostServiceImpl implements PostService {
 
         hashtagRepository.save(hashtag);
 
+        // 날씨를 post에 저장해야함
+        Object[] objects = weatherUtil.getWeather(postRegisterDTO.getLatitude(), postRegisterDTO.getLongitude());
+        Long temperature = Long.parseLong(objects[0].toString());
+        Long weather = Long.parseLong(objects[1].toString());
+
+        post.setTemperature(temperature);
+        post.setWeather(weather);
+
         post.setHashtag(hashtag);
+
         postRepository.save(post);
         log.info(post.getMainPhotoPath());
+
         UploadFileDTO uploadFileDTO = postRegisterDTO.getUploadFileDTO();
 
         List<String> uploadedFilePaths = new ArrayList<>();
@@ -112,7 +125,7 @@ public class PostServiceImpl implements PostService {
                 }
                 else
                 {
-                    m_path = uploadedFilePaths.get(0);
+                    m_path = uploadedFilePaths.get(i);
                 }
 
                 // Falcon : MainPhotoPath 및 PhotoCnt 저장하기
@@ -193,6 +206,23 @@ public class PostServiceImpl implements PostService {
         });
         return postPage;
     }
+
+    @Override
+    public Page<PostReaderDTO> getWeatherPostPage(int size, int page, float latitude, float longitude) throws IOException, ParseException {
+        final Pageable pageable = PageRequest.of(page, size);
+
+        // 날씨를 post에 저장해야함
+        Object[] objects = weatherUtil.getWeather(latitude, longitude);
+        Long temperature = Long.parseLong(objects[0].toString());
+        Long weather = Long.parseLong(objects[1].toString());
+
+        Page<PostReaderDTO> postPage = postRepository.findTemperaturePostReaderDTOPage(pageable, temperature);
+        postPage.forEach(postReaderDTO -> {
+            postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId()));
+        });
+        return postPage;
+    }
+
 
     @Transactional
     @Override
