@@ -10,8 +10,26 @@ import javax.validation.constraints.*;
 @Setter
 public class SearchCategoryDTO {
 
-    @NotNull(message = "해시태그는 모두 입력되어야 합니다.")
-    private HashtagDTO hashtagDTO;
+    //@NotNull(message = "해시태그는 모두 입력되어야 합니다.")
+    //private HashtagDTO hashtagDTO;
+
+    @NotNull
+    private Boolean HashtagDTOMinimal;
+
+    @NotNull
+    private Boolean HashtagDTOCasual;
+
+    @NotNull
+    private Boolean HashtagDTOStreet;
+
+    @NotNull
+    private Boolean HashtagDTOAmekaji;
+
+    @NotNull
+    private Boolean HashtagDTOSporty;
+
+    @NotNull
+    private Boolean HashtagDTOGuitar;
 
     @ApiModelProperty(value = "최대키", example = "180", required = true)
     @NotNull(message = "최대키를 입력해 주세요.")
