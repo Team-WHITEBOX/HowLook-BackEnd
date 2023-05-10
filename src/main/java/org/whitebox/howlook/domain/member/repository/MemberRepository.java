@@ -22,6 +22,7 @@ public interface MemberRepository extends JpaRepository<Member,String>,MemberPro
     @Transactional
     @Query("update Member m set m.memberPassword =:memberPassword where m.memberId = :memberId ")
     void updatePassword(@Param("memberPassword") String password,@Param("memberId") String memberId);
-    
+
+    Optional<Member> findByNickName(@Param("nickName") String nickName);
     boolean existsByNickName(String nickName);
 }

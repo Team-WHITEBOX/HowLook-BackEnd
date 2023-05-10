@@ -154,9 +154,10 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public List<SimplePostDTO> getUserScrap(String memberId) {
+    public ScrapsResponse getUserScrap(String memberId) {
         final List<Scrap> scraps = scrapRepository.findAllByMemberId(memberId);
-        final List<SimplePostDTO> SimplePostDTOs = scraps.stream().map(scrap -> new SimplePostDTO(scrap.getPost().getPostId(),scrap.getPost().getMainPhotoPath())).collect(Collectors.toList());
-        return SimplePostDTOs;
+        final List<SimplePostDTO> simplePostDTOs = scraps.stream().map(scrap -> new SimplePostDTO(scrap.getPost().getPostId(),scrap.getPost().getMainPhotoPath())).collect(Collectors.toList());
+        final ScrapsResponse scrapsResponse = ScrapsResponse.builder().scraps(simplePostDTOs).build();
+        return scrapsResponse;
     }
 }

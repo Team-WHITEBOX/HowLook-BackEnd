@@ -111,4 +111,28 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 .selectFrom(post).fetch().size();
         return new PageImpl<>(postDtos, pageable, total);
     }
+
+    @Override
+    public Page<PostReaderDTO> findTemperaturePostReaderDTOPage(Pageable pageable, Long temperature){
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        booleanBuilder.and(post.temperature.gt(temperature - 2L));
+        booleanBuilder.and(post.temperature.lt(temperature + 2L));
+
+        final List<PostReaderDTO> postDtos = queryFactory
+                .select(new QPostReaderDTO(
+                        post
+                ))
+                .from(post)
+                .where(booleanBuilder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(post.regDate.desc())
+                .distinct()
+                .fetch();
+        final long total = queryFactory
+                .selectFrom(post).fetch().size();
+        return new PageImpl<>(postDtos, pageable, total);
+    }
 }

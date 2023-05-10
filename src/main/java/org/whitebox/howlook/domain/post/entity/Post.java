@@ -51,6 +51,9 @@ public class Post extends BaseEntity{
     private float latitude; // 위도
     private float longitude; // 경도
 
+    private Long temperature; // 온도
+    private Long weather; // 날씨
+
     @OneToOne
     private Hashtag hashtag;
 

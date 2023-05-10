@@ -22,7 +22,7 @@ public enum ErrorCode {
     AUTHORITY_INVALID(403, "M004", "권한이 없습니다."),
     ACCOUNT_MISMATCH(401, "M005", "계정 정보가 일치하지 않습니다."),
     PASSWORD_EQUAL_WITH_OLD(400, "M006", "기존 비밀번호와 동일하게 변경할 수 없습니다."),
-    LOGOUT_BY_ANOTHER(401, "M007", "다른 기기에 의해 로그아웃되었습니다."),
+    NICKNAME_NOT__FOUND(400,"M007","존재하지 않는 닉네임입니다."),
 
     // Jwt
     JWT_INVALID(401, "J001", "유효하지 않은 토큰입니다."),
@@ -55,6 +55,11 @@ public enum ErrorCode {
     EVAL_ALREADY_EXSIST(400, "E001", "평가 게시글이 이미 존재합니다."),
     EVAL_REGISTER_FAIL(400, "E002", "평가 게시글 등록에 실패하였습니다."),
     EVAL_NOT_EXIST(400, "E003", "존재하지 않는 게시글입니다."),
+
+    // chat
+    CHATROOM_NOT_FOUND(400,"C001","존재하지 않는 채팅방입니다."),
+    CHATROOM_MEMBER_NOT_FOUND(400,"C002","참여 중인 채팅방이 아닙니다."),
+    ALREADY_ENTER_ROOM(400,"C003","이미 참여중인 채팅방입니다."),
 
     // Payment
     AMOUNT_NOT_EQUAL(400, "P001", "실제 결제금액과 서버에서 결제금액이 다릅니다.");
