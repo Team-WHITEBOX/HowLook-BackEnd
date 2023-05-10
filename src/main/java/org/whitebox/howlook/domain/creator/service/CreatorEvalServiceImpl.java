@@ -24,7 +24,7 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
     private final CreatorEvalRepository creatorEvalRepository;
     private final EvalRepository evalRepository;
     @Override
-    public long registerCreatorEval(CreatorEvalRegistorDTO creatorEvalRegistorDTO) { // 평가글 등록하기
+    public long registerCreatorEval(CreatorEvalRegistorDTO creatorEvalRegistorDTO) { // 크리에이터 평가글 등록하기
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         CreatorEval creatorEval = modelMapper.map(creatorEvalRegistorDTO,CreatorEval.class);
         Member member = accountUtil.getLoginMember();

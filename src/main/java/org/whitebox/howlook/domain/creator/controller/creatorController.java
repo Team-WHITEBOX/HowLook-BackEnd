@@ -24,7 +24,7 @@ public class creatorController {
     private final CreatorEvalService creatorEvalService;
 
     @ApiOperation(value = "CreatorEval POST", notes = "POST 방식으로 등록")
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE) // 크리에이터 글 등록
     public ResponseEntity<ResultResponse> register(@Valid @RequestBody CreatorEvalRegistorDTO creatorEvalRegistorDTO)
     {
         creatorEvalService.registerCreatorEval(creatorEvalRegistorDTO);
