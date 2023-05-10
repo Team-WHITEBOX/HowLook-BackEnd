@@ -2,6 +2,7 @@ package org.whitebox.howlook.global.config.security.filter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
@@ -16,11 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.whitebox.howlook.global.error.ErrorCode.BLACK_TOKEN;
+
 @Log4j2
 @RequiredArgsConstructor
 public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 후 정보 contextHolder에 등록
     private final JWTUtil jwtUtil;
     private final String[] whiteList;
+    private final RedisTemplate redisTemplate;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
@@ -40,6 +44,10 @@ public class TokenCheckFilter extends OncePerRequestFilter {  //토큰 검증 �
 
             // validateToken 으로 토큰 유효성 검사
             if (jwtUtil.validateToken(token)) {
+                // 로그
+                if (redisTemplate.opsForValue().get(token)!=null){
+                    throw new TokenException(BLACK_TOKEN);
+                }
                 // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
                 Authentication authentication = jwtUtil.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

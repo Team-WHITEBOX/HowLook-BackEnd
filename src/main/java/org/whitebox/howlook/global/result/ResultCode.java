@@ -17,6 +17,7 @@ public enum ResultCode {
     CHECK_MEMBERID_BAD(200, "M008", "사용불가능한 memberId 입니다."),
     CHECK_NICKNAME_GOOD(200, "M009", "사용가능한 닉네임 입니다."),
     CHECK_NICKNAME_BAD(200, "M010", "사용불가능한 닉네임 입니다."),
+    LOGOUT_SUCCESS(200, "M011", "로그아웃에 성공하였습니다."),
 
 
 

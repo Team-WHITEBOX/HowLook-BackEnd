@@ -108,20 +108,18 @@ public class JWTUtil {
         }
     }
 
-    public HashMap<Object,String> parseClaimsByExpiredToken(String accessToken) {
+    public HashMap<Object,String> parseClaimsByExpiredToken(String accessToken){
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken);
         } catch (ExpiredJwtException e) {
             try {
                 String[] splitJwt = accessToken.split("\\.");
-
                 Base64.Decoder decoder = Base64.getDecoder();
-                String payload = new String(decoder.decode(splitJwt[1] .getBytes()));
+                String payload = new String(decoder.decode(splitJwt[1].getBytes()));
 
                 return new ObjectMapper().readValue(payload, HashMap.class);
-            } catch (JsonProcessingException je) {
-                log.error(je.getMessage());
-                return null;
+            } catch (JsonProcessingException ex) {
+                throw new RuntimeException(ex);
             }
         }
         return null;

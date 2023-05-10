@@ -1,10 +1,11 @@
 package org.whitebox.howlook.global.config.security.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class TokenDTO {
     //private String grantType; // Bearer
     private String accessToken;

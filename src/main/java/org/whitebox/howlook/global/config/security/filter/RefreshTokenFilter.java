@@ -35,8 +35,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.whitebox.howlook.global.error.ErrorCode.REFRESH_FAIL;
-import static org.whitebox.howlook.global.error.ErrorCode.REFRESH_INVALID;
+import static org.whitebox.howlook.global.error.ErrorCode.*;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -62,7 +61,10 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             String accessToken = tokens.get("accessToken");
             String refreshToken = tokens.get("refreshToken");
             HashMap<Object, String> claims = jwtUtil.parseClaimsByExpiredToken(accessToken); //만료된 atk를 검증하고 claim정보를 가져옴
-            log.info(claims);
+            // atk가 만료되지 않은 상황은 재발급하지 않음
+            if(claims == null){
+                throw new TokenException(TOKEN_ALIVE);
+            }
 
             jwtUtil.validateToken(refreshToken); //rtk 검증
             Claims refreshClaims = jwtUtil.parseClaims(refreshToken);

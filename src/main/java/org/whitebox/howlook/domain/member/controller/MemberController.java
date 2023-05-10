@@ -10,6 +10,7 @@ import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
+import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.AccountUtil;
 
@@ -26,6 +27,13 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 public class MemberController {
     private final MemberService memberService;
     private final AccountUtil accountUtil;
+
+    @ApiOperation(value = "로그아웃")
+    @DeleteMapping(value = "/logout")
+    public ResponseEntity<ResultResponse> logOut(@RequestBody TokenDTO tokenDTO) {
+        memberService.logout(tokenDTO);
+        return ResponseEntity.ok(ResultResponse.of(LOGOUT_SUCCESS));
+    }
 
     @ApiOperation(value = "JWT토큰을 이용한 로그인 확인")
     @GetMapping(value = "/check")

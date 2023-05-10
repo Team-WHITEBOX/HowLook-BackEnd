@@ -140,7 +140,7 @@ public class CustomSecurityConfig {
     }
 
     private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil,String[] whiteList){
-        return new TokenCheckFilter(jwtUtil,whiteList);
+        return new TokenCheckFilter(jwtUtil,whiteList,redisTemplate);
     }
 
     @Bean
