@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.whitebox.howlook.domain.payment.dto.PaymentsDTO;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
 import org.whitebox.howlook.domain.payment.exception.DifferentAmountException;
 import org.whitebox.howlook.domain.payment.repository.PaymentRepository;
@@ -23,20 +24,20 @@ public class Payservice {
         return paymentsInfo;
     }
 
-    @Transactional
-    public void verifyIamportPayment(IamportResponse<Payment> irsp, int amount) { // 결제가격을 매겨변수로.
+    @Transactional // 프론트에게 쏴줄 정보
+    public void verifyIamportPayment(IamportResponse<Payment> irsp, PaymentsDTO paymentsDTO) { // 결제가격을 매겨변수로.
 
-        if (irsp.getResponse().getAmount().intValue() != amount) {
+        if (irsp.getResponse().getAmount().intValue() != paymentsDTO.getAmount()) {
             throw new DifferentAmountException();
         }
 
+        int ruby = paymentsDTO.getAmount() / 100; // 루비개수
+
         PaymentInfo pay = PaymentInfo.builder()
-                .payMethod(irsp.getResponse().getPayMethod())
-                .impUid(irsp.getResponse().getPayMethod())
-                .merchantUid(irsp.getResponse().getMerchantUid())
-                .amount(irsp.getResponse().getAmount().intValue())
-                .buyerAddr(irsp.getResponse().getBuyerAddr())
-                .buyerPostcode(irsp.getResponse().getBuyerPostcode())
+                .impUid(irsp.getResponse().getImpUid())
+                .member(paymentsDTO.getMember())
+                .amount(paymentsDTO.getAmount())
+                .ruby(ruby)
                 .build();
 
         payRepository.save(pay);

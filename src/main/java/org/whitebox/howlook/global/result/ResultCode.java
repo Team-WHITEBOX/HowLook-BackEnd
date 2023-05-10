@@ -67,8 +67,10 @@ public enum ResultCode {
     REPORT_POST_SUCCESS(200, "R001", "게시글 신고에 성공했습니다."),
 
     // Creator
-    CREATOR_EVAL_REGISTER_SUCCESS(200,"C001","크리에이터 평가 게시글 등록에 성공하였습니다.");
+    CREATOR_EVAL_REGISTER_SUCCESS(200,"C001","크리에이터 평가 게시글 등록에 성공하였습니다."),
 
+    // Payment
+    PAYMENT_SUCCESS(200, "PA001","결제성공");
     private final int status;
     private final String code;
     private final String message;

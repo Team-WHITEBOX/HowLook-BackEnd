@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.whitebox.howlook.domain.member.entity.Member;
 
 import javax.persistence.*;
 
@@ -18,15 +19,12 @@ public class PaymentInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long paymentNo; // 결제한번호
 
-    private String payMethod; // 결제방법
+    @ManyToOne (fetch = FetchType.LAZY)
+    private Member member; // 유저 정보
 
-    private String impUid; // 아임포트 Uid
+    int amount; // 결제 금액
+    
+    int ruby; // 결제된 금액에 따른 얻은 루비수
 
-    private String merchantUid; // merchant Uid
-
-    private int amount; // 결제 금액
-
-    private String buyerAddr; // 구매자 주소
-
-    private String buyerPostcode; // 구매자 PostCode
+    String impUid; // Uid
 }

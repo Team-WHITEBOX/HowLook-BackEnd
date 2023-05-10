@@ -7,11 +7,15 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.whitebox.howlook.domain.payment.dto.PaymentsDTO;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
 import org.whitebox.howlook.domain.payment.service.Payservice;
+import org.whitebox.howlook.global.result.ResultCode;
+import org.whitebox.howlook.global.result.ResultResponse;
 
 import java.io.IOException;
 import java.util.Map;
@@ -19,6 +23,8 @@ import java.util.Map;
 @RestController
 @Log4j2
 public class PaymentsController {
+
+    // application.private으로 보내기!
     private String imp_key = "7018025722033557";
     private String imp_secret = "s42iOrZu5frpsnEbUw0wK8mFnN7h2j71Awoau7aJ7iK8GSBS7N2ZcbCaY3mucHW2Y1Azny4MzUwY2ukY";
 
@@ -43,13 +49,12 @@ public class PaymentsController {
     }
 
     @PostMapping("/verifyIamport")
-    public IamportResponse<Payment> verifyIamport(@RequestBody Map<String,String> map) throws IamportResponseException, IOException {
-        String impUid = map.get("imp_uid");
-        int amount = Integer.parseInt(map.get("amount"));
+    public ResponseEntity<ResultResponse> verifyIamport(@RequestBody PaymentsDTO paymentsDTO) throws IamportResponseException, IOException {
+        String impUid = paymentsDTO.getImpUid();
 
         IamportResponse<Payment> irsp = paymentLookup(impUid);
+        payservice.verifyIamportPayment(irsp,paymentsDTO);
 
-        payservice.verifyIamportPayment(irsp, amount);
-        return irsp;
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PAYMENT_SUCCESS));
     }
 }
