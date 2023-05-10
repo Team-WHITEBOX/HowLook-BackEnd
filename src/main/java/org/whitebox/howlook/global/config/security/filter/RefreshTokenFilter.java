@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -76,7 +77,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             }
 
             Date exp = refreshClaims.getExpiration();
-            Date current = new Date(System.currentTimeMillis());
+            Date current = Date.from(OffsetDateTime.now().toInstant());
 
             //만료 시간과 현재 시간의 간격 계산
             //만일 3일 미만인 경우에는 Refresh Token도 다시 생성

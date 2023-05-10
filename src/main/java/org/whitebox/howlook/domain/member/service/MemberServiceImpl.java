@@ -26,6 +26,7 @@ import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 import org.whitebox.howlook.global.util.JWTUtil;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -63,9 +64,9 @@ public class MemberServiceImpl implements MemberService{
         }
 
         //만료시간 가져옴
-        Long expiration = claims.getExpiration().getTime();
+        Long expiration = claims.getExpiration().toInstant().getEpochSecond() - ZonedDateTime.now().toEpochSecond();
         // 해당 AccessToken logout으로 저장
-        redisTemplate.opsForValue().set(tokenDTO.getAccessToken(),"logout",expiration, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(tokenDTO.getAccessToken(),"logout",expiration,TimeUnit.SECONDS);
     }
 
     @Transactional
