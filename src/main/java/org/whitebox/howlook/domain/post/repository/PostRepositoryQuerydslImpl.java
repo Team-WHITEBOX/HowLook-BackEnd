@@ -51,27 +51,27 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
             booleanBuilder.and(post.member.gender.eq(searchCategoryDTO.getGender()));
         }
 
-        if(searchCategoryDTO.getHashtagDTO().getAmekaji())
+        if(searchCategoryDTO.getHashtagDTOAmekaji())
             booleanBuilder.and(post.hashtag.amekaji.eq(true));
         else booleanBuilder.and(post.hashtag.amekaji.eq(false));
 
-        if(searchCategoryDTO.getHashtagDTO().getCasual())
+        if(searchCategoryDTO.getHashtagDTOCasual())
             booleanBuilder.and(post.hashtag.casual.eq(true));
         else booleanBuilder.and(post.hashtag.casual.eq(false));
 
-        if(searchCategoryDTO.getHashtagDTO().getGuitar())
+        if(searchCategoryDTO.getHashtagDTOGuitar())
             booleanBuilder.and(post.hashtag.guitar.eq(true));
         else booleanBuilder.and(post.hashtag.guitar.eq(false));
 
-        if(searchCategoryDTO.getHashtagDTO().getMinimal())
+        if(searchCategoryDTO.getHashtagDTOMinimal())
             booleanBuilder.and(post.hashtag.minimal.eq(true));
         else booleanBuilder.and(post.hashtag.minimal.eq(false));
 
-        if(searchCategoryDTO.getHashtagDTO().getSporty())
+        if(searchCategoryDTO.getHashtagDTOSporty())
             booleanBuilder.and(post.hashtag.sporty.eq(true));
         else booleanBuilder.and(post.hashtag.sporty.eq(false));
 
-        if(searchCategoryDTO.getHashtagDTO().getStreet())
+        if(searchCategoryDTO.getHashtagDTOStreet())
             booleanBuilder.and(post.hashtag.street.eq(true));
         else booleanBuilder.and(post.hashtag.street.eq(false));
 

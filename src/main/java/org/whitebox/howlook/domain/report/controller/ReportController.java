@@ -10,6 +10,8 @@ import org.whitebox.howlook.domain.report.service.ReportPostService;
 import org.whitebox.howlook.global.result.ResultCode;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/report")
 @Log4j2
@@ -20,7 +22,7 @@ public class ReportController {
 
     @ApiOperation(value = "신고하려는 postid만 보내주쇼")
     @PostMapping(value="/reportpost")
-    public ResponseEntity<ResultCode> reportPosts(Long postId) {
+    public ResponseEntity<ResultCode> reportPosts(Long postId) throws IOException {
         reportPostService.reportPost(postId);
 
         return ResponseEntity.ok(ResultCode.REPORT_POST_SUCCESS);
