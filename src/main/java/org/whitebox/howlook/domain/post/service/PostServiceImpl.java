@@ -121,7 +121,7 @@ public class PostServiceImpl implements PostService {
                 String m_path;
 
                 if(isServer.equals("true")) {
-                    m_path = s3Paths.get(0);
+                    m_path = s3Paths.get(i);
                 }
                 else
                 {
