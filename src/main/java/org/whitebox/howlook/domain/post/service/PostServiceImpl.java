@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
-import org.whitebox.howlook.domain.post.dto.HashtagDTO;
-import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
-import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
-import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
+import org.whitebox.howlook.domain.post.dto.*;
 import org.whitebox.howlook.domain.post.entity.*;
 import org.whitebox.howlook.domain.post.repository.*;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
@@ -88,12 +85,10 @@ public class PostServiceImpl implements PostService {
         hashtagRepository.save(hashtag);
 
         // 날씨를 post에 저장해야함
-        Object[] objects = weatherUtil.getWeather(postRegisterDTO.getLatitude(), postRegisterDTO.getLongitude());
-        Long temperature = Long.parseLong(objects[0].toString());
-        Long weather = Long.parseLong(objects[1].toString());
+        WeatherDTO weatherDTO = weatherUtil.getWeather(postRegisterDTO.getLatitude(), postRegisterDTO.getLongitude());
 
-        post.setTemperature(temperature);
-        post.setWeather(weather);
+        post.setTemperature(weatherDTO.getTemperature());
+        post.setWeather(weatherDTO.getWeather());
 
         post.setHashtag(hashtag);
 
@@ -212,14 +207,13 @@ public class PostServiceImpl implements PostService {
         final Pageable pageable = PageRequest.of(page, size);
 
         // 날씨를 post에 저장해야함
-        Object[] objects = weatherUtil.getWeather(latitude, longitude);
-        Long temperature = Long.parseLong(objects[0].toString());
-        Long weather = Long.parseLong(objects[1].toString());
+        WeatherDTO weatherDTO = weatherUtil.getWeather(latitude, longitude);
 
-        Page<PostReaderDTO> postPage = postRepository.findTemperaturePostReaderDTOPage(pageable, temperature);
+        Page<PostReaderDTO> postPage = postRepository.findTemperaturePostReaderDTOPage(pageable, weatherDTO.getTemperature());
         postPage.forEach(postReaderDTO -> {
             postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId()));
         });
+
         return postPage;
     }
 

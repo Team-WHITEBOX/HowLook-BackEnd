@@ -42,6 +42,10 @@ public enum ResultCode {
     FIND_POST_BY_ID_SUCCESS(200, "P016", "아이디로 게시글 조회에 성공했습니다."),
     FIND_POST_BY_MEMBER_ID_SUCCESS(200, "P017", "멤버아디로 게시글 조회에 성공했습니다."),
 
+    // Weather
+    FIND_RECENT10POSTS_BY_WEATHER_SUCCESS(200, "W001", "날씨로 최근 포스트 10개 조회에 성공했습니다."),
+    FIND_WEATHER_BY_GPS_SUCCESS(200, "W002", "위치로 현재 날씨 조회에 성공했습니다."),
+
     // Hashtag
     GET_HASHTAG_POST_SUCCESS(200, "H001", "해시태그로 게시글 조회에 성공하였습니다."),
 

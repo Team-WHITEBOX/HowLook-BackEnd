@@ -20,6 +20,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.whitebox.howlook.domain.post.dto.WeatherDTO;
 
 @Component
 @Log4j2
@@ -31,7 +32,7 @@ public class WeatherUtil {
     Long NX = 149L; /* X축 격자점 수 */
     Long NY = 253L; /* Y축 격자점 수 */
 
-    public Object[] getWeather(double Latitude, double Longitude) throws IOException, ParseException
+    public WeatherDTO getWeather(double Latitude, double Longitude) throws IOException, ParseException
     {
         String date = getDate(0);
         String now_time = getTime();
@@ -117,11 +118,14 @@ public class WeatherUtil {
             System.out.println(", fcstTime : "+ fcstTime);
         }
 
-        Object[] values = new String[2];
-        values[0] = (String)((JSONObject)parse_item.get(0)).get("fcstValue");
-        values[1] = (String)((JSONObject)parse_item.get(5)).get("fcstValue");
+        String t = (String)((JSONObject)parse_item.get(0)).get("fcstValue");
+        String w = (String)((JSONObject)parse_item.get(5)).get("fcstValue");
 
-        return values;
+        WeatherDTO weatherDTO = new WeatherDTO(
+                Long.valueOf(t),
+                Long.valueOf(w));
+
+        return weatherDTO;
     }
 
     public static int TO_GRID = 0;

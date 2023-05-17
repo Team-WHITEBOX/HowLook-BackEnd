@@ -8,10 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.whitebox.howlook.domain.post.dto.PostPageDTO;
-import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
-import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
-import org.whitebox.howlook.domain.post.dto.SearchCategoryDTO;
+import org.whitebox.howlook.domain.post.dto.*;
 import org.whitebox.howlook.domain.post.service.PostService;
 import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.WeatherUtil;
@@ -37,15 +34,17 @@ public class PostController {
     @GetMapping(value = "/temperature")
     public ResponseEntity<ResultResponse> weatherGet(double Latitude, double Longitude) throws IOException, ParseException
     {
-        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS,weatherUtil.getWeather(Latitude, Longitude)));
+        WeatherDTO weatherDTO = weatherUtil.getWeather(Latitude, Longitude);
+
+        return ResponseEntity.ok(ResultResponse.of(FIND_WEATHER_BY_GPS_SUCCESS,weatherDTO));
     }
 
     @ApiOperation(value = "날씨 기준 최근 게시글 10개 조회")
     @GetMapping("/weather")
-    public ResponseEntity<ResultResponse> getWeather10Posts(@RequestParam @NotNull int page, float latitude, float longitude) throws IOException, ParseException {
+    public ResponseEntity<ResultResponse> getWeather10Posts(@RequestParam @NotNull int page, @NotNull float latitude, @NotNull float longitude) throws IOException, ParseException {
         final List<PostReaderDTO> postList = postService.getWeatherPostPage(10, page,latitude,longitude).getContent();
 
-        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_SUCCESS, postList));
+        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_BY_WEATHER_SUCCESS, postList));
     }
     
 
