@@ -133,6 +133,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 .fetch();
         final long total = queryFactory
                 .selectFrom(post).fetch().size();
+
         return new PageImpl<>(postDtos, pageable, total);
     }
 }

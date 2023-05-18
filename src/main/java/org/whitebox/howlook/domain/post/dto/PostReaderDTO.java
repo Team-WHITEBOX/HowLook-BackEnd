@@ -53,6 +53,9 @@ public class PostReaderDTO {
 
     private Boolean likeCheck; // 이 댓글에 좋아요를 눌렀는지 확인.
 
+    private Long temperature; // 온도
+    private Long weather; // 날씨
+
     @QueryProjection
     public PostReaderDTO(Post post){
         this.postId = post.getPostId();
@@ -67,5 +70,7 @@ public class PostReaderDTO {
         this.modificationDate = post.getModDate();
         this.hashtagDTO = new HashtagDTO(post.getHashtag());
         this.likeCheck = false;
+        this.temperature = post.getTemperature();
+        this.weather = post.getWeather();
     }
 }
