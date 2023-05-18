@@ -1,63 +1,127 @@
 package org.whitebox.howlook.global.util;
 
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.whitebox.howlook.global.config.security.exception.TokenException;
 
+import java.security.Key;
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.whitebox.howlook.global.error.ErrorCode.*;
 
 @Component
 @Log4j2
 public class JWTUtil {
-    @Value("${org.whitebox.jwt.secret}")
-    private String key;
+    private Key key;
 
-    public String generateToken(Map<String, Object> valueMap, int days){
+    public JWTUtil(@Value("${org.whitebox.jwt.secret}") String secretKey) {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
 
-        log.info("generateKey..." + key);
+    public String generateToken(String userName,Collection<? extends GrantedAuthority> authorities) {
+        // 권한 가져오기
+        String authority = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
 
-        //헤더 부분
-        Map<String, Object> headers = new HashMap<>();
-        headers.put("typ","JWT");
-        headers.put("alg","HS256");
-
-        //payload 부분 설정
-        Map<String, Object> payloads = new HashMap<>();
-        payloads.putAll(valueMap);
-
-        //테스트 시에는 짧은 유효 기간
-        int time = (60*24) * days; //테스트는 분단위로 나중에 60*24 (일)단위변경
-     //   int time = (5) * days; //테스트는 분단위로 나중에 60*24 (일)단위변경
-
-        //10분 단위로 조정
-        //int time = (10) * days; //테스트는 분단위로 나중에 60*24 (일)단위변경
-
-        String jwtStr = Jwts.builder()
-                .setHeader(headers)
-                .setClaims(payloads)
-                .setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
-                .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(time).toInstant()))  //plusMinutes 분단위로 설정
-                .signWith(SignatureAlgorithm.HS256, key.getBytes())
+        long now = (new Date()).getTime();
+        // Access Token 생성
+        String accessToken = Jwts.builder()
+                .setSubject(userName)
+                .claim("auth", authority)
+                .setExpiration(Date.from(ZonedDateTime.now().plusDays(1).toInstant()))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        return jwtStr;
+        return accessToken;
+    }
+
+    public String generateRefreshToken(String username) {
+        long now = (new Date()).getTime();
+        // Refresh Token 생성
+        String refreshToken = Jwts.builder()
+                .setSubject(username)
+                .setExpiration(Date.from(ZonedDateTime.now().plusDays(15).toInstant()))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return refreshToken;
     }
 
 
-    public Map<String, Object> validateToken(String token)throws JwtException {
+    // 토큰의 정보로 Authentication 가져옴
+    public Authentication getAuthentication(String accessToken) {
+        // 토큰 복호화
+        Claims claims = parseClaims(accessToken);
 
-        Map<String, Object> claim = null;
+        if (claims.get("auth") == null) {
+            throw new TokenException(JWT_INVALID);
+        }
 
-        claim = Jwts.parser()
-                .setSigningKey(key.getBytes()) // Set Key
-                .parseClaimsJws(token) // 파싱 및 검증, 실패 시 에러
-                .getBody();
-        return claim;
+        // 클레임에서 권한 정보 가져오기
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get("auth").toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+        log.info(authorities);
+
+        // UserDetails 객체를 만들어서 Authentication 리턴
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+    }
+
+    // 토큰 정보를 검증하는 메서드
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            throw new TokenException(JWT_MALFORM);
+        } catch (IllegalArgumentException e) {
+            throw new TokenException(JWT_MALFORM);
+        } catch (ExpiredJwtException e) {
+            throw new TokenException(JWT_EXPIRED);
+        }
+    }
+    
+    // JWT 토큰에 들어있는 정보를 꺼냄
+    public Claims parseClaims(String accessToken) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
+
+    public HashMap<Object,String> parseClaimsByExpiredToken(String accessToken){
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken);
+        } catch (ExpiredJwtException e) {
+            try {
+                String[] splitJwt = accessToken.split("\\.");
+                Base64.Decoder decoder = Base64.getDecoder();
+                String payload = new String(decoder.decode(splitJwt[1].getBytes()));
+
+                return new ObjectMapper().readValue(payload, HashMap.class);
+            } catch (JsonProcessingException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        return null;
     }
 }

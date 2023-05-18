@@ -28,10 +28,15 @@ public enum ErrorCode {
     JWT_INVALID(401, "J001", "유효하지 않은 토큰입니다."),
     REFRESH_EXPIRED(401, "J002", "만료된 REFRESH 토큰입니다."),
     REFRESH_INVALID(401, "J003", "유효하지 않은 REFRESH 토큰입니다."),
-    JWT_UNACCEPT(401,"J004","토큰이 없거나 짧습니다."),
-    JWT_BADTYPE(401, "J005","Bearer 타입 토큰이 아닙니다."),
-    JWT_EXPIRED(403, "J006", "만료된 토큰입니다."),
-    JWT_MALFORM(403, "J007","토큰값이 올바르지 않습니다."),
+    REFRESH_FAIL(401,"J004","토큰 재발급에 실패했습니다."),
+    JWT_UNACCEPT(401,"J005","토큰이 없거나 짧습니다."),
+    JWT_BADTYPE(401, "J006","Bearer 타입 토큰이 아닙니다."),
+    JWT_EXPIRED(403, "J007", "만료된 토큰입니다."),
+    JWT_MALFORM(403, "J008","토큰값이 올바르지 않습니다."),
+    BLACK_TOKEN(401, "J009", "BLACKLIST 토큰입니다."),
+    TOKEN_ALIVE(400, "J010", "유효기간이 만료되지 않은 토큰입니다."),
+
+
 
     // post
     POST_NOT_FOUND(400, "F001", "존재하지 않는 게시물입니다."),

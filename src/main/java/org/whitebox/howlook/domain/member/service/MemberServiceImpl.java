@@ -1,8 +1,10 @@
 package org.whitebox.howlook.domain.member.service;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +20,15 @@ import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.post.entity.Scrap;
 import org.whitebox.howlook.domain.post.repository.PostRepository;
 import org.whitebox.howlook.domain.post.repository.ScrapRepository;
+import org.whitebox.howlook.global.config.security.dto.TokenDTO;
+import org.whitebox.howlook.global.config.security.exception.TokenException;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
+import org.whitebox.howlook.global.util.JWTUtil;
 
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.whitebox.howlook.global.error.ErrorCode.*;
@@ -31,11 +38,37 @@ import static org.whitebox.howlook.global.error.ErrorCode.*;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
     private final AccountUtil accountUtil;
+    private final JWTUtil jwtUtil;
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final ScrapRepository scrapRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisTemplate redisTemplate;
+
+    @Transactional
+    @Override
+    public void logout(TokenDTO tokenDTO) {
+        try {
+            jwtUtil.validateToken(tokenDTO.getAccessToken());
+        }catch (TokenException e){
+            throw e;
+        }
+
+        // AccessToken에서 정보 가져옴
+        Claims claims = jwtUtil.parseClaims(tokenDTO.getAccessToken());
+
+        // 해당 user의 RefreshToken redis에 있다면 삭제
+        if (redisTemplate.opsForValue().get("RT:"+claims.getSubject())!=null){
+            redisTemplate.delete("RT:"+claims.getSubject());
+        }
+
+        //만료시간 가져옴
+        Long expiration = claims.getExpiration().toInstant().getEpochSecond() - ZonedDateTime.now().toEpochSecond();
+        // 해당 AccessToken logout으로 저장
+        redisTemplate.opsForValue().set(tokenDTO.getAccessToken(),"logout",expiration,TimeUnit.SECONDS);
+    }
+
     @Transactional
     @Override
     public Member join(MemberJoinDTO memberJoinDTO) {

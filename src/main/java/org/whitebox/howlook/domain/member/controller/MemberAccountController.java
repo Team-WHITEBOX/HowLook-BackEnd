@@ -7,7 +7,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.member.dto.MemberJoinDTO;
-import org.whitebox.howlook.domain.member.dto.TokenDTO;
+import org.whitebox.howlook.domain.member.service.OAuth2MemberService;
+import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.domain.member.dto.loginDTO;
 import org.whitebox.howlook.domain.member.service.MemberService;
 import org.whitebox.howlook.global.result.ResultResponse;
@@ -23,8 +24,9 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 @RequiredArgsConstructor
 public class MemberAccountController {
     private final MemberService memberService;
+    private final OAuth2MemberService oAuth2MemberService;
 
-    @ApiOperation(value = "로그인")
+    @ApiOperation(value = "로그인") //실제론 컨트롤러를 사용하지 않고 시큐리티 필터를 이용해 처리하지만 스웨거 테스트용으로 사용
     @PostMapping("/generateToken")
     public void loginPost(@RequestBody loginDTO loginDTO){
         log.info("로그인");
@@ -34,6 +36,12 @@ public class MemberAccountController {
     @PostMapping("/refreshToken")
     public void refreshToken(@RequestBody TokenDTO tokenDTO){
         log.info("토큰 재발급");
+    }
+
+    @GetMapping("/oauth/{provider}")
+    public ResponseEntity<ResultResponse> loginOauth(@PathVariable String provider,@RequestParam String code){
+        TokenDTO tokenDTO = oAuth2MemberService.loginOauth(provider,code);
+        return ResponseEntity.ok(ResultResponse.of(LOGIN_SUCCESS,tokenDTO));
     }
 
     @ApiOperation(value = "회원가입")
