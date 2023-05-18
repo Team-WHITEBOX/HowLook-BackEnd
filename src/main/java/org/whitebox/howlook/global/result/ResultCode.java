@@ -7,17 +7,18 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResultCode {
     // Member
-    REGISTER_SUCCESS(200, "M001", "회원가입에 성공하였습니다."),
-    GET_USERPROFILE_SUCCESS(200, "M002", "회원 프로필을 조회하였습니다."),
-    GET_USER_BY_TOKEN_SUCCESS(200, "M003", "토큰으로 회원정보를 조회하였습니다."),
-    GET_EDIT_PROFILE_SUCCESS(200, "M004", "회원 프로필 수정정보를 조회하였습니다."),
-    EDIT_PROFILE_SUCCESS(200, "M005", "회원 프로필을 수정하였습니다."),
-    UPDATE_PASSWORD_SUCCESS(200, "M006", "회원 비밀번호를 변경하였습니다."),
-    CHECK_MEMBERID_GOOD(200, "M007", "사용가능한 memberId 입니다."),
-    CHECK_MEMBERID_BAD(200, "M008", "사용불가능한 memberId 입니다."),
-    CHECK_NICKNAME_GOOD(200, "M009", "사용가능한 닉네임 입니다."),
-    CHECK_NICKNAME_BAD(200, "M010", "사용불가능한 닉네임 입니다."),
-    LOGOUT_SUCCESS(200, "M011", "로그아웃에 성공하였습니다."),
+    LOGIN_SUCCESS(200, "M001", "로그인에 성공하였습니다."),
+    REGISTER_SUCCESS(200, "M002", "회원가입에 성공하였습니다."),
+    GET_USERPROFILE_SUCCESS(200, "M003", "회원 프로필을 조회하였습니다."),
+    GET_USER_BY_TOKEN_SUCCESS(200, "M004", "토큰으로 회원정보를 조회하였습니다."),
+    GET_EDIT_PROFILE_SUCCESS(200, "M005", "회원 프로필 수정정보를 조회하였습니다."),
+    EDIT_PROFILE_SUCCESS(200, "M006", "회원 프로필을 수정하였습니다."),
+    UPDATE_PASSWORD_SUCCESS(200, "M007", "회원 비밀번호를 변경하였습니다."),
+    CHECK_MEMBERID_GOOD(200, "M008", "사용가능한 memberId 입니다."),
+    CHECK_MEMBERID_BAD(200, "M009", "사용불가능한 memberId 입니다."),
+    CHECK_NICKNAME_GOOD(200, "M010", "사용가능한 닉네임 입니다."),
+    CHECK_NICKNAME_BAD(200, "M011", "사용불가능한 닉네임 입니다."),
+    LOGOUT_SUCCESS(200, "M012", "로그아웃에 성공하였습니다."),
 
 
 

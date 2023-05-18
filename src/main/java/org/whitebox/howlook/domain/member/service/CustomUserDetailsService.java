@@ -10,10 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.whitebox.howlook.domain.member.entity.Member;
-import org.whitebox.howlook.domain.member.entity.MemberRole;
 import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
-import org.whitebox.howlook.global.config.security.dto.MemberSecurityDTO;
 
 import java.util.Arrays;
 import java.util.Collection;
