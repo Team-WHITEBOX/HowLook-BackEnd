@@ -71,6 +71,7 @@ public class CustomSecurityConfig {
                 .addFilterBefore(tokenCheckFilter(jwtUtil,WHITELIST), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(refreshTokenCheckFilter("/account/refreshToken", jwtUtil), TokenCheckFilter.class)
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
+        //http.oauth2Login();
         http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
         });

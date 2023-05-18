@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.whitebox.howlook.domain.member.dto.KakaoTokenResponse;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.entity.MemberRole;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
@@ -39,8 +40,12 @@ public class OAuth2MemberServiceImpl implements OAuth2MemberService {
     @Override
     public TokenDTO loginOauth(String providerName, String code) {
         ClientRegistration provider = inMemoryClient.findByRegistrationId(providerName);
-        OAuth2AccessTokenResponse oAuth2Token = getOAuthToken(code, provider);
+        log.info(provider);
+        log.info(providerName);
+        KakaoTokenResponse oAuth2Token = getOAuthToken(code, provider);
+        log.info(oAuth2Token);
         OAuth2MemberDTO oAuthUser = loginOAuthUser(providerName,provider,oAuth2Token);
+        log.info(oAuthUser);
 
         String accessToken = jwtUtil.generateToken(oAuthUser.getMemberId(),oAuthUser.getRoleSet());
         String refreshToken = jwtUtil.generateRefreshToken(oAuthUser.getMemberId());
@@ -49,31 +54,33 @@ public class OAuth2MemberServiceImpl implements OAuth2MemberService {
         return tokenDTO;
     }
 
-    private OAuth2AccessTokenResponse getOAuthToken(String code, ClientRegistration provider) {
-        return WebClient.create()
-                .post()
-                .uri(provider.getProviderDetails().getTokenUri())
-                .headers(header -> {
-                    header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-                    header.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
-                })
-                .bodyValue(tokenRequest(code, provider))
+    private KakaoTokenResponse getOAuthToken(String code, ClientRegistration provider) {
+        WebClient webClient = WebClient.builder()
+                .baseUrl(provider.getProviderDetails().getTokenUri())
+                .defaultHeader("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .build();
+
+        KakaoTokenResponse response = webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("grant_type", "authorization_code")
+                        .queryParam("client_id", provider.getClientId())
+                        .queryParam("redirect_uri", provider.getRedirectUri())
+                        .queryParam("code", code)
+                        .queryParam("client_secret", provider.getClientSecret())
+                        .build())
+                .headers(header->header.setContentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(OAuth2AccessTokenResponse.class)
+                .bodyToMono(KakaoTokenResponse.class)
                 .block();
+        if (response != null) {
+            return response;
+        } else {
+            throw new RuntimeException("Failed to retrieve access token from Kakao");
+        }
     }
 
-    private MultiValueMap<String, String> tokenRequest(String code, ClientRegistration provider) {
-        MultiValueMap<String,String> formData = new LinkedMultiValueMap<>();
-        formData.add("code",code);
-        formData.add("grant_type","authorization_code");
-        formData.add("redirect_uri",provider.getRedirectUri());
-        formData.add("client_secret",provider.getClientSecret());
-        formData.add("client_id",provider.getClientId());
-        return formData;
-    }
-
-    private OAuth2MemberDTO loginOAuthUser(String providerName, ClientRegistration provider, OAuth2AccessTokenResponse oAuth2Token) {
+    private OAuth2MemberDTO loginOAuthUser(String providerName, ClientRegistration provider, KakaoTokenResponse oAuth2Token) {
 
         Map<String, Object> paramMap = getUserAttribute(provider,oAuth2Token);
         Map<String,String> account = new HashMap<>();
@@ -86,7 +93,7 @@ public class OAuth2MemberServiceImpl implements OAuth2MemberService {
         return generateMember(account);
     }
 
-    private Map<String,Object> getUserAttribute(ClientRegistration provider, OAuth2AccessTokenResponse oauth2Token){
+    private Map<String,Object> getUserAttribute(ClientRegistration provider, KakaoTokenResponse oauth2Token){
         return WebClient.create()
                 .get()
                 .uri(provider.getProviderDetails().getUserInfoEndpoint().getUri())
