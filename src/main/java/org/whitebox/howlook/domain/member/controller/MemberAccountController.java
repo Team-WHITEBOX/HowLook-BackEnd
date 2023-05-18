@@ -7,10 +7,10 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.member.dto.MemberJoinDTO;
-import org.whitebox.howlook.domain.member.service.OAuth2MemberService;
-import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.domain.member.dto.loginDTO;
 import org.whitebox.howlook.domain.member.service.MemberService;
+import org.whitebox.howlook.domain.member.service.OAuth2MemberService;
+import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;

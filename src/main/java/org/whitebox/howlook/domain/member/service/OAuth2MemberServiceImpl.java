@@ -5,26 +5,24 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.whitebox.howlook.domain.member.dto.KakaoTokenResponse;
+import org.whitebox.howlook.domain.member.dto.OAuth2MemberDTO;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.entity.MemberRole;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
-import org.whitebox.howlook.domain.member.dto.OAuth2MemberDTO;
 import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.global.util.JWTUtil;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -40,12 +38,8 @@ public class OAuth2MemberServiceImpl implements OAuth2MemberService {
     @Override
     public TokenDTO loginOauth(String providerName, String code) {
         ClientRegistration provider = inMemoryClient.findByRegistrationId(providerName);
-        log.info(provider);
-        log.info(providerName);
         KakaoTokenResponse oAuth2Token = getOAuthToken(code, provider);
-        log.info(oAuth2Token);
         OAuth2MemberDTO oAuthUser = loginOAuthUser(providerName,provider,oAuth2Token);
-        log.info(oAuthUser);
 
         String accessToken = jwtUtil.generateToken(oAuthUser.getMemberId(),oAuthUser.getRoleSet());
         String refreshToken = jwtUtil.generateRefreshToken(oAuthUser.getMemberId());

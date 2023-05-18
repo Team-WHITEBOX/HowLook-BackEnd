@@ -7,7 +7,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.global.util.JWTUtil;
 

@@ -1,17 +1,9 @@
 package org.whitebox.howlook.domain.chat.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.whitebox.howlook.domain.chat.entity.ChatRoom;
-import org.whitebox.howlook.domain.member.entity.Member;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter

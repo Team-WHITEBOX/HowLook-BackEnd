@@ -7,7 +7,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.whitebox.howlook.domain.chat.dto.ChatDTO;
 import org.whitebox.howlook.domain.chat.entity.Chat;
 import org.whitebox.howlook.domain.chat.repository.mongo.ChatRepository;

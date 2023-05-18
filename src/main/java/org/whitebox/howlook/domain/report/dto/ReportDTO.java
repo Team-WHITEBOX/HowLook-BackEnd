@@ -4,7 +4,6 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.whitebox.howlook.domain.member.dto.UserPostInfoResponse;
 import org.whitebox.howlook.domain.post.dto.HashtagDTO;
 import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;

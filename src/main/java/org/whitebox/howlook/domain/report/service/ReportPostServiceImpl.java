@@ -9,28 +9,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.post.dto.PostReaderDTO;
 import org.whitebox.howlook.domain.post.service.PostService;
 import org.whitebox.howlook.domain.report.dto.ReportDTO;
-import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
 import org.whitebox.howlook.global.util.AccountUtil;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @Transactional

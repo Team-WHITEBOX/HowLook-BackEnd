@@ -9,7 +9,6 @@ import org.whitebox.howlook.global.error.exception.BusinessException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.whitebox.howlook.global.error.ErrorCode.JWT_INVALID;
 import static org.whitebox.howlook.global.error.ErrorCode.JWT_UNACCEPT;
 
 public class TokenException extends BusinessException {

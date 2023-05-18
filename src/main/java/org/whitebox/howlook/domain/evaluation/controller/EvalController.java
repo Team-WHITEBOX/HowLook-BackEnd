@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.whitebox.howlook.domain.evaluation.dto.EvalPageDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalRegisterDTO;
@@ -16,7 +14,6 @@ import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;

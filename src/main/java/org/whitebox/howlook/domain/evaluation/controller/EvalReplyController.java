@@ -3,7 +3,6 @@ package org.whitebox.howlook.domain.evaluation.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,7 +16,7 @@ import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.Valid;
 
-import static org.whitebox.howlook.global.result.ResultCode.*;
+import static org.whitebox.howlook.global.result.ResultCode.EVAL_REGISTER_SUCCESS;
 
 @RestController
 @RequestMapping("/eval/reply")

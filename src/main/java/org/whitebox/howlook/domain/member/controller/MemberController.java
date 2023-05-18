@@ -9,14 +9,12 @@ import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
 import org.whitebox.howlook.domain.member.service.MemberService;
-import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 import static org.whitebox.howlook.global.result.ResultCode.*;
 

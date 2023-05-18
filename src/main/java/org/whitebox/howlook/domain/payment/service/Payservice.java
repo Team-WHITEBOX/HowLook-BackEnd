@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
 import org.whitebox.howlook.domain.payment.exception.DifferentAmountException;
 import org.whitebox.howlook.domain.payment.repository.PaymentRepository;
-import org.whitebox.howlook.global.error.GlobalExceptionHandler;
 
 @Log4j2
 @Service

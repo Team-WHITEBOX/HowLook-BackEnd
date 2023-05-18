@@ -2,10 +2,7 @@ package org.whitebox.howlook.domain.member.service;
 
 import org.whitebox.howlook.domain.member.dto.*;
 import org.whitebox.howlook.domain.member.entity.Member;
-import org.whitebox.howlook.domain.post.dto.SimplePostDTO;
 import org.whitebox.howlook.global.config.security.dto.TokenDTO;
-
-import java.util.List;
 
 public interface MemberService {
     void logout(TokenDTO tokenDTO);

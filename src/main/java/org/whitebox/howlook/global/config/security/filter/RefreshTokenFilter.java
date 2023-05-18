@@ -2,25 +2,17 @@ package org.whitebox.howlook.global.config.security.filter;
 
 import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
-import org.whitebox.howlook.domain.member.service.CustomUserDetailsService;
 import org.whitebox.howlook.global.config.security.exception.TokenException;
-import org.whitebox.howlook.global.error.exception.BusinessException;
 import org.whitebox.howlook.global.util.JWTUtil;
 
 import javax.servlet.FilterChain;
@@ -31,12 +23,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.whitebox.howlook.global.error.ErrorCode.*;
+import static org.whitebox.howlook.global.error.ErrorCode.REFRESH_INVALID;
+import static org.whitebox.howlook.global.error.ErrorCode.TOKEN_ALIVE;
 
 @Log4j2
 @RequiredArgsConstructor

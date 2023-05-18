@@ -3,9 +3,6 @@ package org.whitebox.howlook.domain.evaluation.service;
 import org.whitebox.howlook.domain.evaluation.dto.EvalDataDTO;
 import org.whitebox.howlook.domain.evaluation.dto.EvalReplyDTO;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface EvalReplyService {
     public void register(EvalReplyDTO evalReplyDTO);
 

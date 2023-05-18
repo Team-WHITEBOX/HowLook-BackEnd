@@ -12,7 +12,6 @@ import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.evaluation.repository.EvalReplyRepository;
 import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
-import org.whitebox.howlook.global.error.ErrorCode;
 import org.whitebox.howlook.global.error.exception.BusinessException;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
@@ -20,10 +19,8 @@ import org.whitebox.howlook.global.util.AccountUtil;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.whitebox.howlook.global.error.ErrorCode.*;
-import static org.whitebox.howlook.global.result.ResultCode.*;
 
 @Service
 @Log4j2

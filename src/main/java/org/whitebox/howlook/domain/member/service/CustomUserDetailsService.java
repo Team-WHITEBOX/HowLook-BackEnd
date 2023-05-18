@@ -13,9 +13,7 @@ import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Log4j2

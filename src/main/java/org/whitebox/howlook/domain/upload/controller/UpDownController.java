@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.post.dto.PostRegisterDTO;
 import org.whitebox.howlook.domain.upload.dto.PhotoDTO;
-import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
-import org.whitebox.howlook.domain.upload.dto.UploadResultDTO;
 import org.whitebox.howlook.domain.upload.service.UploadService;
 import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.LocalUploader;

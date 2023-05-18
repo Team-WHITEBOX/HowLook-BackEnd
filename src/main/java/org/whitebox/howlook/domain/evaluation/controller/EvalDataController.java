@@ -13,7 +13,7 @@ import org.whitebox.howlook.global.result.ResultResponse;
 
 import javax.validation.constraints.NotNull;
 
-import static org.whitebox.howlook.global.result.ResultCode.*;
+import static org.whitebox.howlook.global.result.ResultCode.EVAL_SEARCH_SUCCESS;
 
 @RestController
 @RequestMapping("/eval")
