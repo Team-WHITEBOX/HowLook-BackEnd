@@ -62,7 +62,7 @@ public class OAuth2MemberServiceImpl implements OAuth2MemberService {
                         .queryParam("code", code)
                         .queryParam("client_secret", provider.getClientSecret())
                         .build())
-                .headers(header->header.setContentType(MediaType.APPLICATION_FORM_URLENCODED))
+                //.headers(header->header.setContentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(KakaoTokenResponse.class)

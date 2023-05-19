@@ -1,135 +1,99 @@
 package org.whitebox.howlook.global.util;
 
-import com.querydsl.core.Tuple;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import java.time.format.DateTimeFormatter;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.io.BufferedReader;
-import java.io.IOException;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.whitebox.howlook.domain.post.dto.WeatherDTO;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 @Log4j2
 public class WeatherUtil {
 
     @Value("${weather.service-key}")
-    private String serviceKey; // 저장될 경로
+    private String serviceKey;
+    private static String BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
 
-    Long NX = 149L; /* X축 격자점 수 */
-    Long NY = 253L; /* Y축 격자점 수 */
+    private static final Long NX = 149L;
+    private static final Long NY = 253L;
+    private static final int TO_GRID = 0;
+    private static final int TO_GPS = 1;
 
-    public WeatherDTO getWeather(double Latitude, double Longitude) throws IOException, ParseException
+    class LatXLngY
     {
-        String date = getDate(0);
-        String now_time = getTime();
+        public double lat;
+        public double lng;
+        public double x;
+        public double y;
 
-        if(now_time == "-100")
-        {
-            now_time = "2300";
-            date = getDate(1);
-        }
-
-        LatXLngY tmp = convertGRID_GPS(TO_GRID, Latitude, Longitude);
-
-        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"); /*URL*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=" + serviceKey); /*Service Key*/
-        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("12", "UTF-8")); /*한 페이지 결과 수*/
-        urlBuilder.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /*요청자료형식(XML/JSON) Default: XML*/
-        urlBuilder.append("&" + URLEncoder.encode("base_date","UTF-8") + "=" + URLEncoder.encode(date, "UTF-8")); /* 20210628 == 21년 6월 28일 발표*/
-        urlBuilder.append("&" + URLEncoder.encode("base_time","UTF-8") + "=" + URLEncoder.encode(now_time, "UTF-8")); /* 0600 == 06시 발표(정시단위) */
-        urlBuilder.append("&" + URLEncoder.encode("nx","UTF-8") + "=" + URLEncoder.encode(String.valueOf((int)tmp.x), "UTF-8")); /*예보지점의 X 좌표값*/
-        urlBuilder.append("&" + URLEncoder.encode("ny","UTF-8") + "=" + URLEncoder.encode(String.valueOf((int)tmp.y), "UTF-8")); /*예보지점의 Y 좌표값*/
-        URL url = new URL(urlBuilder.toString());
-
-        log.info(urlBuilder.toString());
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-type", "application/json");
-        System.out.println("Response code: " + conn.getResponseCode());
-        BufferedReader rd;
-        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        } else {
-            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-        }
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            sb.append(line);
-        }
-        rd.close();
-        conn.disconnect();
-
-        String result= sb.toString();
-
-        // Json parser를 만들어 만들어진 문자열 데이터를 객체화
-        JSONParser parser = new JSONParser();
-        JSONObject obj = (JSONObject) parser.parse(result);
-        // response 키를 가지고 데이터를 파싱
-        JSONObject parse_response = (JSONObject) obj.get("response");
-        // response 로 부터 body 찾기
-        JSONObject parse_body = (JSONObject) parse_response.get("body");
-        // body 로 부터 items 찾기
-        JSONObject parse_items = (JSONObject) parse_body.get("items");
-
-        // items로 부터 itemlist 를 받기
-        JSONArray parse_item = (JSONArray) parse_items.get("item");
-        String category;
-        JSONObject weather; // parse_item은 배열형태이기 때문에 하나씩 데이터를 하나씩 가져올때 사용
-
-        // 카테고리와 값만 받아오기
-        String day="";
-        String time="";
-
-        for(int i = 0 ; i < 12; i++) {
-            weather = (JSONObject) parse_item.get(i);
-            Object fcstValue = weather.get("fcstValue");
-            Object fcstDate = weather.get("fcstDate");
-            Object fcstTime = weather.get("fcstTime");
-            //double형으로 받고싶으면 아래내용 주석 해제
-            //double fcstValue = Double.parseDouble(weather.get("fcstValue").toString());
-            category = (String)weather.get("category");
-            // 출력
-            if(!day.equals(fcstDate.toString())) {
-                day=fcstDate.toString();
-            }
-            if(!time.equals(fcstTime.toString())) {
-                time=fcstTime.toString();
-                System.out.println(day+"  "+time);
-            }
-            System.out.print("\tcategory : "+ category);
-            System.out.print(", fcst_Value : "+ fcstValue);
-            System.out.print(", fcstDate : "+ fcstDate);
-            System.out.println(", fcstTime : "+ fcstTime);
-        }
-
-        String t = (String)((JSONObject)parse_item.get(0)).get("fcstValue");
-        String w = (String)((JSONObject)parse_item.get(5)).get("fcstValue");
-
-        WeatherDTO weatherDTO = new WeatherDTO(
-                Long.valueOf(t),
-                Long.valueOf(w));
-
-        return weatherDTO;
     }
 
-    public static int TO_GRID = 0;
-    public static int TO_GPS = 1;
+    public WeatherDTO getWeather(double latitude, double longitude) throws IOException, ParseException {
+        // 기상청에서 제공하는 날씨정보가 3시간 단위로 10분마다 갱신되기 때문에 그에 맞는 시간으로 검색해야 함
+        String currentDate = getDate(0);
+        String currentTime = getTime();
+
+        if (currentTime.equals("-100")) {
+            currentTime = "2300";
+            currentDate = getDate(1);
+        }
+
+        // 위도,경도가 아닌 기상청이 사용하는 격자 좌표로 검색해야함
+        LatXLngY gridCoordinates = convertGRID_GPS(TO_GRID, latitude, longitude);
+        String response = callWeatherApi(currentDate,currentTime,gridCoordinates);
+        JSONArray weatherDataArray = parseWeatherArrayFromJson(response);
+        String temperature = getWeatherValueByIndex(weatherDataArray, 0);
+        String wind = getWeatherValueByIndex(weatherDataArray, 5);
+
+        return new WeatherDTO(
+                Long.parseLong(temperature),
+                Long.parseLong(wind)
+        );
+    }
+
+    private String callWeatherApi(String currentDate, String currentTime, LatXLngY gridCoordinates){
+        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(BASE_URL);
+        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
+        WebClient webClient = WebClient.builder().uriBuilderFactory(factory).build();
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("serviceKey",serviceKey)
+                        .queryParam("pageNo","1")
+                        .queryParam("numOfRows","12")
+                        .queryParam("dataType","JSON")
+                        .queryParam("base_date",currentDate)
+                        .queryParam("base_time",currentTime)
+                        .queryParam("nx", String.valueOf((int) gridCoordinates.x))
+                        .queryParam("ny",String.valueOf((int) gridCoordinates.y)).build())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
+    private JSONArray parseWeatherArrayFromJson(String jsonResponse) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject obj = (JSONObject) parser.parse(jsonResponse);
+
+        JSONObject parseResponse = (JSONObject) obj.get("response");
+        JSONObject parseBody = (JSONObject) parseResponse.get("body");
+        JSONObject parseItems = (JSONObject) parseBody.get("items");
+
+        return (JSONArray) parseItems.get("item");
+    }
+
+    private String getWeatherValueByIndex(JSONArray weatherDataArray, int index) {
+        return (String) ((JSONObject) weatherDataArray.get(index)).get("fcstValue");
+    }
 
     private LatXLngY convertGRID_GPS(int mode, double lat_X, double lng_Y )
     {
@@ -205,16 +169,6 @@ public class WeatherUtil {
             rs.lng = alon * RADDEG;
         }
         return rs;
-    }
-
-    class LatXLngY
-    {
-        public double lat;
-        public double lng;
-
-        public double x;
-        public double y;
-
     }
 
     public String getDate(int minus)
