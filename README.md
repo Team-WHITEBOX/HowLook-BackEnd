@@ -10,17 +10,24 @@ Spring Boot+Flutter 를 사용해 개발한 패션 SNS입니다.
 ## 개요
 
 > 백엔드 사용기술
-- Spring Boot
+- Spring Boot + Java11
 - Spring Security + JWT + Oauth2
 - Spring Data JPA
 - Query DSL
 - MySQL
+- MongoDB
+- Redis
+- webSocket + RabbitMQ
 - AWS (ec2,s3)
+- Swagger
+- Rest api
 
 
-> 시스템 아키텍처 (1차)
+> 시스템 아키텍처
 
-![캡스톤 아키텍처](https://user-images.githubusercontent.com/74866067/229481359-e20aad37-86c0-4e93-b111-96f63faeea28.png)
+학생들이 진행한 프로젝트로, 대부분 ec2프리티어 내부에 환경을 구성하여 무료로 간단하게 진행했습니다.
+
+![캡스톤 아키텍처](https://github.com/Team-WHITEBOX/HowLook-BackEnd/assets/74866067/f3316bbc-2180-45d7-9e47-6cef2f977b74)
 
 
 >패키지 구조
@@ -171,52 +178,92 @@ public class MemberProfileRepositoryImpl implements MemberProfileRepository{
         http.authenticationManager(authenticationManager);
         http.httpBasic().disable();
         http.formLogin().disable();
+        http.logout().disable();
         http.csrf().disable();  // csrf 비활성화
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT위해 세션 사용안함
         http.authorizeRequests()
                 .antMatchers(WHITELIST).permitAll()
                 .antMatchers("/sample/doB").hasAnyRole("ADMIN")
                 .antMatchers("/member/**").hasAnyRole("USER")
-                .anyRequest().authenticated()
+                .anyRequest().hasAnyRole("USER")
                 .and()
                 .addFilterBefore(apiLoginFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(tokenCheckFilter(jwtUtil,userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new RefreshTokenFilter("/account/refreshToken",jwtUtil), TokenCheckFilter.class)
+                .addFilterBefore(tokenCheckFilter(jwtUtil,WHITELIST), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(refreshTokenCheckFilter("/account/refreshToken", jwtUtil), TokenCheckFilter.class)
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
         http.cors(httpSecurityCorsConfigurer -> {         //cors문제 해결
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
         });
-        http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService()).and().successHandler(authenticationSuccessHandler());
 ```
-- CustomOAuth2UserService
+- OAuth2MemberServiceImpl
 
 카카오 로그인 api를 이용하여 소셜로그인을 구현하여 (비회원이라면 회원가입 후) 자체 JWT토큰을 발급합니다.
 ```
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-
-    private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
-    
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        ClientRegistration clientRegistration = userRequest.getClientRegistration();
-        String clientName = clientRegistration.getClientName();
+    public TokenDTO loginOauth(String providerName, String code) {
+        ClientRegistration provider = inMemoryClient.findByRegistrationId(providerName);
+        KakaoTokenResponse oAuth2Token = getOAuthToken(code, provider);
+        OAuth2MemberDTO oAuthUser = loginOAuthUser(providerName,provider,oAuth2Token);
 
-        OAuth2User oAuth2User = super.loadUser(userRequest);
-        Map<String, Object> paramMap = oAuth2User.getAttributes();
-        Map<String,String> account = new HashMap<>();
-
-        switch (clientName){
-            case "kakao":
-                account = getKakao(paramMap);
-                break;
-        }
-        return generateDTO(account, paramMap);
+        String accessToken = jwtUtil.generateToken(oAuthUser.getMemberId(),oAuthUser.getRoleSet());
+        String refreshToken = jwtUtil.generateRefreshToken(oAuthUser.getMemberId());
+        redisTemplate.opsForValue().set("RT:"+oAuthUser.getMemberId(),refreshToken, Duration.ofDays(15));
+        TokenDTO tokenDTO = TokenDTO.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+        return tokenDTO;
     }
-    
-    ...
-    
-}
+
+    private KakaoTokenResponse getOAuthToken(String code, ClientRegistration provider) {
+        WebClient webClient = WebClient.builder()
+                .baseUrl(provider.getProviderDetails().getTokenUri())
+                .defaultHeader("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .build();
+
+        KakaoTokenResponse response = webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("grant_type", "authorization_code")
+                        .queryParam("client_id", provider.getClientId())
+                        .queryParam("redirect_uri", provider.getRedirectUri())
+                        .queryParam("code", code)
+                        .queryParam("client_secret", provider.getClientSecret())
+                        .build())
+                .headers(header->header.setContentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(KakaoTokenResponse.class)
+                .block();
+        if (response != null) {
+            return response;
+        } else {
+            throw new RuntimeException("Failed to retrieve access token from Kakao");
+        }
+    }
+    ..
+    ..
+```
+
+## 채팅
+- ChatController
+
+rabbitMQ를 메시지 브로커로 사용하여 알맞은 목적지에 메시지를 전달하고, 기본적으로 바인딩 시켜둔 queue와 @RabbitListener를 통해 모든 메시지를 MongoDB에 저장합니다.
+```
+...
+    @MessageMapping("chat.message.{chatRoomId}")
+    public void sendMessage(@Payload ChatDTO chat, @DestinationVariable String chatRoomId) {
+        log.info("CHAT {}", chat);
+        chat.setTime(LocalDateTime.now());
+        chat.setMessage(chat.getMessage());
+        rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
+
+    }
+
+    //기본적으로 chat.queue가 exchange에 바인딩 되어있기 때문에 모든 메시지 처리
+    @RabbitListener(queues = CHAT_QUEUE_NAME)
+    public void receive(ChatDTO chatDTO){
+        log.info("received : " + chatDTO.getMessage());
+        Chat chat = rootConfig.getMapper().map(chatDTO,Chat.class);
+        chatRepository.save(chat);
+    }
+...
 ```
 
 ## 응답 객체
