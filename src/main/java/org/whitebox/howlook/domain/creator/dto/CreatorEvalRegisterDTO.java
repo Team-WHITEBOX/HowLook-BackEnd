@@ -12,11 +12,9 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreatorEvalRegistorDTO {
+public class CreatorEvalRegisterDTO {
     @Positive
     private Evaluation evaluation; // 평가 게시글 아이디
-
-    private int starRating; // 별점
 
     @NotBlank(message = "게시글에 대한 평가를 남겨주세요")
     @Size(min = 1, max = 1000, message = "댓글은 1문자 이상 1000문자 이하여야 합니다.")
