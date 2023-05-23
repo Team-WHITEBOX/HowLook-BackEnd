@@ -153,14 +153,15 @@ public class ReplyServiceImpl implements ReplyService{
 
         Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
-        reply.increaseLikeCount();
-
         Member member = accountUtil.getLoginMember();
 
         if(replyLikeRepository.findByMemberAndReply(member,reply).isPresent())
             throw new EntityAlreadyExistException(ErrorCode.COMMENT_LIKE_ALREADY_EXIST);
 
-        replyLikeRepository.save(new ReplyLike(member,reply));
+        else {
+            reply.increaseLikeCount();
+            replyLikeRepository.save(new ReplyLike(member, reply));
+        }
     }
 
     @Transactional
@@ -170,14 +171,14 @@ public class ReplyServiceImpl implements ReplyService{
 
         Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
-        reply.decreaseLikeCount();
-
         Member member = accountUtil.getLoginMember();
 
         Optional<ReplyLike> ReplyLikeOptional = replyLikeRepository.findByMemberAndReply(member,reply);
 
         ReplyLike replyLike = ReplyLikeOptional.orElseThrow(
                 () -> new EntityNotFoundException(ErrorCode.COMMENT_LIKE_NOT_FOUND));
+
+        reply.decreaseLikeCount();
 
         replyLikeRepository.delete(replyLike);
     }
