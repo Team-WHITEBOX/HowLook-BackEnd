@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum ResultCode {
     // Member
     LOGIN_SUCCESS(200, "M001", "로그인에 성공하였습니다."),
-    REGISTER_SUCCESS(200, "M002", "회원가입에 성공하였습니다."),
+    REGISTER_SUCCESS(201, "M002", "회원가입에 성공하였습니다."),
     GET_USERPROFILE_SUCCESS(200, "M003", "회원 프로필을 조회하였습니다."),
     GET_USER_BY_TOKEN_SUCCESS(200, "M004", "토큰으로 회원정보를 조회하였습니다."),
     GET_EDIT_PROFILE_SUCCESS(200, "M005", "회원 프로필 수정정보를 조회하였습니다."),

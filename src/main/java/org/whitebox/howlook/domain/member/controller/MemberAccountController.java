@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.member.dto.MemberJoinDTO;
@@ -51,7 +52,8 @@ public class MemberAccountController {
         log.info(memberJoinDTO);
 
         memberService.join(memberJoinDTO);
-        return ResponseEntity.ok(ResultResponse.of(REGISTER_SUCCESS, true));
+        //return ResponseEntity.ok(ResultResponse.of(REGISTER_SUCCESS, true));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResultResponse.of(REGISTER_SUCCESS, true));
     }
 
     @ApiOperation(value = "MemberId 중복 조회")

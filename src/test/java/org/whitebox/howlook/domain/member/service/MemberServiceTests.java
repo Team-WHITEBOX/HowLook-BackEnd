@@ -43,7 +43,7 @@ class MemberServiceTests {
     @Spy
     private BCryptPasswordEncoder passwordEncoder;
 
-    @DisplayName("회원가입")
+    @DisplayName("회원가입 성공")
     @Test
     void joinTest() {
         // given

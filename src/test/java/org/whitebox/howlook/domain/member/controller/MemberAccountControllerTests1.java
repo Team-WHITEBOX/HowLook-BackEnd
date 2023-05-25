@@ -3,54 +3,52 @@ package org.whitebox.howlook.domain.member.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.whitebox.howlook.domain.member.dto.MemberJoinDTO;
 import org.whitebox.howlook.domain.member.service.MemberServiceImpl;
+import org.whitebox.howlook.domain.member.service.OAuth2MemberService;
 
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//mockito 단위테스트
-@ExtendWith(MockitoExtension.class)
+//webMvc 슬라이스 테스트
+@WebMvcTest(MemberAccountController.class)
+@MockBean(JpaMetamodelMappingContext.class)
 @Slf4j
-class MemberAccountControllerTests {
-
-    @InjectMocks
-    private MemberAccountController memberAccountController;
-    @Mock
-    private MemberServiceImpl memberService;
-
+class MemberAccountControllerTests1 {
+    @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private MemberServiceImpl memberService;
+    @MockBean
+    private OAuth2MemberService oAuth2MemberService;
 
-    @BeforeEach
-    public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(memberAccountController).build();
-    }
 
 
     @DisplayName("회원가입 성공")
     @Test
+    @WithMockUser(roles = "USER")
     void joinPOST() throws Exception {
         //given
         MemberJoinDTO memberJoinDTO = joinDTO();
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post("/account/join")
+                MockMvcRequestBuilders.post("/account/join").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(memberJoinDTO)));
 
