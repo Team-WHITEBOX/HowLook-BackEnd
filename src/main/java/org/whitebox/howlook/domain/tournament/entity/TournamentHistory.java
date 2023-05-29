@@ -21,13 +21,13 @@ import java.util.List;
 public class TournamentHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long tournamentHistoryId;
-    LocalDate date;
-    Long rank_1;
-    Long rank_2;
-    Long rank_3;
-    Long rank_4;
-    Long voteCount;
+    private Long tournamentHistoryId;
+    private LocalDate date;
+    private Long rank_1;
+    private Long rank_2;
+    private Long rank_3;
+    private Long rank_4;
+    private Long voteCount;
 
     public TournamentHistory(List<TournamentPost> posts){
         this.date = posts.get(0).getDate();
@@ -35,6 +35,6 @@ public class TournamentHistory {
         this.rank_2 = posts.get(1).getTournamentPostId();
         this.rank_3 = posts.get(2).getTournamentPostId();
         this.rank_4 = posts.get(3).getTournamentPostId();
-        this.voteCount = posts.stream().mapToLong(i -> i.score).sum();
+        this.voteCount = posts.stream().mapToLong(post -> post.getScore()).sum();
     }
 }

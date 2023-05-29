@@ -19,17 +19,17 @@ import java.time.LocalDate;
 public class EventHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long eventHistoryId;
-    LocalDate date;
-    String eventType;
-    Long rank_1;
-    Long rank_2;
-    Long rank_3;
-    Long rank_4;
-    Long rank_5;
-    Long rank_6;
-    Long rank_7;
-    Long rank_8;
-    Long rank_9;
-    Long rank_10;
+    private Long eventHistoryId;
+    private LocalDate date;
+    private String eventType;
+    private Long rank_1;
+    private Long rank_2;
+    private Long rank_3;
+    private Long rank_4;
+    private Long rank_5;
+    private Long rank_6;
+    private Long rank_7;
+    private Long rank_8;
+    private Long rank_9;
+    private Long rank_10;
 }

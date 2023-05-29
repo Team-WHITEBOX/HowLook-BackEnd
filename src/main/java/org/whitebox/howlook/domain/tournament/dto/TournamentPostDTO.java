@@ -8,14 +8,14 @@ import java.time.LocalDate;
 
 @Getter
 public class TournamentPostDTO {
-    Long tournamentPostId;
-    LocalDate date;
-    Long postId;
-    String photo;
-    String memberId;
-    Long score;
-    String tournamentType;
-    Long LikeCount;     //좋아요개수
+    private Long tournamentPostId;
+    private LocalDate date;
+    private Long postId;
+    private String photo;
+    private String memberId;
+    private Long score;
+    private String tournamentType;
+    private Long LikeCount;     //좋아요개수
 
     public TournamentPostDTO(Post post)
     {

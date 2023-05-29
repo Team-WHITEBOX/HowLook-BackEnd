@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 public class loginDTO {
     @ApiModelProperty(value = "아이디", example = "testuser1", required = true)
-    String memberId;
+    private String memberId;
 
     @ApiModelProperty(value = "비밀번호", example = "a1234567", required = true)
-    String memberPassword;
+    private String memberPassword;
 }
