@@ -32,7 +32,7 @@ public class creatorController {
 //    @GetMapping(value = "/{EvalId}")
 //    public ResponseEntity<ResultResponse> getEvalId(@PathVariable("EvalId") @Positive @NotNull(message = "평가글의 아이디를 입력해주세요.")
 //                                                    long EvalId) {
-//        creatorEvalService.
-//    }
 //
+//    }
+
 }

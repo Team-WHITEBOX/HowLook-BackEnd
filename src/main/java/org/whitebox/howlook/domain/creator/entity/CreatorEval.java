@@ -20,5 +20,7 @@ public class CreatorEval {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member; // creator 정보
 
+//    private int score; // 평가 점수
+
     private String content; // 내용
 }

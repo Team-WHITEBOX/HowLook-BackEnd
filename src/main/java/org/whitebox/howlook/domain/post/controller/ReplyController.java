@@ -2,10 +2,14 @@ package org.whitebox.howlook.domain.post.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.whitebox.howlook.domain.post.dto.ReplyModifyDTO;
+import org.whitebox.howlook.domain.post.dto.ReplyPageDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyReadDTO;
 import org.whitebox.howlook.domain.post.dto.ReplyRegisterDTO;
 import org.whitebox.howlook.domain.post.service.ReplyService;
@@ -71,5 +75,13 @@ public class ReplyController {
     public ResponseEntity<ResultResponse> unlikeReply(@RequestParam @Positive @NotNull(message = "댓글 아이디를 입력하세요.") long ReplyId) {
         replyService.unlikeReply(ReplyId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.UNLIKE_COMMENT_SUCCESS));
+    }
+
+    @ApiOperation(value = "한 게시글에 해당하는 댓글 페이지", notes = "GET 방식으로 특정 게시물의 댓글 목록") // 댓글 페이지네이션
+    @GetMapping("/replyPage/{postId}")
+    public ResponseEntity<ResultResponse> getReplyPage(@PathVariable("postId") @Positive Long postId ,int page, int size) {
+        Page<ReplyReadDTO> replyList = replyService.getReplyPage(postId, page, size);
+        final ReplyPageDTO replyPageDTO = new ReplyPageDTO(replyList);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.GET_REPLY_IN_POST_SUCCESS, replyPageDTO));
     }
 }

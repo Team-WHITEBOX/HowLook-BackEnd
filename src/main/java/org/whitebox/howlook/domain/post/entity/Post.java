@@ -21,7 +21,7 @@ import java.util.List;
 public class Post extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;       //게시글 id
+    private Long postId;  //게시글 id
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
