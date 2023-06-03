@@ -2,8 +2,13 @@ package org.whitebox.howlook.domain.post.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.member.entity.Member;
@@ -21,8 +26,10 @@ import org.whitebox.howlook.global.error.exception.EntityAlreadyExistException;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -146,6 +153,14 @@ public class ReplyServiceImpl implements ReplyService{
         return result;
     }
 
+    @Override // 댓글 페이지 처리
+    public Page<ReplyReadDTO> getReplyPage(Long postId, int page, int size) {
+        final Pageable pageable = PageRequest.of(page,size);
+        Post post = postRepository.findByPostId(postId);
+        Page<ReplyReadDTO> DTOPages = replyRepository.findAllByPost(pageable,post);
+        return DTOPages;
+    }
+
     @Transactional
     @Override
     public void likeReply(Long ReplyId) { // 댓글 좋아요
@@ -153,14 +168,15 @@ public class ReplyServiceImpl implements ReplyService{
 
         Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
-        reply.increaseLikeCount();
-
         Member member = accountUtil.getLoginMember();
 
         if(replyLikeRepository.findByMemberAndReply(member,reply).isPresent())
             throw new EntityAlreadyExistException(ErrorCode.COMMENT_LIKE_ALREADY_EXIST);
 
-        replyLikeRepository.save(new ReplyLike(member,reply));
+        else {
+            reply.increaseLikeCount();
+            replyLikeRepository.save(new ReplyLike(member, reply));
+        }
     }
 
     @Transactional
@@ -170,14 +186,14 @@ public class ReplyServiceImpl implements ReplyService{
 
         Reply reply = replyOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
-        reply.decreaseLikeCount();
-
         Member member = accountUtil.getLoginMember();
 
         Optional<ReplyLike> ReplyLikeOptional = replyLikeRepository.findByMemberAndReply(member,reply);
 
         ReplyLike replyLike = ReplyLikeOptional.orElseThrow(
                 () -> new EntityNotFoundException(ErrorCode.COMMENT_LIKE_NOT_FOUND));
+
+        reply.decreaseLikeCount();
 
         replyLikeRepository.delete(replyLike);
     }

@@ -9,7 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 public class CustomServletConfig implements WebMvcConfigurer {
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry){
-        registry.addResourceHandler("/account/**").addResourceLocations("classpath:/templates/account/");
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/**").addResourceLocations("classpath:/templates/"); // 테스트용
+          registry.addResourceHandler("/account/**").addResourceLocations("classpath:/templates/account/");
     }
 }

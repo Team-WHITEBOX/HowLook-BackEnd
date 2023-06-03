@@ -187,6 +187,7 @@ public class PostServiceImpl implements PostService {
         postPage.forEach(postReaderDTO -> {
             postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId()));
         });
+
         return postPage;
     }
 

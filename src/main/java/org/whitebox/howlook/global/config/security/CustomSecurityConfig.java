@@ -45,6 +45,8 @@ public class CustomSecurityConfig {
     private final MemberRepository memberRepository;
     private final RedisTemplate redisTemplate;
     private static final String[] WHITELIST = {"/account/**","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**"};
+//    private static final String[] WHITELIST = {"/**","/swagger*/**","/v3/api-docs","/api/v2/**","/ws**"}; // 테스트용
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)throws Exception {

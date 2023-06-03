@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class EvalReply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long replyId;       // 평가 id
+    private Long replyId; // 평가 id
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")

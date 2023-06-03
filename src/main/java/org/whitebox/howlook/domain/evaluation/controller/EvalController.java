@@ -87,4 +87,5 @@ public class EvalController {
         return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalReaderDTOS));
     }
     
+    // 크리에이터 평가 (별점 + 피드백)
 }
