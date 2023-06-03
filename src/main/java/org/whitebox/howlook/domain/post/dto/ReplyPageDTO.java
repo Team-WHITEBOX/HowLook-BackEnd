@@ -21,7 +21,7 @@ public class ReplyPageDTO {
 
     public ReplyPageDTO(Page<ReplyReadDTO> page){
         this.replies = page.getContent();
-        this.totalPages = page.getTotalPages();
+        this.totalPages = page.getTotalPages() - 1;
         this.nowPage = page.getNumber();
     }
 }

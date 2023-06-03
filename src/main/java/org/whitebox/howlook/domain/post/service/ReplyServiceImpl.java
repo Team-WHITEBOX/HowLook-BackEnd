@@ -153,7 +153,7 @@ public class ReplyServiceImpl implements ReplyService{
         return result;
     }
 
-    @Override
+    @Override // 댓글 페이지 처리
     public Page<ReplyReadDTO> getReplyPage(Long postId, int page, int size) {
         final Pageable pageable = PageRequest.of(page,size);
         Post post = postRepository.findByPostId(postId);
@@ -197,13 +197,4 @@ public class ReplyServiceImpl implements ReplyService{
 
         replyLikeRepository.delete(replyLike);
     }
-
-    //댓글 페이징처리 (뭘 기준으로 하는 걸까?
-//    @Transactional
-//    @Override
-//    public Page<ReplyReadDTO> getReplyPage(int page, int size) {
-//        final Pageable pageable = PageRequest.of(page,size);
-//
-//    }
-
 }
