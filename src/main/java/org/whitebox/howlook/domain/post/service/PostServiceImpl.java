@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -243,16 +244,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostReaderDTO> searchPostByHashtag(SearchCategoryDTO searchCategoryDTO) {
+    public Page<PostReaderDTO> searchPostByHashtag(SearchCategoryDTO searchCategoryDTO) {
         final Pageable pageable = PageRequest.of(searchCategoryDTO.getPage(), searchCategoryDTO.getSize());
 
         //해당 함수를 통해 hashtagDTO에서 true로 설정된 값만 있는 post의 ID를 불러온다.
-        List<PostReaderDTO> posts = postRepository.findPostByCategories(searchCategoryDTO, pageable);
-        posts.forEach(postReaderDTO -> {
+        Page<PostReaderDTO> postPage = postRepository.findPostByCategories(searchCategoryDTO, pageable);
+        postPage.forEach(postReaderDTO -> {
             postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId()));
         });
 
-        return posts;
+        return postPage;
     }
 
     @Transactional

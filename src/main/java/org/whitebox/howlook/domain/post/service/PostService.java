@@ -25,7 +25,7 @@ public interface PostService {
 
     public void unScrapPost(Long postId);
 
-    List<PostReaderDTO> searchPostByHashtag(SearchCategoryDTO searchCategoryDTO);
+    Page<PostReaderDTO> searchPostByHashtag(SearchCategoryDTO searchCategoryDTO);
 
     public void deletePost(Long postId);
 

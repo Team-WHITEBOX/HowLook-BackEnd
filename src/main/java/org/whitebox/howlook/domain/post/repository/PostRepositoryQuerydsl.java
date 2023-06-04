@@ -10,7 +10,7 @@ import java.util.List;
 public interface PostRepositoryQuerydsl {
     public Page<PostReaderDTO> findPostReaderDTOPage(Pageable pageable);
 
-    public List<PostReaderDTO> findPostByCategories(SearchCategoryDTO searchCategoryDTO, Pageable pageable);
+    public Page<PostReaderDTO> findPostByCategories(SearchCategoryDTO searchCategoryDTO, Pageable pageable);
 
     public Page<PostReaderDTO> findNearPostReaderDTOPage(Pageable pageable, float latitude, float longitude);
     public Page<PostReaderDTO> findTemperaturePostReaderDTOPage(Pageable pageable, Long temperature);
