@@ -67,10 +67,15 @@ public enum ResultCode {
     REPORT_POST_SUCCESS(200, "R001", "게시글 신고에 성공했습니다."),
 
     // Creator
-    CREATOR_EVAL_REGISTER_SUCCESS(200,"C001","크리에이터 평가 게시글 등록에 성공하였습니다."),
+    CREATOR_EVAL_REGISTER_SUCCESS(200,"CR001","크리에이터 평가 게시글 등록에 성공하였습니다."),
+    GET_CREATOR_EVAL(200, "CR002", "크리에이터 평가글 읽어오기에 성공하였습니다."),
+    DELETE_CREATOR_EVAl_SUCCESS(200, "CR003", "크리에이터 평가글 삭제에 성공하였습니다."),
+    MODIFY_CREATOR_EVAL_SUCCESS(200, "CR004", "크리에이터 평가글 수정에 성공하였습니다."),
+    GET_CREATOR_EVAL_LIST_SUCCESS(200,"CR005","크리에이터 평가글 목록 조회에 성공하였습니다."),
 
     // Payment
     PAYMENT_SUCCESS(200, "PA001","결제성공");
+
     private final int status;
     private final String code;
     private final String message;

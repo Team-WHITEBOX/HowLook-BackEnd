@@ -62,7 +62,13 @@ public enum ErrorCode {
     ALREADY_ENTER_ROOM(400,"C003","이미 참여중인 채팅방입니다."),
 
     // Payment
-    AMOUNT_NOT_EQUAL(400, "P001", "실제 결제금액과 서버에서 결제금액이 다릅니다.");
+    AMOUNT_NOT_EQUAL(400, "P001", "실제 결제금액과 서버에서 결제금액이 다릅니다."),
+
+
+    // creatorEval
+    CREATOREVAL_NOT_FOUND(400,"CR001", "해당하는 크리에이터 평가를 찾지 못하였습니다."),
+    CREATOREVAL_CANT_DELETE(400, "CR002", "타인의 크리에이터 평가는 삭제할 수 없습니다."),
+    CREATOREVAL_CANT_MODIFY(400, "CR003", "타인의 크리에이터 평가는 수정할 수 없습니다.");
 
     private final int status;
     private final String code;
