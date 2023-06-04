@@ -124,7 +124,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         booleanBuilder.and(post.temperature.gt(temperature - 2L));
         booleanBuilder.and(post.temperature.lt(temperature + 2L));
 
-        final List<PostReaderDTO> postDtos = queryFactory
+        QueryResults<PostReaderDTO> result = queryFactory
                 .select(new QPostReaderDTO(
                         post
                 ))
@@ -134,10 +134,14 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 .limit(pageable.getPageSize())
                 .orderBy(post.regDate.desc())
                 .distinct()
-                .fetch();
-        final long total = queryFactory
-                .selectFrom(post).fetch().size();
+                .fetchResults();
+
+
+        final List<PostReaderDTO> postDtos = result.getResults();
+
+        final long total = result.getTotal();
 
         return new PageImpl<>(postDtos, pageable, total);
     }
+
 }
