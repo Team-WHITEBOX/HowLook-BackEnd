@@ -9,10 +9,10 @@ import java.util.List;
 
 @Getter
 public class THistoryList {
-    Long tournamentHistoryId;
-    LocalDate date;
-    List<Long> rank = new ArrayList<>();
-    Long voteCount;
+    private Long tournamentHistoryId;
+    private LocalDate date;
+    private List<Long> rank = new ArrayList<>();
+    private Long voteCount;
 
     @QueryProjection
     public THistoryList(Long tournamentHistoryId, LocalDate date, Long rank_1, Long rank_2, Long rank_3, Long rank_4, Long voteCount){

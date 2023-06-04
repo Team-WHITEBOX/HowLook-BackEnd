@@ -19,7 +19,7 @@ import javax.persistence.Id;
 public class TournamentDateInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long dateInfoId;
+    private Long dateInfoId;
 
-    Long tournamentDate;
+    private Long tournamentDate;
 }

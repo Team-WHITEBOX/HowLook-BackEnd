@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @Builder
 public class ScrapsResponse {
-    List<SimplePostDTO> scraps;
+    private List<SimplePostDTO> scraps;
 }

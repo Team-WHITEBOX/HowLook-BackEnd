@@ -42,9 +42,10 @@ public class PostController {
     @ApiOperation(value = "날씨 기준 최근 게시글 10개 조회")
     @GetMapping("/weather")
     public ResponseEntity<ResultResponse> getWeather10Posts(@RequestParam @NotNull int page, @NotNull float latitude, @NotNull float longitude) throws IOException, ParseException {
-        final List<PostReaderDTO> postList = postService.getWeatherPostPage(10, page,latitude,longitude).getContent();
-
-        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_BY_WEATHER_SUCCESS, postList));
+        final Page<PostReaderDTO> postList = postService.getWeatherPostPage(10, page,latitude,longitude);
+        final PostPageDTO postPageDTO = new PostPageDTO(postList);
+        
+        return ResponseEntity.ok(ResultResponse.of(FIND_RECENT10POSTS_BY_WEATHER_SUCCESS, postPageDTO));
     }
     
 

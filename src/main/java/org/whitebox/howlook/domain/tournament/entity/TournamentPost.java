@@ -19,13 +19,13 @@ import java.time.LocalDate;
 public class TournamentPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long tournamentPostId;
-    LocalDate date;
-    Long postId;
-    String photo;
-    String memberId;
-    Long score;
-    String tournamentType;
+    private Long tournamentPostId;
+    private LocalDate date;
+    private Long postId;
+    private String photo;
+    private String memberId;
+    private Long score;
+    private String tournamentType;
 
     public void setScore(Long score){
         this.score = score;

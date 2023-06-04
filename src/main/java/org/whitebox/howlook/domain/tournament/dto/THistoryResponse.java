@@ -7,15 +7,14 @@ import java.util.List;
 
 @Getter
 public class THistoryResponse {
-    Long tournamentHistoryId;
-    LocalDate date;
-
-    List<TournamentPostDTO> postDTOS;
-    Long voteCount;
+    private Long tournamentHistoryId;
+    private LocalDate date;
+    private List<TournamentPostDTO> postDTOS;
+    private Long voteCount;
 
     public THistoryResponse(THistoryList tHistoryList){
         this.tournamentHistoryId = tHistoryList.getTournamentHistoryId();
-        this.date = tHistoryList.date;
+        this.date = tHistoryList.getDate();
         this.voteCount = tHistoryList.getVoteCount();
     }
 

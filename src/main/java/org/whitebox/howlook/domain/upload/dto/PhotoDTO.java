@@ -9,6 +9,6 @@ import lombok.*;
 @Setter
 @Getter
 public class PhotoDTO {
-    String path;
-    Long photoId;
+    private String path;
+    private Long photoId;
 }

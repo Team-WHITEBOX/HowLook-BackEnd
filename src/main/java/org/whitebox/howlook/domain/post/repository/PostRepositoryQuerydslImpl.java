@@ -1,6 +1,7 @@
 package org.whitebox.howlook.domain.post.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,6 +32,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 .orderBy(post.postId.desc())
                 .distinct()
                 .fetch();
+
         final long total = queryFactory
                 .selectFrom(post).fetch().size();
         return new PageImpl<>(postDTOs, pageable, total);
@@ -97,7 +99,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         booleanBuilder.and(post.longitude.gt(longitude - 0.05f));
         booleanBuilder.and(post.longitude.lt(longitude + 0.05f));
 
-        final List<PostReaderDTO> postDtos = queryFactory
+        QueryResults<PostReaderDTO> result = queryFactory
                 .select(new QPostReaderDTO(
                         post
                 ))
@@ -107,9 +109,11 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 .limit(pageable.getPageSize())
                 .orderBy(post.postId.desc())
                 .distinct()
-                .fetch();
-        final long total = queryFactory
-                .selectFrom(post).fetch().size();
+                .fetchResults();
+        final List<PostReaderDTO> postDtos = result.getResults();
+
+        final long total = result.getTotal();
+
         return new PageImpl<>(postDtos, pageable, total);
     }
 
@@ -121,7 +125,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
         booleanBuilder.and(post.temperature.gt(temperature - 2L));
         booleanBuilder.and(post.temperature.lt(temperature + 2L));
 
-        final List<PostReaderDTO> postDtos = queryFactory
+        QueryResults<PostReaderDTO> result = queryFactory
                 .select(new QPostReaderDTO(
                         post
                 ))
@@ -131,10 +135,14 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 .limit(pageable.getPageSize())
                 .orderBy(post.regDate.desc())
                 .distinct()
-                .fetch();
-        final long total = queryFactory
-                .selectFrom(post).fetch().size();
+                .fetchResults();
+
+
+        final List<PostReaderDTO> postDtos = result.getResults();
+
+        final long total = result.getTotal();
 
         return new PageImpl<>(postDtos, pageable, total);
     }
+
 }

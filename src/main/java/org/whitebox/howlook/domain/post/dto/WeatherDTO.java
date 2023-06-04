@@ -12,10 +12,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class WeatherDTO {
     @NotNull
-    Long temperature; // 섭씨 온도
+    private Long temperature; // 섭씨 온도
 
     @NotNull
-    Long weather; // 날씨 : 1 맑음 3 구름 4 흐림
+    private Long weather; // 날씨 : 1 맑음 3 구름 4 흐림
 
     public WeatherDTO(Long t, Long w)
     {
