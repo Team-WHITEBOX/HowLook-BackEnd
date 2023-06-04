@@ -119,9 +119,10 @@ public class PostController {
     @ApiOperation(value = "카테고리로 피드검색", notes= "카테고리(해시태그 + 사용자정보(키, 몸무게, 성별)로 피드검색함\n해시태그는 반드시 true/false중 하나 선택해야함.(비워두면 안됨)\n" +
             "page에는 표시하고 싶은 page번호 입력(0부터시작), 현재 한 페이지당 post 5개씩 출력됨.")
     public ResponseEntity<ResultResponse> searchByCategories(SearchCategoryDTO searchCategoryDTO) {
-        final List<PostReaderDTO> posts = postService.searchPostByHashtag(searchCategoryDTO);
+        final Page<PostReaderDTO> posts = postService.searchPostByHashtag(searchCategoryDTO);
+        final PostPageDTO postPageDTO = new PostPageDTO(posts);
 
-        return ResponseEntity.ok(ResultResponse.of(GET_HASHTAG_POST_SUCCESS, posts));
+        return ResponseEntity.ok(ResultResponse.of(GET_HASHTAG_POST_SUCCESS, postPageDTO));
     }
 
     @ApiOperation(value = "게시물 좋아요", notes = "POST 방식으로 추가")

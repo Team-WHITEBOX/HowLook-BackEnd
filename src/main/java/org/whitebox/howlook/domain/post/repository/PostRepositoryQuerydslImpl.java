@@ -38,7 +38,7 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
 
     //hashtagDTO받아서 true 값인 hashtag가 포함된 post들의 ID를 List로 반환
     @Override
-    public List<PostReaderDTO> findPostByCategories(SearchCategoryDTO searchCategoryDTO, Pageable pageable) {
+    public Page<PostReaderDTO> findPostByCategories(SearchCategoryDTO searchCategoryDTO, Pageable pageable) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
         booleanBuilder.and(post.member.height.goe(searchCategoryDTO.getHeightLow()));
@@ -82,8 +82,9 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        return posts;
-        //return new PageImpl<>(postIDs);
+        final long total = queryFactory
+                .selectFrom(post).fetch().size();
+        return new PageImpl<>(posts, pageable, total);
     }
 
     @Override
