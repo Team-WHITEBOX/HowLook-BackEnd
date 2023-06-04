@@ -17,14 +17,12 @@ import javax.persistence.*;
 public class PaymentInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long paymentNo; // 결제한번호
+    private long paymentNo;
 
     @ManyToOne (fetch = FetchType.LAZY)
     private Member member; // 유저 정보
 
-    int amount; // 결제 금액
-    
-    int ruby; // 결제된 금액에 따른 얻은 루비수
+    String impUid; // 결제 Uid
 
-    String impUid; // Uid
+    int amount; // 결제 금액
 }

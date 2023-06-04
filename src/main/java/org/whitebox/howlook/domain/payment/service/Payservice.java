@@ -10,7 +10,12 @@ import org.whitebox.howlook.domain.payment.dto.PaymentsDTO;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
 import org.whitebox.howlook.domain.payment.exception.DifferentAmountException;
 import org.whitebox.howlook.domain.payment.repository.PaymentRepository;
+import org.whitebox.howlook.domain.post.entity.Reply;
+import org.whitebox.howlook.global.error.ErrorCode;
+import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
+
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -22,28 +27,26 @@ public class Payservice {
 
     @Transactional
     public PaymentInfo paymentLookupService(long paymentsNO) {
-        PaymentInfo paymentsInfo = payRepository.getById(paymentsNO);
+        Optional<PaymentInfo> paymentOptional = payRepository.findById(paymentsNO);
+        PaymentInfo paymentsInfo = paymentOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
         return paymentsInfo;
     }
 
-    /* 실전용 */
+    /* 실전용 결제 검증 */
     @Transactional
-    public void verifyIamportPayment(IamportResponse<Payment> irsp, PaymentsDTO paymentsDTO) { // 결제가격을 매겨변수로.
-
+    public void verifyIamportPayment(IamportResponse<Payment> irsp, PaymentsDTO paymentsDTO) {
         if (irsp.getResponse().getAmount().intValue() != paymentsDTO.getAmount()) {
+            // 클라이언트 페이지에서 사용자의 출금정보와 아임포트에서의 출금정보를 비교
             throw new DifferentAmountException();
         }
 
-        int ruby = paymentsDTO.getAmount() / 100; // 루비개수
-
-        PaymentInfo pay = PaymentInfo.builder()
+        PaymentInfo paymentInfo = PaymentInfo.builder()
                 .impUid(irsp.getResponse().getImpUid())
-                .member(paymentsDTO.getMember())
+                .member(accountUtil.getLoginMember())
                 .amount(paymentsDTO.getAmount())
-                .ruby(ruby)
                 .build();
 
-        payRepository.save(pay);
+        payRepository.save(paymentInfo);
     }
 
     /* 테스트용 */
