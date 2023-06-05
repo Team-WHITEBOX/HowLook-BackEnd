@@ -145,6 +145,7 @@ public class ReplyServiceImpl implements ReplyService{
         Member member = accountUtil.getLoginMember();
         List<ReplyReadDTO> result = replies.stream().map(reply -> new ReplyReadDTO(reply)).collect(Collectors.toList());
 
+
        for(ReplyReadDTO replyReadDTO: result) {
             if(replyLikeRepository.findByMemberIdAndReplyId(member.getMemberId(), replyReadDTO.getReplyId()).isPresent()) {
                 replyReadDTO.setLikeCheck(true);
@@ -156,8 +157,17 @@ public class ReplyServiceImpl implements ReplyService{
     @Override // 댓글 페이지 처리
     public Page<ReplyReadDTO> getReplyPage(Long postId, int page, int size) {
         final Pageable pageable = PageRequest.of(page,size);
+        Member member = accountUtil.getLoginMember();
+
         Post post = postRepository.findByPostId(postId);
         Page<ReplyReadDTO> DTOPages = replyRepository.findAllByPost(pageable,post);
+
+        DTOPages.forEach(replyReadDTO -> {
+            if(replyLikeRepository.findByMemberIdAndReplyId(member.getMemberId(), replyReadDTO.getReplyId()).isPresent()) {
+                replyReadDTO.setLikeCheck(true);
+            }
+        });
+
         return DTOPages;
     }
 
