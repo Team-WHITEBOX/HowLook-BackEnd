@@ -85,7 +85,11 @@ public class PostRepositoryQuerydslImpl implements PostRepositoryQuerydsl {
                 .limit(pageable.getPageSize())
                 .fetch();
         final long total = queryFactory
-                .selectFrom(post).fetch().size();
+                .select(new QPostReaderDTO(post))
+                .from(post)
+                .where(booleanBuilder)
+                .fetch()
+                .size();
         return new PageImpl<>(posts, pageable, total);
     }
 
