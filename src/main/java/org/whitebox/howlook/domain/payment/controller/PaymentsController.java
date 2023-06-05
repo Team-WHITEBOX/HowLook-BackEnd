@@ -35,9 +35,8 @@ public class PaymentsController {
     @Autowired
     private Payservice payservice;
 
-    // Uid로 결제 정보 찾기
+    // 결제 Uid로 결제 정보 찾기
     public IamportResponse<Payment> paymentLookup(String impUid) throws IamportResponseException, IOException {
-
         IamportClient iamportClient = new IamportPaycoClient(imp_key,imp_secret);
 
         return iamportClient.paymentByImpUid(impUid);
@@ -47,6 +46,7 @@ public class PaymentsController {
     public IamportResponse<Payment> paymentLookup(long paymentsNo) throws IamportResponseException, IOException {
         IamportClient iamportClient = new IamportPaycoClient(imp_key,imp_secret);
         PaymentInfo paymentInfo = payservice.paymentLookupService(paymentsNo);
+
         return iamportClient.paymentByImpUid(paymentInfo.getImpUid());
     }
 
@@ -71,4 +71,5 @@ public class PaymentsController {
 //        payservice.verifyIamportPayment(irsp, amount);
 //        return irsp;
 //    }
+
 }

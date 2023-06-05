@@ -68,6 +68,11 @@ public class EvalReplyServiceImpl implements EvalReplyService{
     @Override
     public EvalDataDTO ReadDateByPostId(Long postId)
     {
+        List<EvalReply> evalReplies = evalReplyRepository.findBypid(postId).orElseThrow(() -> new EntityNotFoundException(EVAL_NOT_EXIST));
+
+        if(evalReplies.size() == 0)
+            throw new EntityNotFoundException(EVAL_NOT_EXIST);
+
         float maxScore = 0;
         float minScore = 10;
         float averageScore = 0;
@@ -86,8 +91,6 @@ public class EvalReplyServiceImpl implements EvalReplyService{
         Arrays.fill(femaleScores,0);
         Arrays.fill(maleCounts,0L);
         Arrays.fill(femaleCounts,0L);
-
-        List<EvalReply> evalReplies = evalReplyRepository.findBypid(postId);
 
         for(EvalReply reply : evalReplies)
         {

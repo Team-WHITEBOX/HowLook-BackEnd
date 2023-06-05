@@ -52,6 +52,9 @@ public enum ErrorCode {
     POST_CANT_PROFILE(400, "F011", "타인의 사진은 프로필사진으로 등록할 수 없습니다."),
     COMMENT_CANT_MODIFY(400,"F012", "타인의 댓글을 수정할 수 없습니다."),
     POST_NOT_LIKED(400, "F013", "좋아요가 눌리지 않은 게시글입니다."),
+    
+    // Weather
+    GPS_NOT_FOUND(400, "W001", "지원하지 않는 좌표입니다."),
 
     // HashTag
     HASHTAG_NOT_FOUND(400, "H001", "존재하지 않는 해시태그 입니다."),
@@ -68,7 +71,13 @@ public enum ErrorCode {
     ALREADY_ENTER_ROOM(400,"C004","이미 참여중인 채팅방입니다."),
 
     // Payment
-    AMOUNT_NOT_EQUAL(400, "P001", "실제 결제금액과 서버에서 결제금액이 다릅니다.");
+    AMOUNT_NOT_EQUAL(400, "P001", "실제 결제금액과 서버에서 결제금액이 다릅니다."),
+
+
+    // creatorEval
+    CREATOREVAL_NOT_FOUND(400,"CR001", "해당하는 크리에이터 평가를 찾지 못하였습니다."),
+    CREATOREVAL_CANT_DELETE(400, "CR002", "타인의 크리에이터 평가는 삭제할 수 없습니다."),
+    CREATOREVAL_CANT_MODIFY(400, "CR003", "타인의 크리에이터 평가는 수정할 수 없습니다.");
 
     private final int status;
     private final String code;

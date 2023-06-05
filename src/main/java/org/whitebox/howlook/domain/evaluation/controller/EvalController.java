@@ -30,12 +30,6 @@ public class EvalController {
     @PostMapping(value = "/registerPost",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerPosts(@Valid @ModelAttribute EvalRegisterDTO evalRegisterDTO) {
 
-//        if(bindingResult.hasErrors()) {
-//            log.info("has errors..");
-//            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-//            return ResponseEntity.ok(ResultResponse.of(EVAL_REGISTER_FAIL, false));
-//        }
-
         evalService.register(evalRegisterDTO);
 
         return ResponseEntity.ok(ResultResponse.of(EVAL_REGISTER_SUCCESS, true));
@@ -86,6 +80,14 @@ public class EvalController {
 
         return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalReaderDTOS));
     }
-    
-    // 크리에이터 평가 (별점 + 피드백)
+
+
+    // 평가안한 평가 글 전부 가져오기
+    @ApiOperation(value = "평가 안한 글 갯수 불러오기 : 파라메터 없음")
+    @GetMapping("/getEvalCount")
+    public ResponseEntity<ResultResponse> getEvalCount() {
+        List<EvalReaderDTO> evalReaderDTOS = evalService.readAllwithoutMine();
+
+        return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalReaderDTOS.size()));
+    }
 }

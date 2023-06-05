@@ -10,11 +10,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.whitebox.howlook.domain.post.dto.WeatherDTO;
+import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static org.whitebox.howlook.global.error.ErrorCode.GPS_NOT_FOUND;
 
 @Component
 @Log4j2
@@ -51,6 +54,10 @@ public class WeatherUtil {
         // 위도,경도가 아닌 기상청이 사용하는 격자 좌표로 검색해야함
         LatXLngY gridCoordinates = convertGRID_GPS(TO_GRID, latitude, longitude);
         String response = callWeatherApi(currentDate,currentTime,gridCoordinates);
+
+        log.info("====");
+        log.info(response);
+
         JSONArray weatherDataArray = parseWeatherArrayFromJson(response);
         String temperature = getWeatherValueByIndex(weatherDataArray, 0);
         String wind = getWeatherValueByIndex(weatherDataArray, 5);
@@ -85,6 +92,12 @@ public class WeatherUtil {
         JSONObject obj = (JSONObject) parser.parse(jsonResponse);
 
         JSONObject parseResponse = (JSONObject) obj.get("response");
+
+        JSONObject parseHeader = (JSONObject) parseResponse.get("header");
+
+        if(!parseHeader.get("resultCode").equals("00"))
+            throw new EntityNotFoundException(GPS_NOT_FOUND);
+
         JSONObject parseBody = (JSONObject) parseResponse.get("body");
         JSONObject parseItems = (JSONObject) parseBody.get("items");
 

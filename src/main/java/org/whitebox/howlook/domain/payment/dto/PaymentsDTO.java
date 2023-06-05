@@ -9,10 +9,7 @@ import org.whitebox.howlook.domain.member.entity.Member;
 @Builder
 @AllArgsConstructor
 public class PaymentsDTO {
-    String impUid; // impUid
-
-    Member member; // 결제한 유저정보
+    String impUid; // 결제 Uid
 
     int amount; // 지불한 금액
-
 }
