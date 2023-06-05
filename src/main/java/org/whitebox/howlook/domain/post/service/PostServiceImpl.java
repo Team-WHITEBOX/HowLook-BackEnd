@@ -70,7 +70,6 @@ public class PostServiceImpl implements PostService {
     @Value("${org.whitebox.server.upload}")
     public String isServer;
 
-
     //전달받은 postRegisterDTO값을 데이터베이스에 저장
     //해당 Post 자체데이터 + 사진데이터 테이블 + 해시테그 테이블 함께저장
     @Transactional
@@ -174,10 +173,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostReaderDTO> readerUID(String UserID) {
         final List<Post> posts = postRepository.findByMemberId(UserID).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
-
+        final Member member = accountUtil.getLoginMember();
         //UserID에 일치하는 값 없을 경우 POST_NOT_FOUND 반환
         List<PostReaderDTO> result = posts.stream().map(post ->  new PostReaderDTO(post)).collect(Collectors.toList());
-        result.forEach( postReaderDTO -> postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId())));
+        result.forEach(postReaderDTO -> {
+            postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId()));
+
+            if(postLikeRepository.findByMemberAndPostId(member,postReaderDTO.getPostId()) != null){
+                postReaderDTO.setLikeCheck(true);
+            }
+        });
 
         return result;
     }
@@ -185,12 +190,19 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<PostReaderDTO> getPostPage(int size, int page) {
         final Pageable pageable = PageRequest.of(page, size);
+        final Member member = accountUtil.getLoginMember();
+
         log.info(pageable);
         log.info(pageable.getOffset());
         Page<PostReaderDTO> postPage = postRepository.findPostReaderDTOPage(pageable);
 
         postPage.forEach(postReaderDTO -> {
             postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId()));
+
+            // 좋아요 체크하기
+            if(postLikeRepository.findByMemberAndPostId(member,postReaderDTO.getPostId()) != null){
+                postReaderDTO.setLikeCheck(true);
+            }
         });
 
         return postPage;
@@ -200,10 +212,16 @@ public class PostServiceImpl implements PostService {
     public Page<PostReaderDTO> getNearPostPage(int size, int page, float latitude, float longitude)
     {
         final Pageable pageable = PageRequest.of(page, size);
+        final Member member = accountUtil.getLoginMember();
 
         Page<PostReaderDTO> postPage = postRepository.findNearPostReaderDTOPage(pageable, latitude, longitude);
         postPage.forEach(postReaderDTO -> {
             postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId()));
+
+            // 좋아요 체크하기
+            if(postLikeRepository.findByMemberAndPostId(member,postReaderDTO.getPostId()) != null){
+                postReaderDTO.setLikeCheck(true);
+            }
         });
         return postPage;
     }
@@ -211,6 +229,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<PostReaderDTO> getWeatherPostPage(int size, int page, float latitude, float longitude) throws IOException, ParseException {
         final Pageable pageable = PageRequest.of(page, size);
+        final Member member = accountUtil.getLoginMember();
 
         // 날씨를 post에 저장해야함
         Object[] objects = weatherUtil.getWeather(latitude, longitude);
@@ -220,6 +239,10 @@ public class PostServiceImpl implements PostService {
         Page<PostReaderDTO> postPage = postRepository.findTemperaturePostReaderDTOPage(pageable, temperature);
         postPage.forEach(postReaderDTO -> {
             postReaderDTO.setPhotoDTOs(uploadService.getPhotoData(postReaderDTO.getPostId()));
+            // 좋아요 체크하기
+            if(postLikeRepository.findByMemberAndPostId(member,postReaderDTO.getPostId()) != null){
+                postReaderDTO.setLikeCheck(true);
+            }
         });
         return postPage;
     }
@@ -234,6 +257,7 @@ public class PostServiceImpl implements PostService {
         if(scrapRepository.findByMemberAndPost(member,post).isPresent()){
             throw new EntityAlreadyExistException(SCRAP_ALREADY_EXIST);
         }
+
         Scrap scrap = new Scrap(member,post);
         scrapRepository.save(scrap);
     }
