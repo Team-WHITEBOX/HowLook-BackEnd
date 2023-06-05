@@ -13,4 +13,5 @@ public interface EvalService {
     public List<EvalReaderDTO> readAll();
     public List<EvalReaderDTO> getEvalPage(int page, int size);
     public EvalPageDTO getEvalWithHasMore(int page, int size);
+    public List<EvalReaderDTO> readAllwithoutMine();
 }
