@@ -19,6 +19,7 @@ import org.whitebox.howlook.global.util.AccountUtil;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.whitebox.howlook.global.error.ErrorCode.*;
 
@@ -69,6 +70,8 @@ public class EvalReplyServiceImpl implements EvalReplyService{
     public EvalDataDTO ReadDateByPostId(Long postId)
     {
         List<EvalReply> evalReplies = evalReplyRepository.findBypid(postId).orElseThrow(() -> new EntityNotFoundException(EVAL_NOT_EXIST));
+        Evaluation eval = evalRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(EVAL_NOT_EXIST));
+
 
         if(evalReplies.size() == 0)
             throw new EntityNotFoundException(EVAL_NOT_EXIST);
@@ -143,6 +146,8 @@ public class EvalReplyServiceImpl implements EvalReplyService{
 
         EvalDataDTO evalDataDTO = new EvalDataDTO();
 
+        evalDataDTO.setPostId(postId);
+        evalDataDTO.setMainPhotoPath(eval.getMainPhotoPath());
         evalDataDTO.setAverageScore(averageScore);
         evalDataDTO.setMaleScore(maleScore);
         evalDataDTO.setFemaleScore(femaleScore);

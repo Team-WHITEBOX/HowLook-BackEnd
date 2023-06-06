@@ -26,7 +26,6 @@ public class EvalDataController {
     @GetMapping("/getReplyData")
     public ResponseEntity<ResultResponse> getReplyData(@NotNull(message = "postId는 필수입니다.") Long postId) {
         EvalDataDTO evalDataDTO = evalReplyService.ReadDateByPostId(postId);
-        log.info(evalDataDTO);
 
         return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS, evalDataDTO));
     }

@@ -4,10 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @Builder
 @AllArgsConstructor
 public class EvalDataDTO {
+    private Long postId;       //게시글 id
+    private String mainPhotoPath; //사진 경로
+
     private float averageScore;
 
     private float maleScore;
