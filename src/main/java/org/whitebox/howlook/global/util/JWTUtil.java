@@ -124,4 +124,17 @@ public class JWTUtil {
         }
         return null;
     }
+
+    public String getUsernameFromJWT(String accessToken) {
+        try {
+            String[] splitJwt = accessToken.split("\\.");
+            Base64.Decoder decoder = Base64.getDecoder();
+            String payload = new String(decoder.decode(splitJwt[1].getBytes()));
+
+            HashMap<Object, String> claims = new ObjectMapper().readValue(payload, HashMap.class);
+            return claims.get("sub");
+        }catch (JsonProcessingException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

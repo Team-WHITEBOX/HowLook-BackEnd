@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import org.whitebox.howlook.domain.chat.entity.Chat;
 import org.whitebox.howlook.domain.chat.repository.mongo.ChatRepository;
 import org.whitebox.howlook.domain.chat.service.ChatService;
 import org.whitebox.howlook.global.config.RootConfig;
+import org.whitebox.howlook.global.util.JWTUtil;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +29,7 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatRepository chatRepository;
     private final RootConfig rootConfig;
+    private final JWTUtil jwtUtil;
 
     private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
     private final static String CHAT_QUEUE_NAME = "chat.queue";
@@ -34,11 +37,12 @@ public class ChatController {
     // /pub/chat.message.{roomId} 로 요청하면 브로커를 통해 처리
     // /exchange/chat.exchange/room.{roomId} 를 구독한 클라이언트에 메시지가 전송된다.
     @MessageMapping("chat.enter.{chatRoomId}")
-    public void enterUser(@Payload ChatDTO chat, @DestinationVariable String chatRoomId) {
-
+    public void enterUser(@Payload ChatDTO chat,@Header("Authorization") String token, @DestinationVariable String chatRoomId) {
+        String sender = jwtUtil.getUsernameFromJWT(token);
         // 채팅방에 유저 추가
-        chatService.enterRoom(chat.getRoomId(), chat.getSender());
+        chatService.enterRoom(chat.getRoomId(), sender);
 
+        chat.setSender(sender);
         chat.setTime(LocalDateTime.now());
         chat.setMessage(chat.getSender() + " 님 입장!!");
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
@@ -46,8 +50,10 @@ public class ChatController {
     }
 
     @MessageMapping("chat.message.{chatRoomId}")
-    public void sendMessage(@Payload ChatDTO chat, @DestinationVariable String chatRoomId) {
+    public void sendMessage(@Payload ChatDTO chat,@Header("Authorization") String token, @DestinationVariable String chatRoomId) {
         log.info("CHAT {}", chat);
+        String sender = jwtUtil.getUsernameFromJWT(token);
+        chat.setSender(sender);
         chat.setTime(LocalDateTime.now());
         chat.setMessage(chat.getMessage());
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);

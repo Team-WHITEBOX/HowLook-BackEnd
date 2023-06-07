@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.whitebox.howlook.global.config.security.handler.ChatAuthHandler;
 
 @Slf4j
 @Configuration
@@ -27,6 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private int rabbitPort;
     @Value("${RABBITMQ_VHOST}")
     private String rabbitVHost;
+    private final ChatAuthHandler chatAuthHandler;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -51,8 +54,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 //.withSockJS();
     }
 
-//    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(chatAuthHandler);
 //        registration.interceptors(new ChannelInterceptor() {
 //            @Override
 //            public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -65,5 +69,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //                return message;
 //            }
 //        });
-//    }
+    }
 }
