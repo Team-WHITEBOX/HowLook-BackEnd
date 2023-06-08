@@ -27,8 +27,6 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 @RequiredArgsConstructor
 public class EvalController {
     private final EvalService evalService;
-
-
     @ApiOperation(value = "평가글 등록하기 : 사진 한장")
     @PostMapping(value = "/registerPost",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerPosts(@Valid @ModelAttribute EvalRegisterDTO evalRegisterDTO) {
@@ -89,6 +87,4 @@ public class EvalController {
 
         return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalReaderDTOS));
     }
-    
-    // 크리에이터 평가 (별점 + 피드백)
 }

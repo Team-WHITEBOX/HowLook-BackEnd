@@ -63,7 +63,7 @@ public enum ErrorCode {
 
     // Payment
     AMOUNT_NOT_EQUAL(400, "P001", "실제 결제금액과 서버에서 결제금액이 다릅니다."),
-
+    LACK_LUBY(400, "P002", "루비 개수가 부족합니다."),
 
     // creatorEval
     CREATOREVAL_NOT_FOUND(400,"CR001", "해당하는 크리에이터 평가를 찾지 못하였습니다."),

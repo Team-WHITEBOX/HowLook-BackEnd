@@ -10,18 +10,18 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.whitebox.howlook.domain.payment.dto.PaymentsDTO;
+import org.springframework.web.bind.annotation.*;
+import org.whitebox.howlook.domain.payment.dto.BuyDTO;
+import org.whitebox.howlook.domain.payment.dto.PayDTO;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
+import org.whitebox.howlook.domain.payment.entity.UserCash;
 import org.whitebox.howlook.domain.payment.service.Payservice;
 import org.whitebox.howlook.global.result.ResultCode;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import java.io.IOException;
-import java.util.Map;
 
+@RequestMapping("/payment")
 @RestController
 @Log4j2
 @RequiredArgsConstructor
@@ -51,12 +51,12 @@ public class PaymentsController {
     }
 
     /* 실전 버전 verifyIamport */
-    @PostMapping("/verifyIamport")
-    public ResponseEntity<ResultResponse> verifyIamport(@RequestBody PaymentsDTO paymentsDTO) throws IamportResponseException, IOException {
-        String impUid = paymentsDTO.getImpUid();
+    @PostMapping("/charge")
+    public ResponseEntity<ResultResponse> chargeRuby(@RequestBody PayDTO payDTO) throws IamportResponseException, IOException {
+        String impUid = payDTO.getImpUid();
         IamportResponse<Payment> irsp = paymentLookup(impUid);
-        payservice.verifyIamportPayment(irsp,paymentsDTO);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.PAYMENT_SUCCESS));
+        UserCash userCash = payservice.chargeCash(irsp,payDTO);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PAYMENT_SUCCESS, userCash));
     }
 
     /* 테스트 버전 verifyIamport */

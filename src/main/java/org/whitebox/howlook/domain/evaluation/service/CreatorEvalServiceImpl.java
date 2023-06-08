@@ -4,20 +4,29 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.whitebox.howlook.domain.evaluation.dto.CreatorEvalModifyDTO;
+import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.evaluation.dto.CreatorEvalReadDTO;
 import org.whitebox.howlook.domain.evaluation.dto.CreatorEvalRegisterDTO;
+import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
 import org.whitebox.howlook.domain.evaluation.entity.CreatorEval;
-import org.whitebox.howlook.domain.evaluation.repository.CreatorEvalRepository;
+import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
-import org.whitebox.howlook.domain.evaluation.repository.EvalRepository;
+import org.whitebox.howlook.domain.evaluation.repository.CreatorEvalRepository;
 import org.whitebox.howlook.domain.member.entity.Member;
-import org.whitebox.howlook.global.error.ErrorCode;
-import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
+import org.whitebox.howlook.domain.payment.entity.UserCash;
+import org.whitebox.howlook.domain.payment.exception.LackOfLubyException;
+import org.whitebox.howlook.domain.payment.repository.UserCashRepository;
+import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 import org.whitebox.howlook.global.util.AccountUtil;
+import org.whitebox.howlook.global.util.LocalUploader;
+import org.whitebox.howlook.global.util.S3Uploader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,66 +38,116 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
     private final ModelMapper modelMapper;
     private final AccountUtil accountUtil;
     private final CreatorEvalRepository creatorEvalRepository;
-    private final EvalRepository evalRepository;
+
+    @Value("${org.whitebox.upload.path}")
+    private String uploadPath; // 저장될 경로
+    @Value("${org.whitebox.server.upload}")
+    public String isServer;
+    private final LocalUploader localUploader;
+    private final S3Uploader s3Uploader;
+    private final UserCashRepository userCashRepository;
     @Override
-    public long registerCreatorEval(CreatorEvalRegisterDTO creatorEvalRegisterDTO) { // 크리에이터 평가글 등록하기
+    public void registerCreatorEval(CreatorEvalRegisterDTO creatorEvalRegisterDTO) { // 크리에이터 평가 등록
+        Member member = accountUtil.getLoginMember();
+        UserCash userCash = userCashRepository.findByMember(member);
+
+        if(userCash.getRuby() > 20) {
+            userCash.payRuby(20);
+            userCashRepository.save(userCash);
+
+            modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+            CreatorEval creatorEval = modelMapper.map(creatorEvalRegisterDTO, CreatorEval.class);
+
+            // 여기까지 프로필 올리는 코드
+            UploadFileDTO uploadFileDTO = creatorEvalRegisterDTO.getFiles();
+
+            List<String> uploadedFilePaths = new ArrayList<>();
+            for(MultipartFile file:uploadFileDTO.getFiles()){
+                uploadedFilePaths.addAll(localUploader.uploadLocal(file));
+            }
+
+            String m_path;
+
+            if(isServer.equals("true")) {
+                List<String> s3Paths = uploadedFilePaths.stream().map(s3Uploader::upload).collect(Collectors.toList());
+                m_path = s3Paths.get(0);
+            }
+
+            else
+            {
+                m_path = uploadedFilePaths.get(0);
+            }
+            //
+
+            creatorEval.setMainPhotoPath(m_path);
+            creatorEval.setMember(member); // 쓴 멤버 정보 등록
+
+
+            creatorEvalRepository.save(creatorEval);
+        }
+
+        else {
+            throw new LackOfLubyException();
+        }
+    }
+
+    @Override
+    public CreatorEvalReadDTO readByCreatorEvalId(Long creatorEvalId)
+    {
+        Optional<CreatorEval> result = creatorEvalRepository.findById(creatorEvalId);
+
+        CreatorEval creatorEval = result.orElseThrow();
+
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        CreatorEval creatorEval = modelMapper.map(creatorEvalRegisterDTO,CreatorEval.class);
-        Member member = accountUtil.getLoginMember();
+        CreatorEvalReadDTO creatorEvalReadDTO = modelMapper.map(creatorEval, CreatorEvalReadDTO.class);
 
-        Evaluation evaluation = evalRepository.findById(creatorEvalRegisterDTO.getEvalId()).orElseThrow(()
-        -> new EntityNotFoundException(ErrorCode.POST_NOT_FOUND));
+        creatorEvalReadDTO.setAverageScore(0); // 크리에이터 평가글 댓글 생성전까지 임시 값.
 
-        creatorEval.setMember(member); // 쓴 멤버 정보 등록
-        creatorEval.setEvaluation(evaluation); // 평가글 정보 등록
-        creatorEval.setContent(creatorEvalRegisterDTO.getContent()); // 평가글 내용 등록
-        creatorEval.setScore(creatorEvalRegisterDTO.getPoint()); // 평가 점수 등록
+        // 크리에이터 평가글 댓글들에 대한 점수 구하기
+//        List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getPostId());
+//
+//        float averScore = 0;
+//        Long rCount = 0L;
+//
+//        for(EvalReply r : evalReplies)
+//        {
+//            averScore += r.getScore();
+//            rCount += 1;
+//        }
+//
+//        if(averScore != 0 && rCount != 0)
+//            averScore = averScore/rCount;
+//
+//        evalReaderDTO.setAverageScore(averScore);
 
-        long EvalId = creatorEvalRepository.save(creatorEval).getEvalId(); // 레퍼지토리에 저장하면서 EvalId를 저장.
-        return EvalId;
+        return creatorEvalReadDTO;
     }
 
     @Override
-    public CreatorEvalReadDTO readCreatorEval(Long creatorEvalId) { // 특정 크리에이터 평가글 읽어오기
-        Optional<CreatorEval> creatorEvalOptional = creatorEvalRepository.findById(creatorEvalId);
-        CreatorEval creatorEval = creatorEvalOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.CREATOREVAL_NOT_FOUND));
-        CreatorEvalReadDTO dto = new CreatorEvalReadDTO(creatorEval);
+    public List<CreatorEvalReadDTO> getCreatorEvalPage(int page, int size)
+    {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        final Pageable pageable = PageRequest.of(page,size);
+        Page<EvalReaderDTO> evalPage = evalRepository.findEvalReaderDTOPage(pageable);
+        List<EvalReaderDTO> evalListFromPage = evalPage.getContent();
 
-        return dto;
-    }
+        List<EvalReaderDTO> readerDTOList = new ArrayList();
 
-    @Transactional
-    @Override
-    public void remove(Long creatorEvalId) {   // 특정 크리에이터 평가글 지우기
-        CreatorEval creatorEval = creatorEvalRepository.findById(creatorEvalId).orElseThrow(() -> new EntityNotFoundException(ErrorCode.CREATOREVAL_NOT_FOUND));
-        Member member = accountUtil.getLoginMember();
+        for(int i = 0; i < evalListFromPage.size(); i++) {
 
-        if(creatorEval.getMember().getMemberId() != member.getMemberId()) {
-            throw new EntityNotFoundException(ErrorCode.CREATOREVAL_CANT_DELETE);
+            EvalReaderDTO evalReaderDTO = modelMapper.map(evalListFromPage.get(i), EvalReaderDTO.class);
+
+            if(checkEvalHasMyReply(evalReaderDTO) && !checkMyEvalPost(evalReaderDTO) ) {
+                readerDTOList.add(evalReaderDTO);
+            }
+            else{
+                List<EvalReaderDTO> temp = getEvalPage(page+1,size);
+                if(temp != null) {
+                    for (int j = 0; j < temp.size(); j++)
+                        readerDTOList.add(temp.get(j));
+                }
+            }
         }
-
-        creatorEvalRepository.delete(creatorEval);
-    }
-
-    @Transactional
-    @Override
-    public void modify(CreatorEvalModifyDTO creatorEvalModifyDTO) { // 크리에이터 평가글 수정
-        Optional<CreatorEval> CreatorEvalOptional = creatorEvalRepository.findById(creatorEvalModifyDTO.getCreatorEvalId());
-        CreatorEval creatorEval = CreatorEvalOptional.orElseThrow(() -> new EntityNotFoundException(ErrorCode.CREATOREVAL_NOT_FOUND));
-        Member member = accountUtil.getLoginMember();
-
-        if(creatorEval.getMember().getMemberId() != member.getMemberId()) {
-            throw new EntityNotFoundException(ErrorCode.CREATOREVAL_CANT_MODIFY);
-        }
-
-        creatorEval.ChangeContent(creatorEvalModifyDTO.getContent());
-        creatorEvalRepository.save(creatorEval);
-    }
-
-    @Override // 평가글에 해당하는 크리에이터 평가글 읽어오기.
-    public List<CreatorEvalReadDTO> getListOfEval(Long EvalId) {
-        List<CreatorEval> creatorEvals = creatorEvalRepository.findByEval(EvalId); // 여기서 list 방식으로 repository에서 받아오기
-        List<CreatorEvalReadDTO> result = creatorEvals.stream().map(creatorEval -> new CreatorEvalReadDTO(creatorEval)).collect(Collectors.toList());
-        return result;
+        return readerDTOList;
     }
 }

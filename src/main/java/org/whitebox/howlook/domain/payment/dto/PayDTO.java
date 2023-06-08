@@ -3,13 +3,14 @@ package org.whitebox.howlook.domain.payment.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.whitebox.howlook.domain.member.entity.Member;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class PaymentsDTO {
+public class PayDTO {
     String impUid; // 결제 Uid
+
+    int ruby; // 지불한 금액에 따른 얻은 루비 개수
 
     int amount; // 지불한 금액
 }

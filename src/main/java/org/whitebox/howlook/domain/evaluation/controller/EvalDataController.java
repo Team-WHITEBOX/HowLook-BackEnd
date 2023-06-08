@@ -30,5 +30,4 @@ public class EvalDataController {
 
         return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS, evalDataDTO));
     }
-
 }

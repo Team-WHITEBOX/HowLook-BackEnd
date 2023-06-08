@@ -25,4 +25,6 @@ public class PaymentInfo {
     String impUid; // 결제 Uid
 
     int amount; // 결제 금액
+
+    int ruby; // 결제캐시
 }
