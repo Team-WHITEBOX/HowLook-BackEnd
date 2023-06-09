@@ -143,12 +143,12 @@ public class MemberServiceImpl implements MemberService{
         }
 
         log.info("수정");
-        member.setName(socialEditProfileRequest.getMemberName());
-        member.setNickName(socialEditProfileRequest.getMemberNickName());
-        member.setHeight(socialEditProfileRequest.getMemberHeight());
-        member.setWeight(socialEditProfileRequest.getMemberWeight());
-        member.setPhone(socialEditProfileRequest.getMemberPhone());
-        member.setBirthDay(socialEditProfileRequest.getMemberBirthDay());
+        member.setName(socialEditProfileRequest.getName());
+        member.setNickName(socialEditProfileRequest.getNickName());
+        member.setHeight(socialEditProfileRequest.getHeight());
+        member.setWeight(socialEditProfileRequest.getWeight());
+        member.setPhone(socialEditProfileRequest.getPhone());
+        member.setBirthDay(socialEditProfileRequest.getBirthDay());
         memberRepository.save(member);
     }
     @Transactional
