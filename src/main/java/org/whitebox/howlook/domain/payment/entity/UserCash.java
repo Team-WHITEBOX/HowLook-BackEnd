@@ -2,6 +2,7 @@ package org.whitebox.howlook.domain.payment.entity;
 
 import lombok.*;
 import org.whitebox.howlook.domain.member.entity.Member;
+import org.whitebox.howlook.domain.payment.dto.PayDTO;
 
 import javax.persistence.*;
 
@@ -15,7 +16,7 @@ import javax.persistence.*;
 public class UserCash {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userCash;
+    private long userCashId;
 
     @ManyToOne (fetch = FetchType.LAZY)
     private Member member;
@@ -27,6 +28,11 @@ public class UserCash {
     }
 
     public void buyRuby(int ruby) { // 루비 구입
-        this.ruby -= ruby;
+        this.ruby += ruby;
+    }
+
+    public UserCash(PayDTO payDTO, Member member) {
+        this.member = member;
+        ruby = payDTO.getRuby();
     }
 }

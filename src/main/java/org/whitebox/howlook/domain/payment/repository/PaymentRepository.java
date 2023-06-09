@@ -6,4 +6,5 @@ import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
 
 @Repository
 public interface PaymentRepository extends JpaRepository <PaymentInfo,Long> {
+
 }

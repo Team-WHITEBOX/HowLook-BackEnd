@@ -12,10 +12,12 @@ import org.whitebox.howlook.global.result.ResultResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import java.util.List;
+
 import static org.whitebox.howlook.global.result.ResultCode.*;
 
 @RestController
-@RequestMapping("/Creator")
+@RequestMapping("/CreatorEval")
 @Log4j2
 @RequiredArgsConstructor
 public class CreatorController {
@@ -37,22 +39,21 @@ public class CreatorController {
 
     @ApiOperation(value = "다음 평가 글 불러오기 : 파라메터 없음")
     @GetMapping("/readNextCreatorEval")
-    public ResponseEntity<ResultResponse> readNextEval()
+    public ResponseEntity<ResultResponse> readNextCreatorEval()
     {
-        final EvalPageDTO evalPageDTO = evalService.getEvalWithHasMore(0,2);
-
-        if(evalPageDTO == null) // || evalPage.getPostId() == null)
+        final CreatorEvalPageDTO creatorEvalPageDTO = creatorEvalService.getCreatorEvalWithHasMore(0,2);
+        if(creatorEvalPageDTO == null) // || evalPage.getPostId() == null)
         {
             return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_FAIL));
         }
 
-        return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalPageDTO));
+        return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,creatorEvalPageDTO));
     }
 
-//    @ApiOperation(value = "유저 아이디로 평가 글 불러오기 : 유저 아이디")
-//    @GetMapping("/readByUserId")
-//    public ResponseEntity<ResultResponse> readByUserId(@NotNull(message = "userID는 필수입니다.") String userId) {
-//        List<CreatorEvalReadDTO> creatorEvalReadDTOS = creatorEvalService.getListOfUserId(userId);
-//        return ResponseEntity.ok(ResultResponse.of(GET_CREATOR_EVAL_LIST_SUCCESS,creatorEvalReadDTOS));
-//    }
+    @ApiOperation(value = "유저 아이디로 평가 글 불러오기 : 유저 아이디")
+    @GetMapping("/readByUserId")
+    public ResponseEntity<ResultResponse> readByUserId(@NotNull(message = "userID는 필수입니다.") String userId) {
+        List<CreatorEvalReadDTO> creatorEvalReadDTOS = creatorEvalService.getListOfUId(userId);
+        return ResponseEntity.ok(ResultResponse.of(GET_CREATOR_EVAL_LIST_SUCCESS,creatorEvalReadDTOS));
+    }
 }

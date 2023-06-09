@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.whitebox.howlook.domain.payment.dto.BuyDTO;
+
 import org.whitebox.howlook.domain.payment.dto.PayDTO;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
 import org.whitebox.howlook.domain.payment.entity.UserCash;
@@ -50,7 +50,7 @@ public class PaymentsController {
         return iamportClient.paymentByImpUid(paymentInfo.getImpUid());
     }
 
-    /* 실전 버전 verifyIamport */
+    /* 실전 버전 사용자 출금 정보 검증 후 결제 */
     @PostMapping("/charge")
     public ResponseEntity<ResultResponse> chargeRuby(@RequestBody PayDTO payDTO) throws IamportResponseException, IOException {
         String impUid = payDTO.getImpUid();

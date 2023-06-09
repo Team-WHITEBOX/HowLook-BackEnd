@@ -2,6 +2,7 @@ package org.whitebox.howlook.domain.payment.service;
 
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 @Log4j2
 @Service
+@NoArgsConstructor
 public class Payservice {
     @Autowired
     private PaymentRepository payRepository;
@@ -55,7 +57,7 @@ public class Payservice {
 
         payRepository.save(paymentInfo); // 구매내역 저장
 
-        UserCash userCash = userCashRepository.findByMember(member);
+        UserCash userCash = userCashRepository.findByMember(member); // 사용자의 캐시 정보 확인
 
         if (userCash != null) {
             userCash.buyRuby(paymentInfo.getRuby());
@@ -63,6 +65,7 @@ public class Payservice {
         }
 
         else {
+            userCash = new UserCash(paymentsDTO,member);
             userCashRepository.save(userCash);
         }
 

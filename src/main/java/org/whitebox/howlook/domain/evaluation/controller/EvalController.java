@@ -84,7 +84,6 @@ public class EvalController {
     @GetMapping("/readByUserId")
     public ResponseEntity<ResultResponse> readByUserId(@NotNull(message = "userID는 필수입니다.") String userID) {
         List<EvalReaderDTO> evalReaderDTOS = evalService.readerUID(userID);
-
         return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalReaderDTOS));
     }
 }

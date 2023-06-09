@@ -1,9 +1,6 @@
 package org.whitebox.howlook.domain.evaluation.service;
 
-import org.whitebox.howlook.domain.evaluation.dto.CreatorEvalModifyDTO;
-import org.whitebox.howlook.domain.evaluation.dto.CreatorEvalReadDTO;
-import org.whitebox.howlook.domain.evaluation.dto.CreatorEvalRegisterDTO;
-import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
+import org.whitebox.howlook.domain.evaluation.dto.*;
 
 import java.util.List;
 
@@ -13,5 +10,9 @@ public interface CreatorEvalService {
 
     public CreatorEvalReadDTO readByCreatorEvalId(Long creatorEvalId);
 
-    public
+    public List<CreatorEvalReadDTO> getCreatorEvalPage(int page,int size);
+
+    public CreatorEvalPageDTO getCreatorEvalWithHasMore(int page, int size);
+
+    public List<CreatorEvalReadDTO> getListOfUId(String userId);
 }

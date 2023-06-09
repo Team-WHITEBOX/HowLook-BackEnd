@@ -165,6 +165,7 @@ public class EvalServiceImpl implements EvalService{
     {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         final Pageable pageable = PageRequest.of(page,size);
+
         Page<EvalReaderDTO> evalPage = evalRepository.findEvalReaderDTOPage(pageable);
         List<EvalReaderDTO> evalListFromPage = evalPage.getContent();
 
@@ -177,6 +178,7 @@ public class EvalServiceImpl implements EvalService{
             if(checkEvalHasMyReply(evalReaderDTO) && !checkMyEvalPost(evalReaderDTO) ) {
                 readerDTOList.add(evalReaderDTO);
             }
+
             else{
                 List<EvalReaderDTO> temp = getEvalPage(page+1,size);
                 if(temp != null) {
@@ -185,6 +187,7 @@ public class EvalServiceImpl implements EvalService{
                 }
             }
         }
+
         return readerDTOList;
     }
 

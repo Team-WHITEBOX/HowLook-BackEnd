@@ -10,12 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.whitebox.howlook.domain.evaluation.dto.CreatorEvalReadDTO;
-import org.whitebox.howlook.domain.evaluation.dto.CreatorEvalRegisterDTO;
-import org.whitebox.howlook.domain.evaluation.dto.EvalReaderDTO;
+import org.whitebox.howlook.domain.evaluation.dto.*;
 import org.whitebox.howlook.domain.evaluation.entity.CreatorEval;
-import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
-import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.evaluation.repository.CreatorEvalRepository;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.payment.entity.UserCash;
@@ -124,30 +120,92 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
     }
 
     @Override
-    public List<CreatorEvalReadDTO> getCreatorEvalPage(int page, int size)
+    public List<CreatorEvalReadDTO> getCreatorEvalPage(int page,int size)
     {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        final Pageable pageable = PageRequest.of(page,size);
-        Page<EvalReaderDTO> evalPage = evalRepository.findEvalReaderDTOPage(pageable);
-        List<EvalReaderDTO> evalListFromPage = evalPage.getContent();
+        Pageable pageable = PageRequest.of(page,size);
 
-        List<EvalReaderDTO> readerDTOList = new ArrayList();
+        Page<CreatorEvalReadDTO> creatorEvalPage = creatorEvalRepository.findCreatorEvalReadDTOPage(pageable);
 
-        for(int i = 0; i < evalListFromPage.size(); i++) {
+        List<CreatorEvalReadDTO> getListFromPage = creatorEvalPage.getContent();
 
-            EvalReaderDTO evalReaderDTO = modelMapper.map(evalListFromPage.get(i), EvalReaderDTO.class);
+        List<CreatorEvalReadDTO> readDTOList = new ArrayList();
 
-            if(checkEvalHasMyReply(evalReaderDTO) && !checkMyEvalPost(evalReaderDTO) ) {
-                readerDTOList.add(evalReaderDTO);
-            }
-            else{
-                List<EvalReaderDTO> temp = getEvalPage(page+1,size);
-                if(temp != null) {
-                    for (int j = 0; j < temp.size(); j++)
-                        readerDTOList.add(temp.get(j));
-                }
-            }
+        for(int i = 0; i < getListFromPage.size(); i++) {
+
+            EvalReaderDTO evalReaderDTO = modelMapper.map(readDTOList.get(i), EvalReaderDTO.class);
+
+            // 이거 무슨 코든데 잘 모르겠음.
+//            if(checkEvalHasMyReply(evalReaderDTO) && !checkMyEvalPost(evalReaderDTO) ) {
+//                readerDTOList.add(evalReaderDTO);
+//            }
+
+//            else{
+//                List<CreatorEvalReadDTO> temp = getCreatorEvalPage(page + 1, size);
+//
+//                if(temp != null) {
+//                    for (int j = 0; j < temp.size(); j++)
+//                        readDTOList.add(temp.get(j));
+//                }
+//            }
         }
-        return readerDTOList;
+        return readDTOList;
+    }
+
+    @Override
+    public CreatorEvalPageDTO getCreatorEvalWithHasMore(int page, int size)
+    {
+        final List<CreatorEvalReadDTO> creatorEvalPage = getCreatorEvalPage(page,size);
+
+        if(creatorEvalPage == null || creatorEvalPage.size() == 0)
+        {
+            return null;
+        }
+
+        CreatorEvalPageDTO creatorEvalPageDTO = new CreatorEvalPageDTO(creatorEvalPage.get(0));
+
+        if(creatorEvalPage.size() >= 2 && creatorEvalPage.get(0).getCreatorEvalId() != creatorEvalPage.get(1).getCreatorEvalId())
+        {
+            // hasMore = 1
+            creatorEvalPageDTO.setHasMore(1L);
+        }
+        else {
+            // hasMore = 0
+            creatorEvalPageDTO.setHasMore(0L);
+        }
+
+        return creatorEvalPageDTO;
+    }
+
+    @Override
+    public List<CreatorEvalReadDTO> getListOfUId(String userId) {
+        List<CreatorEval> creatorEvals = creatorEvalRepository.findByUserId(userId);
+        List<CreatorEvalReadDTO> result = new ArrayList<>();
+
+        for (CreatorEval creatorEval : creatorEvals) {
+            CreatorEvalReadDTO creatorEvalReadDTO = new CreatorEvalReadDTO().builder()
+                    .creatorEvalId(creatorEval.getEvalId())
+                    .mainPhotoPath(creatorEval.getMainPhotoPath()).build();
+            result.add(creatorEvalReadDTO);
+
+            // 댓글에서 AverageCore 구하는 코드
+//            List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getPostId());
+
+//            float averScore = 0;
+//            Long rCount = 0L;
+//            for(EvalReply r : evalReplies)
+//            {
+//                averScore += r.getScore();
+//                rCount += 1;
+//            }
+//
+//            if(averScore != 0 && rCount != 0)
+//                averScore = averScore/rCount;
+//
+//            evalReaderDTO.setAverageScore(averScore);
+//        }
+
+        }
+        return result;
     }
 }
