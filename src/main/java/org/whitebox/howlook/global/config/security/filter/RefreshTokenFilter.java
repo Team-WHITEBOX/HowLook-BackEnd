@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import static org.whitebox.howlook.global.error.ErrorCode.REFRESH_INVALID;
 import static org.whitebox.howlook.global.error.ErrorCode.TOKEN_ALIVE;
 import static org.whitebox.howlook.global.result.ResultCode.LOGIN_SUCCESS;
+import static org.whitebox.howlook.global.result.ResultCode.REFRESH_TOKEN_SUCCESS;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -120,7 +121,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
 
         Gson gson = new Gson();
-        ResultResponse result = ResultResponse.of(LOGIN_SUCCESS,tokenDTO);
+        ResultResponse result = ResultResponse.of(REFRESH_TOKEN_SUCCESS,tokenDTO);
         String jsonStr = gson.toJson(result);
 
         try {

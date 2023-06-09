@@ -19,6 +19,7 @@ public enum ResultCode {
     CHECK_NICKNAME_GOOD(200, "M010", "사용가능한 닉네임 입니다."),
     CHECK_NICKNAME_BAD(200, "M011", "사용불가능한 닉네임 입니다."),
     LOGOUT_SUCCESS(200, "M012", "로그아웃에 성공하였습니다."),
+    REFRESH_TOKEN_SUCCESS(200,"M013","리프레쉬 토큰 발급에 성공하였습니다."),
 
 
 
