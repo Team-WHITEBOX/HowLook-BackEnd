@@ -12,7 +12,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.member.exception.MemberDoesNotExistException;
 import org.whitebox.howlook.domain.member.repository.MemberRepository;
+import org.whitebox.howlook.global.config.security.dto.TokenDTO;
 import org.whitebox.howlook.global.config.security.exception.TokenException;
+import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.JWTUtil;
 
 import javax.servlet.FilterChain;
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static org.whitebox.howlook.global.error.ErrorCode.REFRESH_INVALID;
 import static org.whitebox.howlook.global.error.ErrorCode.TOKEN_ALIVE;
+import static org.whitebox.howlook.global.result.ResultCode.LOGIN_SUCCESS;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -86,8 +89,8 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
                     .collect(Collectors.toList());
 
             accessToken = jwtUtil.generateToken(userName,authorities);
-
-            sendTokens(accessToken, refreshToken, response);
+            TokenDTO tokenDTO = TokenDTO.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+            sendTokens(tokenDTO, response);
         }catch (TokenException e){
             e.sendResponseError(response);
         }catch (Exception e){
@@ -110,15 +113,15 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private void sendTokens(String accessTokenValue, String refreshTokenValue, HttpServletResponse response) {
+    private void sendTokens(TokenDTO tokenDTO, HttpServletResponse response) {
 
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        Gson gson = new Gson();
 
-        String jsonStr = gson.toJson(Map.of("accessToken", accessTokenValue,
-                "refreshToken", refreshTokenValue));
+        Gson gson = new Gson();
+        ResultResponse result = ResultResponse.of(LOGIN_SUCCESS,tokenDTO);
+        String jsonStr = gson.toJson(result);
 
         try {
             response.getWriter().println(jsonStr);

@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.whitebox.howlook.global.config.security.dto.TokenDTO;
+import org.whitebox.howlook.global.result.ResultResponse;
 import org.whitebox.howlook.global.util.JWTUtil;
 
 import javax.servlet.ServletException;
@@ -15,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
+
+import static org.whitebox.howlook.global.result.ResultCode.LOGIN_SUCCESS;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -34,11 +37,11 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {  /
         redisTemplate.opsForValue().set("RT:"+authentication.getName(),refreshToken, Duration.ofDays(15));
 
         TokenDTO tokenDTO = TokenDTO.builder().accessToken(accessToken).refreshToken(refreshToken).build();
-
+        ResultResponse result = ResultResponse.of(LOGIN_SUCCESS,tokenDTO);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
         Gson gson = new Gson();
 
-        String jsonStr = gson.toJson(tokenDTO);
+        String jsonStr = gson.toJson(result);
 
         response.getWriter().println(jsonStr);
 
