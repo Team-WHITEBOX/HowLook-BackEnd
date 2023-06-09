@@ -162,7 +162,7 @@ public class PostServiceImpl implements PostService {
             postReaderDTO.setLikeCheck(false);
         }
 
-        if(scrapRepository.findAllByPostId(postId).isEmpty()) {
+        if(scrapRepository.findByMemberAndPost(member,post).isEmpty()) {
             postReaderDTO.setIsScrapped(false);
         }else {
             postReaderDTO.setIsScrapped(true);
