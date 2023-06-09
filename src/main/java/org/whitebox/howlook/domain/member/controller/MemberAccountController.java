@@ -39,9 +39,9 @@ public class MemberAccountController {
         log.info("토큰 재발급");
     }
 
-    @GetMapping("/oauth/{provider}")
-    public ResponseEntity<ResultResponse> loginOauth(@PathVariable String provider,@RequestParam String code){
-        TokenDTO tokenDTO = oAuth2MemberService.loginOauth(provider,code);
+    @PostMapping("/oauth/{provider}")
+    public ResponseEntity<ResultResponse> loginOauth(@PathVariable String provider,@RequestBody String token){
+        TokenDTO tokenDTO = oAuth2MemberService.loginOauth(provider,token);
         return ResponseEntity.ok(ResultResponse.of(LOGIN_SUCCESS,tokenDTO));
     }
 

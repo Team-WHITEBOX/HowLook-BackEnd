@@ -36,10 +36,10 @@ public class OAuth2MemberServiceImpl implements OAuth2MemberService {
     private final RedisTemplate redisTemplate;
 
     @Override
-    public TokenDTO loginOauth(String providerName, String code) {
+    public TokenDTO loginOauth(String providerName, String token) {
         ClientRegistration provider = inMemoryClient.findByRegistrationId(providerName);
-        KakaoTokenResponse oAuth2Token = getOAuthToken(code, provider);
-        OAuth2MemberDTO oAuthUser = loginOAuthUser(providerName,provider,oAuth2Token);
+        //KakaoTokenResponse oAuth2Token = getOAuthToken(code, provider);
+        OAuth2MemberDTO oAuthUser = loginOAuthUser(providerName,provider,token);
 
         String accessToken = jwtUtil.generateToken(oAuthUser.getMemberId(),oAuthUser.getRoleSet());
         String refreshToken = jwtUtil.generateRefreshToken(oAuthUser.getMemberId());
@@ -74,7 +74,7 @@ public class OAuth2MemberServiceImpl implements OAuth2MemberService {
         }
     }
 
-    private OAuth2MemberDTO loginOAuthUser(String providerName, ClientRegistration provider, KakaoTokenResponse oAuth2Token) {
+    private OAuth2MemberDTO loginOAuthUser(String providerName, ClientRegistration provider, String oAuth2Token) {
 
         Map<String, Object> paramMap = getUserAttribute(provider,oAuth2Token);
         Map<String,String> account = new HashMap<>();
@@ -87,11 +87,11 @@ public class OAuth2MemberServiceImpl implements OAuth2MemberService {
         return generateMember(account);
     }
 
-    private Map<String,Object> getUserAttribute(ClientRegistration provider, KakaoTokenResponse oauth2Token){
+    private Map<String,Object> getUserAttribute(ClientRegistration provider, String oauth2Token){
         return WebClient.create()
                 .get()
                 .uri(provider.getProviderDetails().getUserInfoEndpoint().getUri())
-                .headers(header-> header.setBearerAuth(oauth2Token.getAccessToken().toString()))
+                .headers(header-> header.setBearerAuth(oauth2Token))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>() {})
                 .block();
