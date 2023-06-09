@@ -56,6 +56,8 @@ public class PostReaderDTO {
     private Long temperature; // 온도
     private Long weather; // 날씨
 
+    private Boolean isScrapped;
+
     @QueryProjection
     public PostReaderDTO(Post post){
         this.postId = post.getPostId();

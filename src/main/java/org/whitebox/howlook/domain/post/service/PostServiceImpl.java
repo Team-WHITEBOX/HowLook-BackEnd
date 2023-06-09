@@ -158,9 +158,14 @@ public class PostServiceImpl implements PostService {
         if(postLikeRepository.findByMemberAndPost(member,post).isPresent()) {
             postReaderDTO.setLikeCheck(true);
         }
-
         else {
             postReaderDTO.setLikeCheck(false);
+        }
+
+        if(scrapRepository.findAllByPostId(postId).isEmpty()) {
+            postReaderDTO.setIsScrapped(false);
+        }else {
+            postReaderDTO.setIsScrapped(true);
         }
 
         return postReaderDTO;
