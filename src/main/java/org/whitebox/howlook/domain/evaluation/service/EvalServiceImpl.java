@@ -42,7 +42,7 @@ public class EvalServiceImpl implements EvalService {
     final EvalRepository evalRepository;
     final EvalReplyRepository evalReplyRepository;
     @Value("${org.whitebox.upload.path}")
-    private String uploadPath; // ì €ì¥ë  ê²½ë¡œ
+    private String uploadPath; // ????¥?  ê²½ë¡œ
 
     final AccountUtil accountUtil;
     private final LocalUploader localUploader;
@@ -120,7 +120,7 @@ public class EvalServiceImpl implements EvalService {
             EvalReaderDTO evalReaderDTO = modelMapper.map(evalList.get(i), EvalReaderDTO.class);
 
 
-            // ì´ë¯¸ ë‹¬ì€ í‰ê°€ë¼ë©´ ë°˜í™˜í•˜ì§€ ì•Šê²Œ
+            // ?´ë¯? ?‹¬??? ?‰ê°??¼ë©? ë°˜í™˜?•˜ì§? ?•Šê²?
             EvalReply temp = evalReplyRepository
                     .findMyReplyByPostid(evalReaderDTO.getPostId(), accountUtil.getLoginMember().getMemberId());
 
@@ -185,6 +185,7 @@ public class EvalServiceImpl implements EvalService {
                 }
             }
         }
+
         return readerDTOList;
     }
 
@@ -211,7 +212,7 @@ public class EvalServiceImpl implements EvalService {
     }
 
     public boolean checkEvalHasMyReply(EvalReaderDTO evalReaderDTO) {
-        // ë‚´ê°€ ë‹¬ì€ í‰ê°€ê°€ ì—†ë‹¤ë©´ true ë¦¬í„´
+        // ?‚´ê°? ?‹¬??? ?‰ê°?ê°? ?—†?‹¤ë©? true ë¦¬í„´
         EvalReply temp = evalReplyRepository
                 .findMyReplyByPostid(evalReaderDTO.getPostId(), accountUtil.getLoginMember().getMemberId());
 
@@ -222,7 +223,7 @@ public class EvalServiceImpl implements EvalService {
     }
 
     public boolean checkMyEvalPost(EvalReaderDTO evalReaderDTO) {
-        // ë‚´ê°€ ì“´ ê¸€ì´ë¼ë©´ true ë¦¬í„´
+        // ?‚´ê°? ?“´ ê¸??´?¼ë©? true ë¦¬í„´
         Evaluation evaluation = evalRepository.findByPid(evalReaderDTO.getPostId()).get();
 
         if (evaluation.getMember().getMemberId() == accountUtil.getLoginMember().getMemberId())

@@ -24,8 +24,6 @@ import static org.whitebox.howlook.global.result.ResultCode.*;
 @RequiredArgsConstructor
 public class EvalController {
     private final EvalService evalService;
-
-
     @ApiOperation(value = "평가글 등록하기 : 사진 한장")
     @PostMapping(value = "/registerPost",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerPosts(@Valid @ModelAttribute EvalRegisterDTO evalRegisterDTO) {
@@ -77,7 +75,6 @@ public class EvalController {
     @GetMapping("/readByUserId")
     public ResponseEntity<ResultResponse> readByUserId(@NotNull(message = "userID는 필수입니다.") String userID) {
         List<EvalReaderDTO> evalReaderDTOS = evalService.readerUID(userID);
-
         return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalReaderDTOS));
     }
 

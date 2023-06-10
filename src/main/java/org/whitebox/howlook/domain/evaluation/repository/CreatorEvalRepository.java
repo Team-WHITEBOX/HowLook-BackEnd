@@ -6,7 +6,7 @@ import org.whitebox.howlook.domain.evaluation.entity.CreatorEval;
 
 import java.util.List;
 
-public interface CreatorEvalRepository extends JpaRepository<CreatorEval,Long> {
-    @Query("select c from CreatorEval c where c.evaluation.postId = :EvalId")
-    List<CreatorEval> findByEval(Long EvalId);
+public interface CreatorEvalRepository extends JpaRepository<CreatorEval,Long>, CreatorEvalSearchQuerydsl {
+    @Query("select c from CreatorEval c where c.member = :userId")
+    List<CreatorEval> findByUserId(String userId);
 }
