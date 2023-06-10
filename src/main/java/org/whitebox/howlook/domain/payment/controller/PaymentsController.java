@@ -20,6 +20,7 @@ import org.whitebox.howlook.global.result.ResultCode;
 import org.whitebox.howlook.global.result.ResultResponse;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RequestMapping("/payment")
 @RestController
@@ -59,7 +60,7 @@ public class PaymentsController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PAYMENT_SUCCESS, userCash));
     }
 
-    /* 테스트 버전 verifyIamport */
+    /* 테스트 버전 결제 */
 //    @PostMapping("/verifyIamport") // 테스트용
 //    public IamportResponse<Payment> verifyIamport(@RequestBody Map<String,String> map) throws IamportResponseException,
 //            IOException{
@@ -68,7 +69,8 @@ public class PaymentsController {
 //        int amount = Integer.parseInt(map.get("amount"));
 //        IamportResponse<Payment> irsp = paymentLookup(impUid);
 //
-//        payservice.verifyIamportPayment(irsp, amount);
+//        PayDTO payDTO = new PayDTO(impUid,amount/100,amount);
+//        UserCash userCash = payservice.chargeCash(irsp,payDTO);
 //        return irsp;
 //    }
 
