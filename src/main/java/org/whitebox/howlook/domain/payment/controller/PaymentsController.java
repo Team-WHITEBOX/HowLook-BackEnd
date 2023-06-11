@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.whitebox.howlook.domain.payment.dto.PayDTO;
+import org.whitebox.howlook.domain.payment.dto.TestPayDTO;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
 import org.whitebox.howlook.domain.payment.entity.UserCash;
 import org.whitebox.howlook.domain.payment.service.Payservice;
@@ -62,17 +63,9 @@ public class PaymentsController {
     }
 
     /* 테스트 버전 결제 */
-//    @PostMapping("/verifyIamport") // 테스트용
-//    public IamportResponse<Payment> verifyIamport(@RequestBody Map<String,String> map) throws IamportResponseException,
-//            IOException{
-//
-//        String impUid = map.get("imp_uid");
-//        int amount = Integer.parseInt(map.get("amount"));
-//        IamportResponse<Payment> irsp = paymentLookup(impUid);
-//
-//        PayDTO payDTO = new PayDTO(impUid,amount/100,amount);
-//        UserCash userCash = payservice.chargeCash(irsp,payDTO);
-//        return irsp;
-//    }
-
+    @PostMapping("/Testcharge") // 테스트용
+    public ResponseEntity<ResultResponse> verifyIamport(@RequestBody TestPayDTO testPayDTO) {
+        UserCash userCash = payservice.testChargeCash(testPayDTO);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PAYMENT_SUCCESS, userCash));
+    }
 }
