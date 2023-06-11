@@ -17,7 +17,7 @@ public class CreatorReviewDTO {
     private String mainPhotoPath;
 
     // 매긴 점수
-    private Double score;
+    private Long score;
 
     // 남긴 리뷰
     private String review;

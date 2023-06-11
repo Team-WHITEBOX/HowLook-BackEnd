@@ -6,7 +6,9 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
+import org.whitebox.howlook.domain.evaluation.dto.CreatorDataDTO;
 import org.whitebox.howlook.domain.evaluation.dto.CreatorReplyDTO;
+import org.whitebox.howlook.domain.evaluation.dto.CreatorReviewDTO;
 import org.whitebox.howlook.domain.evaluation.entity.CreatorEval;
 import org.whitebox.howlook.domain.evaluation.entity.CreatorReply;
 import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
@@ -20,6 +22,9 @@ import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 
 import javax.transaction.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.whitebox.howlook.global.error.ErrorCode.*;
 
@@ -66,5 +71,30 @@ public class CreatorReplyServiceImpl implements  CreatorReplyService{
         }
 
         return;
+    }
+
+
+    public CreatorDataDTO ReadDataByPostId(Long postId)
+    {
+        List<CreatorReply> evalReplies = creatorReplyRepository.findBypid(postId).orElseThrow(() -> new EntityNotFoundException(EVAL_NOT_EXIST));
+        CreatorDataDTO creatorDataDTO = new CreatorDataDTO();
+        List<CreatorReviewDTO> list = new ArrayList<>();
+
+        for(CreatorReply c : evalReplies)
+        {
+            CreatorReviewDTO creatorReviewDTO = new CreatorReviewDTO();
+            creatorReviewDTO.setPostId(postId);
+            creatorReviewDTO.setReview(c.getReview());
+            creatorReviewDTO.setScore(c.getScore());
+            creatorReviewDTO.setNickname(c.getMember().getNickName());
+            creatorReviewDTO.setMainPhotoPath(c.getEvaluation().getMainPhotoPath());
+
+            list.add(creatorReviewDTO);
+
+        }
+
+        creatorDataDTO.setCreatorReviewDTO(list);
+
+        return creatorDataDTO;
     }
 }
