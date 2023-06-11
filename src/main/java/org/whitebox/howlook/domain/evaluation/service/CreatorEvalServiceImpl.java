@@ -103,6 +103,7 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
         CreatorEvalReadDTO creatorEvalReadDTO = modelMapper.map(creatorEval, CreatorEvalReadDTO.class);
 
         creatorEvalReadDTO.setAverageScore(0); // 크리에이터 평가글 댓글 생성전까지 임시 값.
+        creatorEvalReadDTO.setCreatorEvalId(creatorEvalId);
 
         // 크리에이터 평가글 댓글들에 대한 점수 구하기
         Optional<List<CreatorReply>> replies = creatorReplyReopository.findBypid(creatorEvalId);
