@@ -44,6 +44,7 @@ public enum ResultCode {
     GET_REPLY_IN_POST_SUCCESS(200,"P015","게시글 댓글 조회에 성공하였습니다."),
     FIND_POST_BY_ID_SUCCESS(200, "P016", "아이디로 게시글 조회에 성공했습니다."),
     FIND_POST_BY_MEMBER_ID_SUCCESS(200, "P017", "멤버아디로 게시글 조회에 성공했습니다."),
+    IS_BOOKMARK_SUCCESS(200, "P018", "게시물 북마크 조회에 성공하였습니다."),
 
     // Weather
     FIND_RECENT10POSTS_BY_WEATHER_SUCCESS(200, "W001", "날씨로 최근 포스트 10개 조회에 성공했습니다."),

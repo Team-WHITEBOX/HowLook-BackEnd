@@ -24,6 +24,7 @@ public interface PostService {
     public void scrapPost(Long postId);
 
     public void unScrapPost(Long postId);
+    Boolean isScrapPost(Long postId);
 
     Page<PostReaderDTO> searchPostByHashtag(SearchCategoryDTO searchCategoryDTO);
 
@@ -32,4 +33,5 @@ public interface PostService {
     public void likePost(Long postId);
 
     public void unlikePost(Long postId);
+
 }

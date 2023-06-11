@@ -103,16 +103,24 @@ public class PostController {
     }
     @ApiOperation(value = "스크랩")
     @PostMapping("/scrap")
-    public ResponseEntity<ResultResponse> scrapPost(@RequestParam @NotNull(message = "PostId는 필수입니다.") @Positive Long postId){
+    public ResponseEntity<ResultResponse> scrapPost(@RequestParam @NotNull(message = "PostId는 필수입니다.") Long postId){
         postService.scrapPost(postId);
         return ResponseEntity.ok(ResultResponse.of(BOOKMARK_POST_SUCCESS));
     }
     @ApiOperation(value = "스크랩 취소")
     @DeleteMapping("/scrap")
-    public ResponseEntity<ResultResponse> unScrapPost(@RequestParam @NotNull(message = "PostId는 필수입니다.") @Positive Long postId) {
+    public ResponseEntity<ResultResponse> unScrapPost(@RequestParam @NotNull(message = "PostId는 필수입니다.") Long postId) {
         postService.unScrapPost(postId);
 
         return ResponseEntity.ok(ResultResponse.of(UN_BOOKMARK_POST_SUCCESS));
+    }
+
+    @ApiOperation(value = "스크랩 확인")
+    @GetMapping("/scrap")
+    public ResponseEntity<ResultResponse> isScrapPost(@RequestParam @NotNull(message = "PostId는 필수입니다.") Long postId) {
+        Boolean check = postService.isScrapPost(postId);
+
+        return ResponseEntity.ok(ResultResponse.of(UN_BOOKMARK_POST_SUCCESS,check));
     }
 
     //posts에 값이 없으면 Error 반환해야함. 차후 설정필요

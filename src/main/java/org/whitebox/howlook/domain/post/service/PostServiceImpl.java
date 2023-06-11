@@ -273,6 +273,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Boolean isScrapPost(Long postId) {
+        final Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(POST_NOT_FOUND));
+        final Member member = accountUtil.getLoginMember();
+        Boolean check=false;
+        if(scrapRepository.findByMemberAndPost(member,post).isPresent()) check=true;
+        return check;
+    }
+
+    @Override
     public Page<PostReaderDTO> searchPostByHashtag(SearchCategoryDTO searchCategoryDTO) {
         final Pageable pageable = PageRequest.of(searchCategoryDTO.getPage(), searchCategoryDTO.getSize());
 

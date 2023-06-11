@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,10 +22,12 @@ public class EditProfileRequest {
 
     @ApiModelProperty(value = "키", example = "183", required = true)
     @NotNull(message = "키을 입력해주세요")
+    @Range(min = 20,max = 300)
     private Long memberHeight;
 
     @ApiModelProperty(value = "몸무게", example = "70", required = true)
     @NotNull(message = "몸무게를 입력해주세요")
+    @Range(min = 20,max = 300)
     private Long memberWeight;
 
     @ApiModelProperty(value = "전화번호", example = "01012345678", required = false)
