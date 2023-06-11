@@ -3,6 +3,7 @@ package org.whitebox.howlook.domain.payment.entity;
 import lombok.*;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.payment.dto.PayDTO;
+import org.whitebox.howlook.domain.payment.dto.TestPayDTO;
 
 import javax.persistence.*;
 
@@ -34,5 +35,10 @@ public class UserCash {
     public UserCash(PayDTO payDTO, Member member) {
         this.member = member;
         ruby = payDTO.getRuby();
+    }
+
+    public UserCash(TestPayDTO testPayDTO, Member member) {
+        this.member = member;
+        ruby = testPayDTO.getRuby();
     }
 }
