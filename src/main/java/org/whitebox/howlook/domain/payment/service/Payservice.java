@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.payment.dto.BuyDTO;
 import org.whitebox.howlook.domain.payment.dto.PayDTO;
+import org.whitebox.howlook.domain.payment.dto.TestPayDTO;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
 import org.whitebox.howlook.domain.payment.entity.UserCash;
 import org.whitebox.howlook.domain.payment.exception.DifferentAmountException;
@@ -52,7 +53,7 @@ public class Payservice {
                 .impUid(irsp.getResponse().getImpUid())
                 .member(member)
                 .amount(paymentsDTO.getAmount())
-                .ruby(paymentsDTO.getRuby() / 100)
+                .ruby(paymentsDTO.getRuby())
                 .build();
 
         payRepository.save(paymentInfo); // 구매내역 저장
@@ -73,23 +74,31 @@ public class Payservice {
     }
 
     /* 테스트용 */
-//    @Transactional
-//    public void verifyIamportPayment(IamportResponse<Payment> irsp, int amount) {
-//        if(irsp.getResponse().getAmount().intValue() != amount) {
-//            // 오류 메시지 띄우기
-//            log.info("오류");
-//            return;
-//        }
-//
-//        int ruby = amount / 100; // 루비개수
-//
-//        PaymentInfo pay = PaymentInfo.builder()
-//                .impUid(irsp.getResponse().getImpUid())
-//                .member(null)
-//                .amount(amount)
-//                .ruby(ruby)
-//                .build();
-//
-//        payRepository.save(pay);
-//    }
+    @Transactional
+    public UserCash testChargeCash(TestPayDTO testPayDTO) {
+        Member member = accountUtil.getLoginMember();
+
+        PaymentInfo paymentInfo = PaymentInfo.builder()
+                .impUid("12345")
+                .member(member)
+                .amount(testPayDTO.getAmount())
+                .ruby(testPayDTO.getRuby())
+                .build();
+
+        payRepository.save(paymentInfo); // 구매내역 저장
+
+        UserCash userCash = userCashRepository.findByMember(member); // 사용자의 캐시 정보 확인
+
+        if (userCash != null) {
+            userCash.buyRuby(paymentInfo.getRuby());
+            userCashRepository.save(userCash);
+        }
+
+        else {
+            userCash = new UserCash(testPayDTO,member);
+            userCashRepository.save(userCash);
+        }
+
+        return userCash;
+    }
 }
