@@ -3,6 +3,7 @@ package org.whitebox.howlook.domain.payment.service;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class Payservice {
 
     @Autowired
     private AccountUtil accountUtil;
-
+    @Autowired
     private UserCashRepository userCashRepository;
 
     @Transactional

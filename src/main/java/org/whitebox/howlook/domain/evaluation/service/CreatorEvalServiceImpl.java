@@ -80,7 +80,9 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
 
             creatorEval.setMainPhotoPath(m_path);
             creatorEval.setMember(member); // 쓴 멤버 정보 등록
-
+            creatorEval.setContent(creatorEvalRegisterDTO.getContent());
+            creatorEval.setLikeCount(0L);
+            creatorEval.setCommentCount(0L);
 
             creatorEvalRepository.save(creatorEval);
         }
@@ -135,15 +137,18 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
 
         List<CreatorEvalReadDTO> readDTOList = new ArrayList();
 
-        for(int i = 0; i < getListFromPage.size(); i++) {
-
-            EvalReaderDTO evalReaderDTO = modelMapper.map(readDTOList.get(i), EvalReaderDTO.class);
-
-            // 이거 무슨 코든데 잘 모르겠음.
+//        for(int i = 0; i < getListFromPage.size(); i++) {
+//
+//            CreatorEvalReadDTO creatorEvalReadDTO = modelMapper.map(readDTOList.get(i), CreatorEvalReadDTO.class);
+//
+//            List<CreatorEvalReadDTO> temp = getCreatorEvalPage(page + 1, size);
+//
+//
+//            // 이거 무슨 코드인지 잘 모르겠음.
 //            if(checkEvalHasMyReply(evalReaderDTO) && !checkMyEvalPost(evalReaderDTO) ) {
 //                readerDTOList.add(evalReaderDTO);
 //            }
-
+//
 //            else{
 //                List<CreatorEvalReadDTO> temp = getCreatorEvalPage(page + 1, size);
 //
@@ -152,8 +157,9 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
 //                        readDTOList.add(temp.get(j));
 //                }
 //            }
-        }
-        return readDTOList;
+//        }
+
+        return getListFromPage;
     }
 
     @Override
