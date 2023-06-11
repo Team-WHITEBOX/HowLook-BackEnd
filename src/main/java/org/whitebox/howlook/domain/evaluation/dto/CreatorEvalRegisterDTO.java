@@ -15,8 +15,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 public class CreatorEvalRegisterDTO {
-    @Positive(message = "등록할 평가 게시글의 아이디를 입력해주세요")
-    private Long creatorEvalId; // 크리에이터 평가 게시글 아이디
+    private String content;
 
     @NotNull(message = "사진은 필수입니다.")
     private UploadFileDTO files;

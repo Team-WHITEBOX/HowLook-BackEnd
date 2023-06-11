@@ -42,6 +42,7 @@ public class CreatorController {
     public ResponseEntity<ResultResponse> readNextCreatorEval()
     {
         final CreatorEvalPageDTO creatorEvalPageDTO = creatorEvalService.getCreatorEvalWithHasMore(0,2);
+
         if(creatorEvalPageDTO == null) // || evalPage.getPostId() == null)
         {
             return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_FAIL));
