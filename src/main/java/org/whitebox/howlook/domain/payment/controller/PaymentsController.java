@@ -19,6 +19,7 @@ import org.whitebox.howlook.domain.payment.service.Payservice;
 import org.whitebox.howlook.global.result.ResultCode;
 import org.whitebox.howlook.global.result.ResultResponse;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Map;
 
@@ -53,7 +54,7 @@ public class PaymentsController {
 
     /* 실전 버전 사용자 출금 정보 검증 후 결제 */
     @PostMapping("/charge")
-    public ResponseEntity<ResultResponse> chargeRuby(@RequestBody PayDTO payDTO) throws IamportResponseException, IOException {
+    public ResponseEntity<ResultResponse> chargeRuby(@Valid @ModelAttribute PayDTO payDTO) throws IamportResponseException, IOException {
         String impUid = payDTO.getImpUid();
         IamportResponse<Payment> irsp = paymentLookup(impUid);
         UserCash userCash = payservice.chargeCash(irsp,payDTO);

@@ -27,9 +27,8 @@ public class CreatorController {
     @PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerPosts(@Valid @ModelAttribute CreatorEvalRegisterDTO creatorEvalRegisterDTO) {
         creatorEvalService.registerCreatorEval(creatorEvalRegisterDTO);
-        return ResponseEntity.ok(ResultResponse.of(CREATOR_EVAL_REGISTER_SUCCESS));
+        return ResponseEntity.ok(ResultResponse.of(CREATOR_EVAL_POST_SUCCESS));
     }
-
     @ApiOperation(value = "크리에이터 평가 글 번호로 글 불러오기 : 평가 글 ID")
     @GetMapping("/readByCreatorId")
     public ResponseEntity<ResultResponse> readCreatorEval(@NotNull(message = "p") Long creatorEvalId) {
