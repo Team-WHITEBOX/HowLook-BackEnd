@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
+import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
@@ -13,12 +15,8 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 public class CreatorEvalRegisterDTO {
-    @Positive(message = "등록할 평가 게시글의 아이디를 입력해주세요")
-    private Long EvalId; // 평가 게시글 아이디
+    private String content;
 
-    @NotBlank(message = "게시글에 대한 평가를 남겨주세요")
-    @Size(min = 1, max = 1000, message = "댓글은 1문자 이상 1000문자 이하여야 합니다.")
-    private String content; // 게시물에 대한 크리에이터 평가글
-
-    private int point; //  평가 점수
+    @NotNull(message = "사진은 필수입니다.")
+    private UploadFileDTO files;
 }
