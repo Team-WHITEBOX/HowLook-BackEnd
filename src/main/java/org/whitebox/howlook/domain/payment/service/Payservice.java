@@ -30,6 +30,7 @@ public class Payservice {
     @Autowired
     private PaymentRepository payRepository;
 
+    @Autowired
     private AccountUtil accountUtil;
 
     private UserCashRepository userCashRepository;
@@ -77,7 +78,6 @@ public class Payservice {
     @Transactional
     public UserCash testChargeCash(TestPayDTO testPayDTO) {
         Member member = accountUtil.getLoginMember();
-
         PaymentInfo paymentInfo = PaymentInfo.builder()
                 .impUid("12345")
                 .member(member)

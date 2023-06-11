@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.evaluation.dto.*;
 import org.whitebox.howlook.domain.evaluation.entity.CreatorEval;
+import org.whitebox.howlook.domain.evaluation.entity.CreatorReply;
 import org.whitebox.howlook.domain.evaluation.repository.CreatorEvalRepository;
+import org.whitebox.howlook.domain.evaluation.repository.CreatorReplyRepository;
 import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.payment.entity.UserCash;
 import org.whitebox.howlook.domain.payment.exception.LackOfLubyException;
@@ -34,6 +36,7 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
     private final ModelMapper modelMapper;
     private final AccountUtil accountUtil;
     private final CreatorEvalRepository creatorEvalRepository;
+    private final CreatorReplyRepository creatorReplyReopository;
 
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
@@ -100,21 +103,22 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
         creatorEvalReadDTO.setAverageScore(0); // 크리에이터 평가글 댓글 생성전까지 임시 값.
 
         // 크리에이터 평가글 댓글들에 대한 점수 구하기
-//        List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getPostId());
-//
-//        float averScore = 0;
-//        Long rCount = 0L;
-//
-//        for(EvalReply r : evalReplies)
-//        {
-//            averScore += r.getScore();
-//            rCount += 1;
-//        }
-//
-//        if(averScore != 0 && rCount != 0)
-//            averScore = averScore/rCount;
-//
-//        evalReaderDTO.setAverageScore(averScore);
+        Optional<List<CreatorReply>> replies = creatorReplyReopository.findBypid(creatorEvalId);
+        List<CreatorReply> creatorReplies = replies.orElseThrow();
+
+        float averScore = 0;
+        Long rCount = 0L;
+
+        for(CreatorReply r : creatorReplies)
+        {
+            averScore += r.getScore();
+            rCount += 1;
+        }
+
+        if(averScore != 0 && rCount != 0)
+            averScore = averScore/rCount;
+
+        creatorEvalReadDTO.setAverageScore(averScore);
 
         return creatorEvalReadDTO;
     }
@@ -188,21 +192,23 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
                     .mainPhotoPath(creatorEval.getMainPhotoPath()).build();
             result.add(creatorEvalReadDTO);
 
-            // 댓글에서 AverageCore 구하는 코드
-//            List<EvalReply> evalReplies = evalReplyRepository.findBypid(evalReaderDTO.getPostId());
+            // 크리에이터 평가글 댓글들에 대한 점수 구하기
+            Optional<List<CreatorReply>> replies = creatorReplyReopository.findBypid(creatorEval.getEvalId());
+            List<CreatorReply> creatorReplies = replies.orElseThrow();
 
-//            float averScore = 0;
-//            Long rCount = 0L;
-//            for(EvalReply r : evalReplies)
-//            {
-//                averScore += r.getScore();
-//                rCount += 1;
-//            }
-//
-//            if(averScore != 0 && rCount != 0)
-//                averScore = averScore/rCount;
-//
-//            evalReaderDTO.setAverageScore(averScore);
+            float averScore = 0;
+            Long rCount = 0L;
+
+            for(CreatorReply r : creatorReplies)
+            {
+                averScore += r.getScore();
+                rCount += 1;
+            }
+
+            if(averScore != 0 && rCount != 0)
+                averScore = averScore/rCount;
+
+            creatorEvalReadDTO.setAverageScore(averScore);
 //        }
 
         }
