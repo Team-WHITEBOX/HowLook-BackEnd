@@ -101,8 +101,8 @@ public class TournamentServiceImpl implements TournamentService {
 
         log.info(rows);
         for(Map<String, Object> map: cnt) {
-            Post f = postRepository.findByPostId((Long)map.get("postId"));
-            f.setMember(memberRepository.findById((String)map.get("memberId")).orElseThrow());
+            Post f = postRepository.findByPostId((Long)map.get("post_id"));
+            f.setMember(memberRepository.findById((String)map.get("member_id")).orElseThrow());
             posts.add(f);
         }
 
