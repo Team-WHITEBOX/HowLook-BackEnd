@@ -55,4 +55,11 @@ public class CreatorController {
         List<CreatorEvalReadDTO> creatorEvalReadDTOS = creatorEvalService.getListOfUId(userId);
         return ResponseEntity.ok(ResultResponse.of(GET_CREATOR_EVAL_LIST_SUCCESS,creatorEvalReadDTOS));
     }
+
+    @ApiOperation(value = "현재 유저가 크리에이터인지 아닌지 불러오기 : 파라메터 없음")
+    @GetMapping("/isCreator")
+    public ResponseEntity<ResultResponse> readByUserId() {
+        Boolean isCreator = creatorEvalService.checkIAMCreator();
+        return ResponseEntity.ok(ResultResponse.of(CREATOR_SEARCH_SUCCESS,isCreator));
+    }
 }

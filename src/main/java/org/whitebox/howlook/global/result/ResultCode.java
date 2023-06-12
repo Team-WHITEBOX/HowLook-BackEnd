@@ -81,6 +81,7 @@ public enum ResultCode {
     GET_CREATOR_EVAL_LIST_SUCCESS(200,"CR005","크리에이터 평가글 목록 조회에 성공하였습니다."),
     CREATOR_EVAL_REPLY_SUCCESS(200,"CR006","크리에이터 평가 리뷰 등록에 성공하였습니다."),
     GET_EVAL_REPLY_SUCCESS(200,"CR007","크리에이터 리뷰 조회에 성공하였습니다."),
+    CREATOR_SEARCH_SUCCESS(200,"CR008", "사용자 정보를 찾는데 성공하였습니다."),
 
     // Payment
     PAYMENT_SUCCESS(200, "PA001","결제성공"),
