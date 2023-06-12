@@ -90,12 +90,12 @@ public class TournamentServiceImpl implements TournamentService {
         List<Post> posts = new ArrayList<>();
 
         String sql = "SELECT " +
-                "DISTINCT (memberId),likeCount, postId, DATE_FORMAT(regdate,'%Y-%m-%d') FROM post " +
-                "WHERE ((memberId, likeCount) IN (SELECT memberId, MAX(likeCount) " +
-                "FROM post GROUP BY memberId HAVING MAX(likeCount))) " +
+                "DISTINCT (member_id),like_count, post_id, DATE_FORMAT(regdate,'%Y-%m-%d') FROM post " +
+                "WHERE ((member_id, like_count) IN (SELECT member_id, MAX(like_count) " +
+                "FROM post GROUP BY member_id HAVING MAX(like_count))) " +
                 "AND " +
                 "DATE_FORMAT(NOW() - INTERVAL 1 DAY,'%Y-%m-%d') = DATE_FORMAT(regdate,'%Y-%m-%d') " +
-                "ORDER BY likeCount DESC, postId DESC;";
+                "ORDER BY like_count DESC, post_id DESC;";
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
         cnt.addAll(rows);
 
