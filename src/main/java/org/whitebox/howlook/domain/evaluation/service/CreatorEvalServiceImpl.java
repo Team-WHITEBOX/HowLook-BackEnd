@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.whitebox.howlook.domain.evaluation.dto.*;
 import org.whitebox.howlook.domain.evaluation.entity.CreatorEval;
 import org.whitebox.howlook.domain.evaluation.entity.CreatorReply;
+import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
+import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.evaluation.repository.CreatorEvalRepository;
 import org.whitebox.howlook.domain.evaluation.repository.CreatorReplyRepository;
 import org.whitebox.howlook.domain.member.entity.Member;
@@ -138,29 +140,25 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
 
         List<CreatorEvalReadDTO> readDTOList = new ArrayList();
 
-//        for(int i = 0; i < getListFromPage.size(); i++) {
-//
-//            CreatorEvalReadDTO creatorEvalReadDTO = modelMapper.map(readDTOList.get(i), CreatorEvalReadDTO.class);
-//
-//            List<CreatorEvalReadDTO> temp = getCreatorEvalPage(page + 1, size);
-//
-//
-//            // 이거 무슨 코드인지 잘 모르겠음.
-//            if(checkEvalHasMyReply(evalReaderDTO) && !checkMyEvalPost(evalReaderDTO) ) {
-//                readerDTOList.add(evalReaderDTO);
-//            }
-//
-//            else{
-//                List<CreatorEvalReadDTO> temp = getCreatorEvalPage(page + 1, size);
-//
-//                if(temp != null) {
-//                    for (int j = 0; j < temp.size(); j++)
-//                        readDTOList.add(temp.get(j));
-//                }
-//            }
-//        }
+        for(int i = 0; i < getListFromPage.size(); i++) {
 
-        return getListFromPage;
+            CreatorEvalReadDTO creatorEvalReadDTO = getListFromPage.get(i);
+
+            if(checkEvalHasMyReply(creatorEvalReadDTO) && !checkMyEvalPost(creatorEvalReadDTO) ) {
+                readDTOList.add(creatorEvalReadDTO);
+            }
+
+            else{
+                List<CreatorEvalReadDTO> temp = getCreatorEvalPage(page + 1, size);
+
+                if(temp != null) {
+                    for (int j = 0; j < temp.size(); j++)
+                        readDTOList.add(temp.get(j));
+                }
+            }
+        }
+
+        return readDTOList;
     }
 
     @Override
@@ -220,5 +218,24 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
 
         }
         return result;
+    }
+
+    public boolean checkEvalHasMyReply(CreatorEvalReadDTO creatorEvalReadDTO) {
+        CreatorReply temp = creatorReplyReopository
+                .findMyReplyByPostid(creatorEvalReadDTO.getCreatorEvalId(), accountUtil.getLoginMemberId());
+
+        if (temp == null)
+            return true;
+
+        return false;
+    }
+
+    public boolean checkMyEvalPost(CreatorEvalReadDTO creatorEvalReadDTO) {
+        CreatorEval creatorEval = creatorEvalRepository.findByPid(creatorEvalReadDTO.getCreatorEvalId()).get();
+
+        if (creatorEval.getMember().getMemberId() == accountUtil.getLoginMember().getMemberId())
+            return true;
+
+        return false;
     }
 }

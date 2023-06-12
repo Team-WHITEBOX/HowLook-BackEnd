@@ -13,6 +13,7 @@ import org.whitebox.howlook.domain.member.entity.Member;
 import org.whitebox.howlook.domain.payment.dto.BuyDTO;
 import org.whitebox.howlook.domain.payment.dto.PayDTO;
 import org.whitebox.howlook.domain.payment.dto.TestPayDTO;
+import org.whitebox.howlook.domain.payment.dto.UserCashReadDTO;
 import org.whitebox.howlook.domain.payment.entity.PaymentInfo;
 import org.whitebox.howlook.domain.payment.entity.UserCash;
 import org.whitebox.howlook.domain.payment.exception.DifferentAmountException;
@@ -101,5 +102,21 @@ public class Payservice {
         }
 
         return userCash;
+    }
+
+    @Transactional
+    public UserCashReadDTO getUserCashReadDTO(Member member) {
+        UserCash userCash = userCashRepository.findByMember(member);
+        UserCashReadDTO userCashReadDTO;
+
+        if(userCash == null) {
+            userCashReadDTO = new UserCashReadDTO();
+        }
+
+        else {
+            userCashReadDTO = new UserCashReadDTO(userCash);
+        }
+
+        return userCashReadDTO;
     }
 }

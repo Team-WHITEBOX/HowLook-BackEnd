@@ -14,4 +14,7 @@ public interface UserCashRepository extends JpaRepository <UserCash,Long> {
 
     @Query("select u from UserCash u where u.member = :member")
     UserCash findByMember(Member member);
+
+    @Query("select u from UserCash u where u.member.memberId = :userId")
+    UserCash findByMemberId(String userId);
 }

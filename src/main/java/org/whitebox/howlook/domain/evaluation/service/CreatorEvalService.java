@@ -15,4 +15,8 @@ public interface CreatorEvalService {
     public CreatorEvalPageDTO getCreatorEvalWithHasMore(int page, int size);
 
     public List<CreatorEvalReadDTO> getListOfUId(String userId);
+
+    public boolean checkEvalHasMyReply(CreatorEvalReadDTO creatorEvalReadDTO);
+
+    public boolean checkMyEvalPost(CreatorEvalReadDTO creatorEvalReadDTO);
 }
