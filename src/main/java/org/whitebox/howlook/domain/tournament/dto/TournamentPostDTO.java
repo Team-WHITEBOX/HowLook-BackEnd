@@ -1,12 +1,15 @@
 package org.whitebox.howlook.domain.tournament.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.whitebox.howlook.domain.post.entity.Post;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
 
 import java.time.LocalDate;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TournamentPostDTO {
     private Long tournamentPostId;
     private LocalDate date;

@@ -15,7 +15,6 @@ import org.whitebox.howlook.domain.tournament.dto.THistoryList;
 import org.whitebox.howlook.domain.tournament.dto.TournamentPostDTO;
 import org.whitebox.howlook.domain.tournament.entity.TournamentPost;
 import org.whitebox.howlook.domain.tournament.repository.TournamentRepository;
-import org.whitebox.howlook.domain.tournament.repository.postToTournaRepository;
 import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 
 import java.time.LocalDate;
@@ -32,7 +31,6 @@ import static org.whitebox.howlook.global.error.ErrorCode.POST_NOT_FOUND;
 @RequiredArgsConstructor
 public class TournamentServiceImpl implements TournamentService {
     private final TournamentRepository tournamentRepository;
-    private final postToTournaRepository postToTournaRepository;
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
@@ -55,7 +53,8 @@ public class TournamentServiceImpl implements TournamentService {
     public void UpdatePosts(List<TournamentPostDTO> postDTOs) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         postDTOs.forEach(p -> {
-            TournamentPost post = modelMapper.map(p,TournamentPost.class);
+            TournamentPost post = tournamentRepository.findById(p.getTournamentPostId()).orElseThrow();
+            post.setScore(p.getScore());
             tournamentRepository.save(post);
         });
     }
