@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface CreatorEvalService {
     // 평가글 적기
-   public void registerCreatorEval(CreatorEvalRegisterDTO creatorEvalRegisterDTO);
+    public void registerCreatorEval(CreatorEvalRegisterDTO creatorEvalRegisterDTO);
 
     public CreatorEvalReadDTO readByCreatorEvalId(Long creatorEvalId);
 
-    public List<CreatorEvalReadDTO> getCreatorEvalPage(int page,int size);
+    public List<CreatorEvalReadDTO> getCreatorEvalPage(int page, int size);
 
     public CreatorEvalPageDTO getCreatorEvalWithHasMore(int page, int size);
 
@@ -19,4 +19,6 @@ public interface CreatorEvalService {
     public boolean checkEvalHasMyReply(CreatorEvalReadDTO creatorEvalReadDTO);
 
     public boolean checkMyEvalPost(CreatorEvalReadDTO creatorEvalReadDTO);
+
+    public boolean checkIAMCreator();
 }
