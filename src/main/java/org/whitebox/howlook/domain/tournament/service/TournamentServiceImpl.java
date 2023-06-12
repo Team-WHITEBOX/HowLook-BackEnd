@@ -37,7 +37,7 @@ public class TournamentServiceImpl implements TournamentService {
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<TournamentPostDTO> getPosts(LocalDate date) {
