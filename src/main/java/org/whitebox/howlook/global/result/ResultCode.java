@@ -84,7 +84,8 @@ public enum ResultCode {
     GET_EVAL_REPLY_SUCCESS(200,"CR007","크리에이터 리뷰 조회에 성공하였습니다."),
 
     // Payment
-    PAYMENT_SUCCESS(200, "PA001","결제성공");
+    PAYMENT_SUCCESS(200, "PA001","결제성공"),
+    GET_USERCASH_SUCCESS(200, "PA002" , "사용자의 루비정보를 찾는데 성공하였습니다.");
 
     private final int status;
     private final String code;
