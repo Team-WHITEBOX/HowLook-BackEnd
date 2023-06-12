@@ -49,7 +49,7 @@ public class TournamentTask {
             for(TournamentPostDTO post : posts)
             {
                 TournamentPost tournamentPost = TournamentPost.builder()
-                        .date(LocalDate.now()).tournamentPostId(post.getPostId()).photo(post.getPhoto())
+                        .date(LocalDate.now()).postId(post.getPostId()).photo(post.getPhoto())
                         .memberId(post.getMemberId()).score(0L).tournamentType(finalTourtype).build();
 
                 tournamentRepository.save((tournamentPost));
