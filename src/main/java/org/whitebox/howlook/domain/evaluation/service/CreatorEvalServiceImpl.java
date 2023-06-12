@@ -17,7 +17,9 @@ import org.whitebox.howlook.domain.evaluation.entity.EvalReply;
 import org.whitebox.howlook.domain.evaluation.entity.Evaluation;
 import org.whitebox.howlook.domain.evaluation.repository.CreatorEvalRepository;
 import org.whitebox.howlook.domain.evaluation.repository.CreatorReplyRepository;
+import org.whitebox.howlook.domain.member.entity.Creator;
 import org.whitebox.howlook.domain.member.entity.Member;
+import org.whitebox.howlook.domain.member.repository.MemberRepository;
 import org.whitebox.howlook.domain.payment.entity.UserCash;
 import org.whitebox.howlook.domain.payment.exception.LackOfLubyException;
 import org.whitebox.howlook.domain.payment.repository.UserCashRepository;
@@ -39,6 +41,8 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
     private final AccountUtil accountUtil;
     private final CreatorEvalRepository creatorEvalRepository;
     private final CreatorReplyRepository creatorReplyReopository;
+
+    private final MemberRepository memberRepository;
 
     @Value("${org.whitebox.upload.path}")
     private String uploadPath; // 저장될 경로
@@ -97,6 +101,8 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
     @Override
     public CreatorEvalReadDTO readByCreatorEvalId(Long creatorEvalId)
     {
+        Member member = accountUtil.getLoginMember();
+
         Optional<CreatorEval> result = creatorEvalRepository.findById(creatorEvalId);
 
         CreatorEval creatorEval = result.orElseThrow();
@@ -235,6 +241,16 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
 
         if (creatorEval.getMember().getMemberId() == accountUtil.getLoginMember().getMemberId())
             return true;
+
+        return false;
+    }
+
+    public boolean checkIAMCreator() {
+        Member member = accountUtil.getLoginMember();
+
+        if(memberRepository.getCreatorbyUID(member.getMemberId()).isPresent()) {
+            return true;
+        }
 
         return false;
     }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.whitebox.howlook.domain.member.entity.Creator;
 import org.whitebox.howlook.domain.member.entity.Member;
 
 import javax.transaction.Transactional;
@@ -25,4 +26,7 @@ public interface MemberRepository extends JpaRepository<Member,String>,MemberPro
 
     Optional<Member> findByNickName(@Param("nickName") String nickName);
     boolean existsByNickName(String nickName);
+
+    @Query("select c from Creator c where c.userId = :Uid")
+    Optional<Creator> getCreatorbyUID(String Uid);
 }
