@@ -39,6 +39,8 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 
 	// 아임포트 관련 gradle
 	implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
