@@ -24,6 +24,7 @@ import org.whitebox.howlook.domain.payment.entity.UserCash;
 import org.whitebox.howlook.domain.payment.exception.LackOfLubyException;
 import org.whitebox.howlook.domain.payment.repository.UserCashRepository;
 import org.whitebox.howlook.domain.upload.dto.UploadFileDTO;
+import org.whitebox.howlook.global.error.exception.EntityNotFoundException;
 import org.whitebox.howlook.global.util.AccountUtil;
 import org.whitebox.howlook.global.util.LocalUploader;
 import org.whitebox.howlook.global.util.S3Uploader;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.whitebox.howlook.global.error.ErrorCode.EVAL_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -237,7 +240,9 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
     }
 
     public boolean checkMyEvalPost(CreatorEvalReadDTO creatorEvalReadDTO) {
-        CreatorEval creatorEval = creatorEvalRepository.findByPid(creatorEvalReadDTO.getCreatorEvalId()).get();
+        CreatorEval creatorEval = creatorEvalRepository.findByPid(
+                creatorEvalReadDTO.getCreatorEvalId()
+        ).get();
 
         if (creatorEval.getMember().getMemberId() == accountUtil.getLoginMember().getMemberId())
             return true;
@@ -254,4 +259,28 @@ public class CreatorEvalServiceImpl implements CreatorEvalService{
 
         return false;
     }
+
+
+    @Override
+    public List<CreatorEvalReadDTO> readAllwithoutMine() {
+        List<CreatorEval> evalList = creatorEvalRepository.findAll();
+        List<CreatorEvalReadDTO> readerDTOList = new ArrayList<>();
+
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        for (int i = 0; i < evalList.size(); i++) {
+            CreatorEvalReadDTO evalReaderDTO = new CreatorEvalReadDTO();
+
+            evalReaderDTO.setCreatorEvalId(evalList.get(i).getEvalId());
+            evalReaderDTO.setMainPhotoPath(evalList.get(i).getMainPhotoPath());
+
+            if (checkEvalHasMyReply(evalReaderDTO) && !checkMyEvalPost(evalReaderDTO)) {
+                readerDTOList.add(evalReaderDTO);
+            }
+
+        }
+
+        return readerDTOList;
+    }
+
 }

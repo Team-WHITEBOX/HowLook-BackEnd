@@ -21,4 +21,5 @@ public interface CreatorEvalService {
     public boolean checkMyEvalPost(CreatorEvalReadDTO creatorEvalReadDTO);
 
     public boolean checkIAMCreator();
+    public List<CreatorEvalReadDTO> readAllwithoutMine();
 }

@@ -62,4 +62,13 @@ public class CreatorController {
         Boolean isCreator = creatorEvalService.checkIAMCreator();
         return ResponseEntity.ok(ResultResponse.of(CREATOR_SEARCH_SUCCESS,isCreator));
     }
+
+    // 평가안한 평가 글 전부 가져오기
+    @ApiOperation(value = "평가 안한 글 갯수 불러오기 : 파라메터 없음")
+    @GetMapping("/getEvalCount")
+    public ResponseEntity<ResultResponse> getEvalCount() {
+        List<CreatorEvalReadDTO> evalReaderDTOS = creatorEvalService.readAllwithoutMine();
+
+        return ResponseEntity.ok(ResultResponse.of(EVAL_SEARCH_SUCCESS,evalReaderDTOS.size()));
+    }
 }
