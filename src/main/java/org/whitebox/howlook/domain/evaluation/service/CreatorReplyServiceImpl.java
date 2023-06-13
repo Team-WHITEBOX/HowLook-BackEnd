@@ -74,10 +74,9 @@ public class CreatorReplyServiceImpl implements  CreatorReplyService{
     }
 
 
-    public CreatorDataDTO ReadDataByPostId(Long postId)
+    public List<CreatorReviewDTO> ReadDataByPostId(Long postId)
     {
         List<CreatorReply> evalReplies = creatorReplyRepository.findBypid(postId).orElseThrow(() -> new EntityNotFoundException(EVAL_NOT_EXIST));
-        CreatorDataDTO creatorDataDTO = new CreatorDataDTO();
         List<CreatorReviewDTO> list = new ArrayList<>();
 
         for(CreatorReply c : evalReplies)
@@ -93,8 +92,6 @@ public class CreatorReplyServiceImpl implements  CreatorReplyService{
 
         }
 
-        creatorDataDTO.setCreatorReviewDTO(list);
-
-        return creatorDataDTO;
+        return list;
     }
 }
