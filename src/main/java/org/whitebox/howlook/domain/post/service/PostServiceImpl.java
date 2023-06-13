@@ -305,7 +305,7 @@ public class PostServiceImpl implements PostService {
         String thismember = accountUtil.getLoginMemberId();
         String postmember = postRepository.findMemberIdByPostId(postId);
         log.info("thismember: " + thismember + "postmember: " + postmember);
-        if(!thismember.equals(postmember)) {
+        if(!thismember.equals(postmember) && !thismember.equals("admin")) {
             throw new EntityAlreadyExistException(POST_CANT_DELETE);
         }
 
