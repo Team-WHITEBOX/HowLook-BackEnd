@@ -1,7 +1,7 @@
 # HowLook-BackEnd
 Spring Boot+Flutter 를 사용해 개발한 패션 SNS입니다.
 
-시연영상 : https://www.youtube.com/watch?v=HEArI2TpQAY
+시연영상 : https://youtu.be/zA1p0lpGsXU
 
 스웨거 api : 
 
@@ -27,22 +27,22 @@ Spring Boot+Flutter 를 사용해 개발한 패션 SNS입니다.
 
 학생들이 진행한 프로젝트로, 대부분 ec2프리티어 내부에 환경을 구성하여 무료로 간단하게 진행했습니다.
 
-![캡스톤 아키텍처](https://github.com/Team-WHITEBOX/HowLook-BackEnd/assets/74866067/f3316bbc-2180-45d7-9e47-6cef2f977b74)
+![image](https://github.com/Team-WHITEBOX/HowLook-BackEnd/assets/74866067/3b753743-f830-4a1c-a8a9-953efae5cc1f)
 
 
 >패키지 구조
 
 패키지 구조를 도메인형으로 나누어 직관적으로 구분이 가능하고 협업에 편리하도록 설계하였습니다.
 
-![패키지 구조](https://user-images.githubusercontent.com/74866067/229355074-5649c3a0-c9fd-4ec6-996a-1314a74038e6.JPG)
+![image](https://github.com/Team-WHITEBOX/HowLook-BackEnd/assets/74866067/3090ef6b-24a1-47bb-a7fb-2674f0c0e133)
 
 
 
 >ERD
 
-![2erd](https://user-images.githubusercontent.com/74866067/229354467-d5980b0b-ff2b-4398-b1f3-24fae953d597.jpg)
 
-  
+![image](https://github.com/Team-WHITEBOX/HowLook-BackEnd/assets/74866067/c90d84b5-1421-4d5f-83cf-ad503c88552e)
+
     
 ## 주요 구조
 
